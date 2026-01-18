@@ -2,31 +2,60 @@
 
 ## Animation: `03-ClaudeChatAnimation`
 
-Web chat vs terminal comparison showing identical interaction patterns.
+Subtractive flow showing same prompt traveling from web chat to terminal.
 
 ## Design Notes
 
 **Concept: "You Already Know This"**
 
-Demonstrate that chatting with AI and using a terminal are the same interaction pattern: text in, text out, turn-based conversation.
+Demystify the terminal by showing that it's the same interaction pattern as web chat. The prompt "travels" between windows to reinforce that it's the same action in both places.
 
-**Duration:** ~30 seconds
+**Duration:** ~18 seconds
 
-### Visual Breakdown
+### Scene Flow
 
-1. **Chat Interface** - Familiar web chat with AI (claude.ai style)
-2. **Terminal Interface** - Same conversation happening in terminal
-3. **The Parallel** - Side-by-side comparison showing identical patterns
-4. **The Reveal** - "The terminal was the original chat interface"
+**Scene 1: Web Browser** (~8s)
+- ChatGPT-style browser with sidebar, chat area, input box
+- User asks: "What are three tips for better presentations?"
+- AI responds with three tips
+- Familiar, comfortable interface
 
-**Key Insight:** Users already understand terminal interaction - they've been doing it every time they chat with AI.
+**Transition: Prompt Travels** (~2s)
+- Web fades
+- The user's prompt floats to center
+- Moves toward terminal as it fades in
+- Prompt "lands" in the terminal
 
-**Visual Hook:** Two panels side by side, same question flowing into both, same pattern of interaction
+**Scene 2: Terminal** (~5s)
+- Same prompt appears
+- Subtle: `→ Reading ./notes/presentations.md` (hints at local context)
+- Same three tips appear
+- Same pattern, different wrapper
 
-## Content Summary
+**Scene 3: Insight** (~3s)
+- "Text in. Text out."
+- "You already know this."
 
-Reframes terminal anxiety by showing that chat interfaces and terminals use identical interaction models. The intimidation comes from the language (commands vs natural language), not the concept.
+### Visual Elements
 
-## References
+**Web Browser:**
+- Full browser chrome (dots, nav buttons, URL bar)
+- ChatGPT-style layout (sidebar with history, main chat area)
+- OpenAI green avatar for AI
+- Blue bubble for user message
 
-- Original storyboard: `animation/storyboards/SECTIONS_3_4_STORYBOARD.md` (Part 1)
+**Terminal:**
+- Consistent with Sections 1-2
+- Green prompt, response with left border
+- Context line shows local file reading (subtle)
+
+### The Traveling Prompt
+
+The user's question physically moves from the web interface to the terminal. This visual metaphor reinforces:
+1. It's the same question
+2. It's the same action (type and send)
+3. The only difference is where you're typing
+
+### Key Message
+
+You've been using this interaction pattern for years with AI chatbots. The terminal is just another place to have the same conversation—but with access to your local environment.
