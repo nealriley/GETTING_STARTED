@@ -1,254 +1,158 @@
-# GETTING_STARTED Site Rebuild Roadmap
+# GETTING_STARTED - Project Roadmap
 
 ## Overview
 
-Rebuilding the main site experience from an "interview chat" format to a **full-screen immersive educational experience**:
+An educational Astro-based site helping "technical adjacent" professionals (UX researchers, product managers, designers, data analysts) understand foundational concepts for working with AI tools.
 
-- **LEFT (45%)**: Content from `content/FULL_GUIDE_v3.md` (10 sections, ~7,200 words)
-- **RIGHT (55%)**: Terminal-style animations from `animation/storyboards/`
-
-**Design Philosophy**: Data visualization/storytelling approach with technical/educational content. Full viewport, dark theme, minimal chrome, immersive reading experience.
-
-**Goal**: Create an immersive learning experience where users read foundational concepts about AI tools while watching visual animations that reinforce each concept.
+**Live URL**: https://nealriley.github.io/GETTING_STARTED
 
 ---
 
-## Current State
+## Current State (January 2026)
 
-### What Exists
-| Component | Location | Status |
-|-----------|----------|--------|
-| InterviewChat.astro | `src/components/` | To be replaced |
-| AnimatedScene.astro | `src/components/` | Reusable (basic GSAP demo) |
-| ScrollProgressBar.astro | `src/components/` | Keep |
-| BaseLayout.astro | `src/layouts/` | Keep |
-| global.css | `src/styles/` | Keep, extend |
+### Completed Features
 
-### Key Source Files
-| File | Purpose |
-|------|---------|
-| `content/FULL_GUIDE_v3.md` | Authoritative content (10 sections) |
-| `animation/storyboards/ANIMATION_PLAN_SUMMARY.md` | Animation overview |
-| `animation/storyboards/SECTION_*.md` | Individual storyboards |
+| Feature | Status | Notes |
+|---------|--------|-------|
+| 12-section content | Done | Astro Content Collections in `src/content/sections/` |
+| 12 GSAP animations | Done | One per section in `src/components/animations/` |
+| Split-screen layout | Done | `SplitLayout.astro` - content left, animation right |
+| Welcome screen | Done | Full-screen landing, "Get Started" button |
+| Section navigation | Done | Prev/Next buttons, keyboard arrows |
+| URL hash routing | Done | `/#intro`, `/#interfaces`, etc. |
+| Progress indicator | Done | Progress bar in footer |
+| Responsive design | Done | Stacked on mobile, side-by-side on desktop |
+| Reduced motion support | Done | `prefers-reduced-motion` respected |
+| ESLint | Done | `eslint-plugin-astro` configured |
+| Vitest tests | Done | 26 tests passing |
+| GitHub Pages deploy | Done | Automated via GitHub Actions |
+
+### Architecture
+
+```
+User lands on /
+    |
+    v
+[Welcome Screen] -- "Get Started" --> /#intro
+    |
+    v
+[Split Layout]
+  - Left: Content panel (markdown rendered)
+  - Right: Animation panel (GSAP)
+  - Header: Prev/Next navigation
+  - Footer: Progress bar
+```
+
+### Section Structure
+
+| # | ID | Title | Animation |
+|---|-----|-------|-----------|
+| 1 | `intro` | For the Technical Adjacent | 01-IntroAnimation |
+| 2 | `interfaces` | Not All Models Are the Same | 02-InterfacesAnimation |
+| 3 | `terminal-chat` | The Terminal is Just a Chat | 03-ClaudeChatAnimation |
+| 4 | `terminal-raw` | What's Actually Happening | 04-RawTerminalAnimation |
+| 5 | `terminal-translator` | AI as Your Translator | 05-TranslatorAnimation |
+| 6 | `packages` | Package Managers | 06-PackageManagerAnimation |
+| 7 | `creation` | More Than Just Code | 07-CreationAnimation |
+| 8 | `markdown` | The Unreasonable Usefulness of Markdown | 08-MarkdownAnimation |
+| 9 | `structure` | A Little Bit of Structure | 09-StructureAnimation |
+| 10 | `context` | Context Is King | 10-ContextAnimation |
+| 11 | `decorators` | Decorating Your Prompts | 11-DecoratorsAnimation |
+| 12 | `factory` | The Factory Is the Teacher | 12-FactoryAnimation |
 
 ---
 
-## Content Structure
+## Remaining Tasks
 
-The guide has 10 sections with different animation requirements:
+### High Priority
 
-| # | Section | Animation | Duration | Visual Concept |
-|---|---------|-----------|----------|----------------|
-| 1 | For the Technical Adjacent | NO | - | Intro/meta content |
-| 2 | Interfaces | YES | 60-90s | "Same Brain, Different Body" |
-| 3+4 | Terminal + Package Managers | YES | 90-120s | "You Already Know This" |
-| 5 | More Than Just Code | YES | 60-75s | "The Creation Machine" |
-| 6 | Markdown | YES | 90-120s | "Description Becomes Reality" |
-| 7 | Structure | YES | 75-90s | "The Transformation" |
-| 8 | Context | YES | 75-90s | "The Right Buttons" |
-| 9 | Decorators | YES | 90-120s | "The Story in Structure" |
-| 10 | Factory Is Teacher | YES | 60-75s | "The Walls Come Alive" |
+- [ ] **Content review** - Review all 12 sections for clarity, accuracy, and tone
+- [ ] **Welcome screen content** - Finalize intro text (placeholder currently)
 
-**Total: 8 animations, ~10-12 minutes runtime**
+### Medium Priority
 
----
+- [ ] **Cross-browser testing** - Test on Safari, Firefox, Edge
+- [ ] **Mobile UX review** - Test stacked layout on real devices
+- [ ] **Animation timing review** - Ensure all animations have appropriate pacing
 
-## Phase 1: Foundation (COMPLETED)
+### Low Priority / Nice-to-Have
 
-### Goals
-- [x] Document the rebuild plan (this file)
-- [x] Create content-to-animation mapping
-- [x] Design component architecture
-- [x] Set up project documentation structure
-
-### Deliverables
-- [x] `docs/ROADMAP.md` - This file
-- [x] `docs/CONTENT_ANIMATION_MAP.md` - Section-by-section mapping
-- [x] `docs/COMPONENT_ARCHITECTURE.md` - New component design
+- [ ] **Mobile swipe navigation** - Swipe between sections on touch devices
+- [ ] **Animation controls** - Play/pause/restart buttons
+- [ ] **Visual regression tests** - Commit Playwright screenshot baselines
+- [ ] **Component tests** - Add tests for Astro components (currently only lib tests)
+- [ ] **Analytics** - Track section engagement
 
 ---
 
-## Phase 2: Core Layout (COMPLETED)
+## Tech Stack
 
-### Goals
-- [x] Create split-screen layout component
-- [x] Implement section navigation
-- [x] Set up testing framework (Vitest)
-- [x] Create content parsing utilities
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Astro | 4.x | Static site generator |
+| GSAP | 3.12+ | Animations |
+| TypeScript | - | Type safety |
+| Vitest | 4.x | Unit testing |
+| Playwright | 1.57+ | E2E testing |
+| ESLint | 9.x | Linting |
+| GitHub Pages | - | Hosting |
 
-### Completed Components
+---
+
+## File Structure
+
 ```
 src/
+  content/
+    config.ts              # Content collection schema
+    sections/              # 12 markdown files (01-intro.md, etc.)
+  components/
+    SplitLayout.astro      # Main layout component
+    WelcomeScreen.astro    # Landing page
+    animations/            # 12 animation components
   lib/
-    content.ts               # Content parsing utilities
-  components/
-    SplitLayout.astro        # Main split-screen container
-    ContentPanel.astro       # Left panel - rendered markdown content
-    TerminalFrame.astro      # Terminal-style animation wrapper
+    sections.ts            # SectionData interface
+    content.ts             # Content utilities
   pages/
-    index.astro              # Updated to use new components
-
-tests/
-  content.test.ts            # 29 tests for content parsing
-
-vitest.config.ts             # Test configuration
-```
-
-### Technical Decisions Made
-- Vitest for testing (29 tests passing)
-- Direct markdown parsing via `lib/content.ts`
-- Basic markdown-to-HTML conversion in index.astro
-- URL hash-based section navigation
-- Keyboard navigation (arrow keys)
-- Full-screen dark theme (immersive experience)
-- 45/55 split (content/animation) for emphasis on visuals
-- Astro dev server binds to 0.0.0.0 for Codespaces compatibility
-
----
-
-## Phase 3: Content Integration (IN PROGRESS)
-
-### Goals
-- [x] Parse and render FULL_GUIDE_v3.md sections
-- [x] Implement section-by-section navigation
-- [x] Add persistent section titles
-- [x] Handle responsive layout (stacked on mobile)
-- [ ] Improve markdown parsing (use proper parser)
-- [ ] Add section content loading on navigation
-
-### Approach
-- Use Astro's content collections or direct markdown parsing
-- Each section becomes a "slide" in the experience
-- Section titles remain visible during transitions
-- Content scrolls independently from animations
-
----
-
-## Phase 4: Animation System
-
-### Goals
-- [ ] Create base animation framework
-- [ ] Implement terminal-style text animations
-- [ ] Build animation components for each section
-- [ ] Link animations to scroll/section progress
-
-### Animation Components
-```
-src/components/animations/
-  BaseAnimation.astro        # Shared animation utilities
-  InterfacesAnimation.astro  # Section 2
-  TerminalAnimation.astro    # Sections 3+4
-  CreationAnimation.astro    # Section 5
-  MarkdownAnimation.astro    # Section 6
-  StructureAnimation.astro   # Section 7
-  ContextAnimation.astro     # Section 8
-  DecoratorsAnimation.astro  # Section 9
-  FactoryAnimation.astro     # Section 10
-```
-
-### Visual Style
-- Terminal/CLI aesthetic (monospace, dark background)
-- Typewriter text effects
-- ASCII art elements
-- GSAP timelines synchronized with content
-
----
-
-## Phase 5: Polish & Accessibility
-
-### Goals
-- [ ] Add prefers-reduced-motion support
-- [ ] Implement keyboard navigation
-- [ ] Add skip links and ARIA labels
-- [ ] Performance optimization
-- [ ] Cross-browser testing
-
-### Accessibility Requirements
-- All animations respect `prefers-reduced-motion`
-- Keyboard-navigable sections
-- Screen reader friendly content
-- Focus management during transitions
-
----
-
-## Technical Decisions
-
-### Animation Library
-**GSAP** - Already installed, documented in AGENTS.md
-
-### Content Source
-**Direct markdown parsing** - FULL_GUIDE_v3.md is the single source of truth
-
-### State Management
-**URL-based sections** - Each section gets a URL fragment for shareability
-- `/GETTING_STARTED/#interfaces`
-- `/GETTING_STARTED/#terminal`
-- etc.
-
-### Scroll Behavior
-**ScrollTrigger integration** - Animations tied to scroll position within sections
-
----
-
-## File Structure (Target)
-
-```
-src/
-  pages/
-    index.astro              # Main entry, uses SplitLayout
-  components/
-    SplitLayout.astro        # Split-screen container
-    ContentPanel.astro       # Left: markdown content
-    AnimationPanel.astro     # Right: animations
-    SectionNav.astro         # Navigation/progress
-    TerminalFrame.astro      # Terminal wrapper
-    animations/              # Section-specific animations
-      BaseAnimation.astro
-      [8 section animations]
+    index.astro            # Homepage
   layouts/
-    BaseLayout.astro         # Keep existing
+    BaseLayout.astro       # Base HTML layout
   styles/
-    global.css               # Keep, extend
-    animations.css           # Animation-specific styles
+    global.css             # Global styles
 
 docs/
-  ROADMAP.md                 # This file
-  CONTENT_ANIMATION_MAP.md   # Section mapping
-  COMPONENT_ARCHITECTURE.md  # Component design
+  sections/                # Design notes per section (12 files)
+  archive/
+    planning/              # Original planning docs (v1)
+    FULL_GUIDE_v3.md       # Original source content
 
-content/
-  FULL_GUIDE_v3.md           # Authoritative content (keep)
-
-animation/
-  storyboards/               # Animation plans (keep for reference)
+tests/
+  content.test.ts          # Unit tests
+  e2e/                     # Playwright tests
 ```
 
 ---
 
-## Open Questions
+## Development
 
-1. **Section 1 handling**: No animation planned - different layout? Splash screen?
-2. **Mobile experience**: Stack panels or alternative mobile-first design?
-3. **Auto-advance behavior**: Keep timer from InterviewChat or user-controlled?
-4. **xterm.js**: Animation storyboard mentions it - implement real terminal or styled div?
-5. **Series mode**: Option to play all animations continuously?
-
----
-
-## Next Steps
-
-1. ~~Create `docs/CONTENT_ANIMATION_MAP.md` with detailed section breakdown~~ DONE
-2. ~~Create `docs/COMPONENT_ARCHITECTURE.md` with component specs~~ DONE
-3. ~~Begin Phase 2 implementation with SplitLayout.astro~~ DONE
-4. Install proper markdown parser (marked or remark)
-5. Implement dynamic section loading on navigation
-6. Begin Phase 4: Create first animation component (Section 7 - "The Transformation")
+```bash
+npm install          # Install dependencies
+npm run dev          # Start dev server (localhost:4321)
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run test:run     # Run tests
+npm run lint         # Run ESLint
+```
 
 ---
 
-## References
+## History
 
-- Content: `content/FULL_GUIDE_v3.md`
-- Animations: `animation/storyboards/ANIMATION_PLAN_SUMMARY.md`
-- Current implementation: `src/components/InterviewChat.astro`
-- GSAP docs: Documented in `AGENTS.md`
+This project evolved from an "interview chat" format to a full-screen immersive educational experience. Original planning documents are archived in `docs/archive/planning/`.
+
+Key milestones:
+1. Initial content and storyboards created
+2. Split-screen layout implemented
+3. 12 GSAP animations built
+4. Welcome screen added
+5. ESLint configured
