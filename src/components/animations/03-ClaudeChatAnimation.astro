@@ -119,12 +119,8 @@ const { class: className = '' } = Astro.props;
           <span class="prompt-text">What are three tips for better presentations?</span>
         </div>
         
-        <div class="term-line context-line" data-term="context">
-          <span class="context-arrow">→</span>
-          <span class="context-text">Reading ./notes/presentations.md</span>
-        </div>
-        
         <div class="term-response" data-term="response">
+          <p class="context-note">Based on your notes in <span class="file-ref">~/notes/presentations.md</span>:</p>
           <p><strong>1. Know your audience</strong> — Tailor your content to what they care about.</p>
           <p><strong>2. Use visuals to support, not replace</strong> — Slides should enhance your words, not repeat them.</p>
           <p><strong>3. Practice out loud</strong> — Rehearsing helps you find your natural rhythm.</p>
@@ -183,8 +179,8 @@ const { class: className = '' } = Astro.props;
      ============================================ */
   .browser-window {
     width: 100%;
-    max-width: 600px;
-    height: 85%;
+    max-width: 700px;
+    height: 92%;
     display: flex;
     flex-direction: column;
     background: #1a1a1a;
@@ -384,7 +380,7 @@ const { class: className = '' } = Astro.props;
   }
 
   .message-text {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.9);
   }
@@ -466,8 +462,8 @@ const { class: className = '' } = Astro.props;
      ============================================ */
   .terminal-window {
     width: 100%;
-    max-width: 600px;
-    height: 85%;
+    max-width: 700px;
+    height: 92%;
     display: flex;
     flex-direction: column;
     background: #0a0a0a;
@@ -523,30 +519,13 @@ const { class: className = '' } = Astro.props;
   .prompt {
     color: #22c55e;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .prompt-text {
     color: rgba(255, 255, 255, 0.9);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-family: system-ui, sans-serif;
-  }
-
-  .context-line {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding-left: 1.5rem;
-  }
-
-  .context-arrow {
-    color: #60a5fa;
-  }
-
-  .context-text {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.85rem;
-    font-style: italic;
   }
 
   .term-response {
@@ -557,7 +536,7 @@ const { class: className = '' } = Astro.props;
 
   .term-response p {
     margin: 0 0 0.75rem 0;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.85);
     font-family: system-ui, sans-serif;
@@ -569,6 +548,19 @@ const { class: className = '' } = Astro.props;
 
   .term-response strong {
     color: #22c55e;
+  }
+
+  .term-response .context-note {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+
+  .term-response .file-ref {
+    color: #60a5fa;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-style: normal;
+    font-size: 0.9em;
   }
 
   /* ============================================
@@ -583,7 +575,7 @@ const { class: className = '' } = Astro.props;
   }
 
   .insight-main {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 500;
     margin-bottom: 0.5rem;
@@ -592,7 +584,7 @@ const { class: className = '' } = Astro.props;
   }
 
   .insight-sub {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: rgba(139, 92, 246, 0.9);
     font-family: 'Lora', Georgia, serif;
     opacity: 0;
@@ -805,15 +797,7 @@ const { class: className = '' } = Astro.props;
 
       tl.to({}, { duration: 0.8 });
 
-      // Context line (reading local file)
-      tl.to(q('[data-term="context"]'), {
-        opacity: 1,
-        duration: 0.4
-      });
-
-      tl.to({}, { duration: 0.8 });
-
-      // Response
+      // Response (includes context note about local files)
       tl.to(q('[data-term="response"]'), {
         opacity: 1,
         duration: 0.5,
@@ -881,7 +865,6 @@ const { class: className = '' } = Astro.props;
       // Reset terminal scene
       gsap.set(q('.terminal-window'), { opacity: 0, y: 10 });
       gsap.set(q('[data-term="prompt"]'), { opacity: 0 });
-      gsap.set(q('[data-term="context"]'), { opacity: 0 });
       gsap.set(q('[data-term="response"]'), { opacity: 0 });
 
       // Reset insight
