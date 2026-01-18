@@ -1,8 +1,8 @@
 ---
 id: "structure"
-number: 9
+number: 8
 title: "A Little Bit of Structure Goes a Long Way"
-animation: "09-StructureAnimation"
+animation: "08-StructureAnimation"
 ---
 
 Here's what most people send to AI:

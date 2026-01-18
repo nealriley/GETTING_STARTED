@@ -1,8 +1,8 @@
 ---
 id: "terminal-raw"
-number: 4
+number: 3
 title: "Same Pattern, Different Words"
-animation: "04-RawTerminalAnimation"
+animation: "03-RawTerminalAnimation"
 ---
 
 Now look at the same action - listing files - but without the AI in the middle.

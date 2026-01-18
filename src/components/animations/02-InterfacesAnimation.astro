@@ -55,9 +55,9 @@ const { class: className = '' } = Astro.props;
           </div>
           <div class="sidebar-section">
             <span class="sidebar-label">Today</span>
-            <div class="chat-history-item active">Presentation tips</div>
-            <div class="chat-history-item">Project brainstorm</div>
-            <div class="chat-history-item">Meeting notes</div>
+            <div class="chat-history-item active">Draft email</div>
+            <div class="chat-history-item">Meeting prep</div>
+            <div class="chat-history-item">Research notes</div>
           </div>
         </div>
         
@@ -66,7 +66,7 @@ const { class: className = '' } = Astro.props;
           <div class="chat-messages">
             <div class="message user-message" data-web="user">
               <div class="message-bubble">
-                <span class="message-text">What are three tips for better presentations?</span>
+                <span class="message-text">Help me draft an email about the project delay</span>
               </div>
             </div>
             
@@ -74,9 +74,10 @@ const { class: className = '' } = Astro.props;
               <div class="ai-avatar">✦</div>
               <div class="message-bubble">
                 <div class="message-text">
-                  <p><strong>1. Know your audience</strong> — Tailor your content to what they care about.</p>
-                  <p><strong>2. Use visuals to support, not replace</strong> — Slides should enhance your words, not repeat them.</p>
-                  <p><strong>3. Practice out loud</strong> — Rehearsing helps you find your natural rhythm.</p>
+                  <p>I'd be happy to help! To write an effective email, I'll need some details:</p>
+                  <p>• What caused the delay?</p>
+                  <p>• How long is the delay?</p>
+                  <p>• Who is the audience?</p>
                 </div>
               </div>
             </div>
@@ -96,7 +97,7 @@ const { class: className = '' } = Astro.props;
 
   <!-- Floating Prompt (for transition) -->
   <div class="floating-prompt" data-element="floating-prompt">
-    <span class="floating-text">What are three tips for better presentations?</span>
+    <span class="floating-text">Help me draft an email about the project delay</span>
   </div>
 
   <!-- Scene 2: Terminal -->
@@ -115,15 +116,24 @@ const { class: className = '' } = Astro.props;
       
       <div class="terminal-content">
         <div class="term-line prompt-line" data-term="prompt">
-          <span class="prompt">$</span>
-          <span class="prompt-text">What are three tips for better presentations?</span>
+          <span class="prompt">&gt;</span>
+          <span class="prompt-text">Help me draft an email about the project delay</span>
+        </div>
+        
+        <div class="term-line thinking-line" data-term="thinking">
+          <span class="thinking-indicator">
+            <span class="thinking-dot"></span>
+            <span class="thinking-dot"></span>
+            <span class="thinking-dot"></span>
+          </span>
+          <span class="thinking-text">Thinking...</span>
         </div>
         
         <div class="term-response" data-term="response">
-          <p class="context-note">Based on your notes in <span class="file-ref">~/notes/presentations.md</span>:</p>
-          <p><strong>1. Know your audience</strong> — Tailor your content to what they care about.</p>
-          <p><strong>2. Use visuals to support, not replace</strong> — Slides should enhance your words, not repeat them.</p>
-          <p><strong>3. Practice out loud</strong> — Rehearsing helps you find your natural rhythm.</p>
+          <p class="context-note">Based on <span class="file-ref">~/projects/atlas/status.md</span>:</p>
+          <p>Here's a draft email for the Atlas project delay:</p>
+          <p><em>"Hi team, the vendor integration is taking longer than expected. We're now targeting March 15th instead of March 1st. I've updated the timeline doc with details."</em></p>
+          <p class="file-saved"><span class="save-icon">✓</span> Saved to <span class="file-ref">~/Desktop/delay-email.txt</span></p>
         </div>
       </div>
     </div>
@@ -132,7 +142,7 @@ const { class: className = '' } = Astro.props;
   <!-- Scene 3: Insight -->
   <div class="scene scene-insight" data-scene="insight">
     <div class="insight-content">
-      <div class="insight-main">Same intelligence. Different access.</div>
+      <div class="insight-main">Same model, different interface.</div>
     </div>
   </div>
 
@@ -516,9 +526,9 @@ const { class: className = '' } = Astro.props;
   }
 
   .prompt {
-    color: #22c55e;
-    font-weight: 600;
-    font-size: 1.15rem;
+    color: #a78bfa;
+    font-weight: 700;
+    font-size: 1.25rem;
   }
 
   .prompt-text {
@@ -527,9 +537,55 @@ const { class: className = '' } = Astro.props;
     font-family: system-ui, sans-serif;
   }
 
+  /* Thinking indicator */
+  .thinking-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 1.75rem;
+  }
+
+  .thinking-indicator {
+    display: flex;
+    gap: 4px;
+  }
+
+  .thinking-dot {
+    width: 6px;
+    height: 6px;
+    background: #a78bfa;
+    border-radius: 50%;
+    animation: thinking-pulse 1.4s ease-in-out infinite;
+  }
+
+  .thinking-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .thinking-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes thinking-pulse {
+    0%, 80%, 100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    40% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .thinking-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
   .term-response {
     padding-left: 1.75rem;
-    border-left: 2px solid rgba(34, 197, 94, 0.3);
+    border-left: 2px solid rgba(167, 139, 250, 0.3);
     opacity: 0;
   }
 
@@ -560,6 +616,18 @@ const { class: className = '' } = Astro.props;
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-style: normal;
     font-size: 0.9em;
+  }
+
+  .term-response .file-saved {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #22c55e;
+    font-style: normal;
+  }
+
+  .term-response .save-icon {
+    margin-right: 0.25rem;
   }
 
   /* ============================================
@@ -786,7 +854,22 @@ const { class: className = '' } = Astro.props;
       // SCENE 2: TERMINAL
       // ========================================
 
-      tl.to({}, { duration: 0.8 });
+      tl.to({}, { duration: 0.5 });
+
+      // Show thinking indicator
+      tl.to(q('[data-term="thinking"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Hold on thinking
+      tl.to({}, { duration: 1.5 });
+
+      // Hide thinking, show response
+      tl.to(q('[data-term="thinking"]'), {
+        opacity: 0,
+        duration: 0.2
+      });
 
       // Response (includes context note about local files)
       tl.to(q('[data-term="response"]'), {
@@ -850,6 +933,7 @@ const { class: className = '' } = Astro.props;
       // Reset terminal scene
       gsap.set(q('.terminal-window'), { opacity: 0, y: 10 });
       gsap.set(q('[data-term="prompt"]'), { opacity: 0 });
+      gsap.set(q('[data-term="thinking"]'), { opacity: 0 });
       gsap.set(q('[data-term="response"]'), { opacity: 0 });
 
       // Reset insight

@@ -1,8 +1,8 @@
 ---
 id: "creation"
-number: 7
+number: 6
 title: "More Than Just Code"
-animation: "07-CreationAnimation"
+animation: "06-CreationAnimation"
 ---
 
 There's an assumption worth naming: terminals are for writing code, code is for programmers, therefore terminals aren't for me.

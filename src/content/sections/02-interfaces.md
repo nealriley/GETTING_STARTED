@@ -1,37 +1,30 @@
 ---
 id: "interfaces"
 number: 2
-title: "Not All Models Are the Same, Not All Interfaces Either"
+title: "Same Model, Different Interface"
 animation: "02-InterfacesAnimation"
 ---
 
-Picture this: You're using Claude. Maybe through the website chat. Maybe through Claude Code in your terminal. Maybe through the new Cowork app that just launched. Maybe embedded in your Slack workspace, or inside Excel, or as a Chrome extension.
+Every major AI provider offers two ways to access their models: a chat interface in your browser, and command-line tools for your terminal.
 
-**Same model. Drastically different experiences.**
+Same models. Same APIs. **Different capabilities.**
 
-The interface shapes everything - what you can do, how you do it, what feels natural, what feels impossible.
+## Where You Use AI Tools Matters
 
-## The Landscape
+Chat interfaces are sandboxed. Text goes in, text comes out. The browser can't see your files, run commands, or touch anything on your system.
 
-**Web Chat Interfaces** (claude.ai, chatgpt.com)
-- Where most people start
-- Great for conversation, brainstorming, quick questions
-- Limited: can't directly manipulate files, run commands, or access your system
+CLI tools run on your machine. They can read your files, send relevant context to the API, and act on the response—writing files, running commands, making changes directly.
 
-**CLI Tools** (Claude Code, OpenAI's tools)
-- Command-line interfaces that can read/write files, execute code, search your projects
-- Powerful but intimidating - requires terminal comfort
-- Built for developers, but increasingly used by non-coders for complex file tasks
+Same intelligence. Different access.
 
-**Desktop Apps** (Claude Cowork, Cursor, Windsurf)
-- Middle ground: GUI interfaces with system access
-- Designate a folder, chat about its contents, let it modify files
-- No terminal required, but all the power of file manipulation
+## Why Choose the Terminal?
 
-## Why This Matters
+The terminal connects AI to your local environment. That connection unlocks capabilities the chat interface can't match:
 
-When someone says "I tried Claude and it couldn't help with X," the question is: *which* Claude? The web chat can't search through folders. Claude Code can. Cowork can, but without the terminal.
+**Context from your actual files.** Instead of describing your project, the AI reads it directly—your documents, your data, your folder structure.
 
-The underlying intelligence is the same, but the interface determines what's possible.
+**Output you can immediately use.** The AI writes files to your machine. A report, a script, a config file—created and ready to use.
 
-**The models are smart enough now that the bottleneck isn't intelligence - it's access.**
+**Workflows that build on each other.** Read a file, transform it, save the result. Chained steps that would be tedious by hand.
+
+The rest of this guide explores how to work in this environment—how terminals operate, how to provide useful context, and how to structure requests so the output is what you actually need.

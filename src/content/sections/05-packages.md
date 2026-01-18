@@ -1,8 +1,8 @@
 ---
 id: "packages"
-number: 6
+number: 5
 title: "The Original App Stores"
-animation: "06-PackageManagerAnimation"
+animation: "05-PackageManagerAnimation"
 ---
 
 The App Store launched in 2008. But app stores have existed since the 1990s.

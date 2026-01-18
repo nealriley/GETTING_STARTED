@@ -1,8 +1,8 @@
 ---
 id: "context"
-number: 10
+number: 9
 title: "Context Is King"
-animation: "10-ContextAnimation"
+animation: "09-ContextAnimation"
 ---
 
 Imagine standing in front of a vending machine. You want chips. You punch in random numbers. Gum falls out. You punch more random numbers. A granola bar. More numbers. Mints.

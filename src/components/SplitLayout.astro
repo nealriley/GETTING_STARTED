@@ -11,16 +11,15 @@ import type { SectionData } from '../lib/sections';
 import WelcomeScreen from './WelcomeScreen.astro';
 import IntroAnimation from './animations/01-IntroAnimation.astro';
 import InterfacesAnimation from './animations/02-InterfacesAnimation.astro';
-import ClaudeChatAnimation from './animations/03-ClaudeChatAnimation.astro';
-import RawTerminalAnimation from './animations/04-RawTerminalAnimation.astro';
-import TranslatorAnimation from './animations/05-TranslatorAnimation.astro';
-import PackageManagerAnimation from './animations/06-PackageManagerAnimation.astro';
-import CreationAnimation from './animations/07-CreationAnimation.astro';
-import MarkdownAnimation from './animations/08-MarkdownAnimation.astro';
-import StructureAnimation from './animations/09-StructureAnimation.astro';
-import ContextAnimation from './animations/10-ContextAnimation.astro';
-import DecoratorsAnimation from './animations/11-DecoratorsAnimation.astro';
-import FactoryAnimation from './animations/12-FactoryAnimation.astro';
+import RawTerminalAnimation from './animations/03-RawTerminalAnimation.astro';
+import TranslatorAnimation from './animations/04-TranslatorAnimation.astro';
+import PackageManagerAnimation from './animations/05-PackageManagerAnimation.astro';
+import CreationAnimation from './animations/06-CreationAnimation.astro';
+import MarkdownAnimation from './animations/07-MarkdownAnimation.astro';
+import StructureAnimation from './animations/08-StructureAnimation.astro';
+import ContextAnimation from './animations/09-ContextAnimation.astro';
+import DecoratorsAnimation from './animations/10-DecoratorsAnimation.astro';
+import FactoryAnimation from './animations/11-FactoryAnimation.astro';
 
 interface Props {
   sections: SectionData[];
@@ -116,52 +115,47 @@ const currentSection = sections[initialSection - 1] || sections[0];
         <InterfacesAnimation />
       </div>
       
-      <!-- Section 3: Claude Chat Animation -->
-      <div class="animation-container" data-animation-id="terminal-chat" style="display: none;">
-        <ClaudeChatAnimation />
-      </div>
-      
-      <!-- Section 4: Raw Terminal Animation -->
+      <!-- Section 3: Raw Terminal Animation -->
       <div class="animation-container" data-animation-id="terminal-raw" style="display: none;">
         <RawTerminalAnimation />
       </div>
       
-      <!-- Section 5: Translator Animation -->
+      <!-- Section 4: Translator Animation -->
       <div class="animation-container" data-animation-id="terminal-translator" style="display: none;">
         <TranslatorAnimation />
       </div>
       
-      <!-- Section 6: Package Manager Animation -->
+      <!-- Section 5: Package Manager Animation -->
       <div class="animation-container" data-animation-id="packages" style="display: none;">
         <PackageManagerAnimation />
       </div>
       
-      <!-- Section 7: Creation Animation -->
+      <!-- Section 6: Creation Animation -->
       <div class="animation-container" data-animation-id="creation" style="display: none;">
         <CreationAnimation />
       </div>
       
-      <!-- Section 8: Markdown Animation -->
+      <!-- Section 7: Markdown Animation -->
       <div class="animation-container" data-animation-id="markdown" style="display: none;">
         <MarkdownAnimation />
       </div>
       
-      <!-- Section 9: Structure Animation -->
+      <!-- Section 8: Structure Animation -->
       <div class="animation-container" data-animation-id="structure" style="display: none;">
         <StructureAnimation />
       </div>
       
-      <!-- Section 10: Context Animation -->
+      <!-- Section 9: Context Animation -->
       <div class="animation-container" data-animation-id="context" style="display: none;">
         <ContextAnimation />
       </div>
       
-      <!-- Section 11: Decorators Animation -->
+      <!-- Section 10: Decorators Animation -->
       <div class="animation-container" data-animation-id="decorators" style="display: none;">
         <DecoratorsAnimation />
       </div>
       
-      <!-- Section 12: Factory Animation -->
+      <!-- Section 11: Factory Animation -->
       <div class="animation-container" data-animation-id="factory" style="display: none;">
         <FactoryAnimation />
       </div>
@@ -744,7 +738,6 @@ const currentSection = sections[initialSection - 1] || sections[0];
   const sectionAnimationMap: Record<string, string> = {
     'intro': 'intro',
     'interfaces': 'interfaces',
-    'terminal-chat': 'terminal-chat',
     'terminal-raw': 'terminal-raw',
     'terminal-translator': 'terminal-translator',
     'packages': 'packages',
