@@ -5,11 +5,12 @@
  * Section 2: "Same Models, Different Interfaces"
  * 
  * Subtractive scene flow:
- * 1. Chat interface - isolated, can't access files
- * 2. Terminal - connected, reads files directly
- * 3. Insight - "Same intelligence. Different access."
+ * 1. Web browser (ChatGPT-style) - familiar chat interface
+ * 2. Prompt "travels" to terminal
+ * 3. Terminal - same prompt, but references local files
+ * 4. Insight - "Same intelligence. Different access."
  * 
- * Key visual: Same prompt, different outcomes based on local access.
+ * Key visual: The prompt moves between windows, showing same model, different capabilities.
  */
 
 interface Props {
@@ -21,116 +22,109 @@ const { class: className = '' } = Astro.props;
 
 <div class:list={['interfaces-animation', className]} data-interfaces-animation>
   
-  <!-- Scene 1: Chat Interface (Sandboxed) -->
-  <div class="scene scene-chat" data-scene="chat">
-    <div class="scene-label">Chat Interface</div>
+  <!-- Scene 1: Web Browser (ChatGPT-style) -->
+  <div class="scene scene-web" data-scene="web">
+    <div class="scene-label">Web</div>
     
-    <div class="chat-container">
-      <div class="chat-window">
-        <div class="chat-header">
-          <div class="chat-avatar">AI</div>
-          <span class="chat-title">Assistant</span>
+    <div class="browser-window">
+      <!-- Browser Chrome -->
+      <div class="browser-chrome">
+        <div class="browser-controls">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="browser-nav">
+          <button class="nav-btn">←</button>
+          <button class="nav-btn">→</button>
+          <button class="nav-btn">↻</button>
+          <button class="nav-btn">⌂</button>
+        </div>
+        <div class="url-bar">
+          <span class="url-icon">🔒</span>
+          <span class="url-text">chat.openai.com</span>
+        </div>
+      </div>
+      
+      <!-- Chat App Layout -->
+      <div class="chat-app">
+        <!-- Sidebar -->
+        <div class="chat-sidebar">
+          <div class="sidebar-header">
+            <span class="new-chat-btn">+ New chat</span>
+          </div>
+          <div class="sidebar-section">
+            <span class="sidebar-label">Today</span>
+            <div class="chat-history-item active">Presentation tips</div>
+            <div class="chat-history-item">Project brainstorm</div>
+            <div class="chat-history-item">Meeting notes</div>
+          </div>
         </div>
         
-        <div class="chat-messages">
-          <div class="message user-message" data-chat="user">
-            <span class="message-text">Summarize my project files</span>
+        <!-- Main Chat Area -->
+        <div class="chat-main">
+          <div class="chat-messages">
+            <div class="message user-message" data-web="user">
+              <div class="message-bubble">
+                <span class="message-text">What are three tips for better presentations?</span>
+              </div>
+            </div>
+            
+            <div class="message ai-message" data-web="ai">
+              <div class="ai-avatar">✦</div>
+              <div class="message-bubble">
+                <div class="message-text">
+                  <p><strong>1. Know your audience</strong> — Tailor your content to what they care about.</p>
+                  <p><strong>2. Use visuals to support, not replace</strong> — Slides should enhance your words, not repeat them.</p>
+                  <p><strong>3. Practice out loud</strong> — Rehearsing helps you find your natural rhythm.</p>
+                </div>
+              </div>
+            </div>
           </div>
           
-          <div class="message ai-message" data-chat="ai">
-            <span class="message-text">I don't have access to your local files. Please paste the content you'd like me to summarize.</span>
+          <!-- Input Area -->
+          <div class="chat-input-area" data-web="input">
+            <div class="chat-input-box">
+              <input type="text" placeholder="Message ChatGPT..." disabled />
+              <button class="send-btn">↑</button>
+            </div>
           </div>
-        </div>
-      </div>
-      
-      <!-- Files below - unreachable -->
-      <div class="files-barrier" data-chat="barrier">
-        <div class="barrier-line"></div>
-        <span class="barrier-label">Your Machine</span>
-      </div>
-      
-      <div class="files-unreachable" data-chat="files">
-        <div class="file-icon unreachable">
-          <span class="icon">📄</span>
-          <span class="filename">report.md</span>
-        </div>
-        <div class="file-icon unreachable">
-          <span class="icon">📁</span>
-          <span class="filename">data/</span>
-        </div>
-        <div class="file-icon unreachable">
-          <span class="icon">📄</span>
-          <span class="filename">notes.txt</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scene 2: Terminal (Connected) -->
+  <!-- Floating Prompt (for transition) -->
+  <div class="floating-prompt" data-element="floating-prompt">
+    <span class="floating-text">What are three tips for better presentations?</span>
+  </div>
+
+  <!-- Scene 2: Terminal -->
   <div class="scene scene-terminal" data-scene="terminal">
     <div class="scene-label">Terminal</div>
     
-    <div class="terminal-container">
-      <!-- Files above - reachable -->
-      <div class="files-reachable" data-term="files">
-        <div class="file-icon reachable" data-file="1">
-          <span class="icon">📄</span>
-          <span class="filename">report.md</span>
-          <span class="connection-dot"></span>
+    <div class="terminal-window">
+      <div class="terminal-chrome">
+        <div class="window-controls">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
         </div>
-        <div class="file-icon reachable" data-file="2">
-          <span class="icon">📁</span>
-          <span class="filename">data/</span>
-          <span class="connection-dot"></span>
-        </div>
-        <div class="file-icon reachable" data-file="3">
-          <span class="icon">📄</span>
-          <span class="filename">notes.txt</span>
-          <span class="connection-dot"></span>
-        </div>
+        <span class="terminal-title">Terminal</span>
       </div>
       
-      <div class="connection-lines" data-term="lines">
-        <svg class="lines-svg" viewBox="0 0 300 40" preserveAspectRatio="none">
-          <path class="conn-line" d="M50,0 L150,40" data-line="1"/>
-          <path class="conn-line" d="M150,0 L150,40" data-line="2"/>
-          <path class="conn-line" d="M250,0 L150,40" data-line="3"/>
-        </svg>
-      </div>
-      
-      <div class="terminal-window" data-term="window">
-        <div class="terminal-chrome">
-          <div class="window-controls">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-          </div>
-          <span class="terminal-title">Terminal</span>
+      <div class="terminal-content">
+        <div class="term-line prompt-line" data-term="prompt">
+          <span class="prompt">$</span>
+          <span class="prompt-text">What are three tips for better presentations?</span>
         </div>
         
-        <div class="terminal-content">
-          <div class="term-line" data-term="prompt">
-            <span class="prompt">$</span>
-            <span class="typed-text"></span>
-            <span class="cursor">█</span>
-          </div>
-          
-          <div class="term-output" data-term="reading">
-            <span class="status-icon">→</span> Reading project files...
-          </div>
-          
-          <div class="term-output" data-term="found">
-            <span class="status-icon">→</span> Found 8 files in ./project
-          </div>
-          
-          <div class="term-output success" data-term="summary">
-            <span class="status-icon">✓</span> Summary: 3 key themes identified across your documents.
-          </div>
+        <div class="term-response" data-term="response">
+          <p class="context-note">Based on your notes in <span class="file-ref">~/notes/presentations.md</span>:</p>
+          <p><strong>1. Know your audience</strong> — Tailor your content to what they care about.</p>
+          <p><strong>2. Use visuals to support, not replace</strong> — Slides should enhance your words, not repeat them.</p>
+          <p><strong>3. Practice out loud</strong> — Rehearsing helps you find your natural rhythm.</p>
         </div>
-      </div>
-      
-      <div class="machine-label" data-term="machine">
-        <span>Your Machine</span>
       </div>
     </div>
   </div>
@@ -138,25 +132,7 @@ const { class: className = '' } = Astro.props;
   <!-- Scene 3: Insight -->
   <div class="scene scene-insight" data-scene="insight">
     <div class="insight-content">
-      <div class="insight-comparison">
-        <div class="compare-item chat-compare" data-insight="chat">
-          <div class="compare-icon">💬</div>
-          <div class="compare-label">Chat</div>
-          <div class="compare-desc">Isolated</div>
-        </div>
-        
-        <div class="compare-vs" data-insight="vs">vs</div>
-        
-        <div class="compare-item terminal-compare" data-insight="terminal">
-          <div class="compare-icon">⌨️</div>
-          <div class="compare-label">Terminal</div>
-          <div class="compare-desc">Connected</div>
-        </div>
-      </div>
-      
-      <div class="insight-text" data-insight="text">
-        <div class="insight-main">Same intelligence. Different access.</div>
-      </div>
+      <div class="insight-main">Same intelligence. Different access.</div>
     </div>
   </div>
 
@@ -168,7 +144,7 @@ const { class: className = '' } = Astro.props;
     width: 100%;
     position: relative;
     overflow: hidden;
-    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-family: system-ui, -apple-system, sans-serif;
   }
 
   /* Scenes */
@@ -186,243 +162,53 @@ const { class: className = '' } = Astro.props;
 
   .scene-label {
     position: absolute;
-    top: 1.5rem;
+    top: 1rem;
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     color: rgba(255, 255, 255, 0.4);
+    font-family: 'SF Mono', 'Fira Code', monospace;
     opacity: 0;
   }
 
   /* ============================================
-     SCENE 1: CHAT INTERFACE
+     BROWSER WINDOW
      ============================================ */
-  .chat-container {
+  .browser-window {
+    width: 100%;
+    max-width: 700px;
+    height: 92%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 360px;
-  }
-
-  .chat-window {
-    width: 100%;
-    background: #1a1a2e;
-    border-radius: 16px;
+    background: #1a1a1a;
+    border-radius: 12px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(10px);
   }
 
-  .chat-header {
+  .browser-chrome {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.875rem 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 0.6rem 0.875rem;
+    background: #2d2d2d;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
   }
 
-  .chat-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: white;
-  }
-
-  .chat-title {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-family: system-ui, sans-serif;
-  }
-
-  .chat-messages {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .message {
-    max-width: 85%;
-    padding: 0.625rem 0.875rem;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    line-height: 1.5;
-    font-family: system-ui, sans-serif;
-    opacity: 0;
-  }
-
-  .user-message {
-    align-self: flex-end;
-    background: #6366f1;
-    color: white;
-    border-bottom-right-radius: 4px;
-  }
-
-  .ai-message {
-    align-self: flex-start;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.85);
-    border-bottom-left-radius: 4px;
-  }
-
-  /* Barrier */
-  .files-barrier {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    opacity: 0;
-  }
-
-  .barrier-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.5), transparent);
-  }
-
-  .barrier-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: rgba(239, 68, 68, 0.7);
-    white-space: nowrap;
-  }
-
-  /* Unreachable files */
-  .files-unreachable {
-    display: flex;
-    gap: 1.25rem;
-    opacity: 0;
-  }
-
-  .file-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.5rem;
-    position: relative;
-  }
-
-  .file-icon .icon {
-    font-size: 1.5rem;
-    filter: grayscale(0);
-    transition: filter 0.3s;
-  }
-
-  .file-icon.unreachable .icon {
-    filter: grayscale(1);
-    opacity: 0.4;
-  }
-
-  .file-icon .filename {
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  .file-icon.unreachable .filename {
-    color: rgba(255, 255, 255, 0.25);
-  }
-
-  /* ============================================
-     SCENE 2: TERMINAL
-     ============================================ */
-  .terminal-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
-  }
-
-  /* Reachable files */
-  .files-reachable {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 0;
-    opacity: 0;
-  }
-
-  .file-icon.reachable .icon {
-    filter: none;
-    opacity: 1;
-  }
-
-  .file-icon.reachable .filename {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .connection-dot {
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    background: #22c55e;
-    border-radius: 50%;
-    opacity: 0;
-  }
-
-  /* Connection lines */
-  .connection-lines {
-    width: 100%;
-    height: 40px;
-    opacity: 0;
-  }
-
-  .lines-svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .conn-line {
-    stroke: #22c55e;
-    stroke-width: 2;
-    fill: none;
-    opacity: 0.6;
-    stroke-dasharray: 4 4;
-  }
-
-  /* Terminal window */
-  .terminal-window {
-    width: 100%;
-    background: #0a0a0a;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 197, 94, 0.1);
-    opacity: 0;
-  }
-
-  .terminal-chrome {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.625rem 0.875rem;
-    background: #1a1a1a;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .window-controls {
+  .browser-controls {
     display: flex;
     gap: 6px;
   }
 
   .dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
   }
 
@@ -430,178 +216,398 @@ const { class: className = '' } = Astro.props;
   .dot.yellow { background: #ffbd2e; }
   .dot.green { background: #27ca40; }
 
-  .terminal-title {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  .terminal-content {
-    padding: 1rem 1.25rem;
+  .browser-nav {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    line-height: 1.6;
+    gap: 2px;
   }
 
-  .term-line {
+  .nav-btn {
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .url-bar {
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    max-width: 280px;
+  }
+
+  .url-icon {
+    font-size: 0.75rem;
+  }
+
+  .url-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-family: system-ui, sans-serif;
+  }
+
+  /* Chat App Layout */
+  .chat-app {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    background: #0f0f0f;
+  }
+
+  /* Sidebar */
+  .chat-sidebar {
+    width: 160px;
+    background: #171717;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header {
+    padding: 0.875rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .new-chat-btn {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  .sidebar-section {
+    padding: 0.875rem 0.625rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .sidebar-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .chat-history-item {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chat-history-item.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Main Chat */
+  .chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+  }
+
+  .message {
+    display: flex;
+    gap: 0.75rem;
     opacity: 0;
+  }
+
+  .user-message {
+    justify-content: flex-end;
+  }
+
+  .user-message .message-bubble {
+    background: #2563eb;
+    color: white;
+    padding: 0.875rem 1.125rem;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 85%;
+  }
+
+  .ai-message {
+    align-items: flex-start;
+  }
+
+  .ai-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #10a37f, #1a7f64);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .ai-message .message-bubble {
+    background: transparent;
+    max-width: 90%;
+  }
+
+  .message-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .message-text p {
+    margin: 0 0 0.75rem 0;
+  }
+
+  .message-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .message-text strong {
+    color: white;
+  }
+
+  /* Chat Input */
+  .chat-input-area {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    opacity: 0;
+  }
+
+  .chat-input-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.625rem 0.625rem 0.625rem 1rem;
+  }
+
+  .chat-input-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+    outline: none;
+  }
+
+  .send-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.1rem;
+    cursor: default;
+  }
+
+  /* ============================================
+     FLOATING PROMPT (Transition)
+     ============================================ */
+  .floating-prompt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1rem 1.5rem;
+    background: #2563eb;
+    border-radius: 18px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 100;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.4);
+  }
+
+  .floating-text {
+    color: white;
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+
+  /* ============================================
+     TERMINAL WINDOW
+     ============================================ */
+  .terminal-window {
+    width: 100%;
+    max-width: 700px;
+    height: 92%;
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .terminal-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.875rem;
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 6px;
+  }
+
+  .terminal-title {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .terminal-content {
+    flex: 1;
+    padding: 1.75rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    overflow-y: auto;
+  }
+
+  .term-line {
+    opacity: 0;
+  }
+
+  .prompt-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .prompt {
     color: #22c55e;
     font-weight: 600;
+    font-size: 1.15rem;
   }
 
-  .typed-text {
-    color: #e2e8f0;
+  .prompt-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.15rem;
+    font-family: system-ui, sans-serif;
   }
 
-  .cursor {
-    color: #22c55e;
-    animation: blink 1s step-end infinite;
-    visibility: hidden;
-  }
-
-  .cursor.active {
-    visibility: visible;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .term-output {
-    padding-left: 1rem;
-    color: rgba(255, 255, 255, 0.6);
+  .term-response {
+    padding-left: 1.75rem;
+    border-left: 2px solid rgba(34, 197, 94, 0.3);
     opacity: 0;
   }
 
-  .term-output .status-icon {
+  .term-response p {
+    margin: 0 0 0.875rem 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: system-ui, sans-serif;
+  }
+
+  .term-response p:last-child {
+    margin-bottom: 0;
+  }
+
+  .term-response strong {
+    color: #22c55e;
+  }
+
+  .term-response .context-note {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    margin-bottom: 1.25rem;
+  }
+
+  .term-response .file-ref {
     color: #60a5fa;
-    margin-right: 0.25rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-style: normal;
+    font-size: 0.9em;
   }
 
-  .term-output.success {
-    color: #22c55e;
+  /* ============================================
+     INSIGHT
+     ============================================ */
+  .scene-insight {
+    background: transparent;
   }
 
-  .term-output.success .status-icon {
-    color: #22c55e;
+  .insight-content {
+    text-align: center;
   }
 
-  /* Machine label */
-  .machine-label {
-    margin-top: 1rem;
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: rgba(34, 197, 94, 0.6);
+  .insight-main {
+    font-size: 1.75rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    font-family: 'Lora', Georgia, serif;
     opacity: 0;
   }
 
   /* ============================================
-     SCENE 3: INSIGHT
+     RESPONSIVE
      ============================================ */
-  .insight-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .insight-comparison {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .compare-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    opacity: 0;
-  }
-
-  .compare-icon {
-    font-size: 2rem;
-    line-height: 1;
-  }
-
-  .compare-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    font-family: system-ui, sans-serif;
-  }
-
-  .compare-desc {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .chat-compare .compare-desc {
-    color: rgba(239, 68, 68, 0.8);
-  }
-
-  .terminal-compare .compare-desc {
-    color: rgba(34, 197, 94, 0.8);
-  }
-
-  .compare-vs {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.3);
-    font-style: italic;
-    opacity: 0;
-  }
-
-  .insight-text {
-    text-align: center;
-    opacity: 0;
-  }
-
-  .insight-main {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.95);
-    font-family: 'Lora', Georgia, serif;
-    font-weight: 500;
-  }
-
-  /* Responsive */
-  @media (max-width: 480px) {
-    .chat-container,
-    .terminal-container {
+  @media (max-width: 600px) {
+    .browser-window,
+    .terminal-window {
       max-width: 100%;
+      height: 85%;
     }
 
-    .message {
-      font-size: 0.75rem;
+    .chat-sidebar {
+      width: 120px;
     }
 
-    .terminal-content {
-      font-size: 0.75rem;
-      padding: 0.875rem 1rem;
+    .url-bar {
+      display: none;
     }
 
-    .insight-comparison {
-      gap: 1.5rem;
-    }
-
-    .compare-icon {
-      font-size: 1.5rem;
+    .message-text,
+    .term-response p {
+      font-size: 0.95rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cursor {
-      animation: none;
-      opacity: 1;
+    .floating-prompt {
+      transition: none;
     }
   }
 </style>
@@ -635,21 +641,6 @@ const { class: className = '' } = Astro.props;
       }
     }
 
-    private typeText(element: HTMLElement, text: string, duration: number): gsap.core.Tween {
-      const chars = text.split('');
-      element.textContent = '';
-      
-      return gsap.to({ charIndex: 0 }, {
-        charIndex: chars.length,
-        duration: duration,
-        ease: 'none',
-        onUpdate: function() {
-          const index = Math.floor(this.targets()[0].charIndex);
-          element.textContent = chars.slice(0, index).join('');
-        }
-      });
-    }
-
     play() {
       if (this.isPlaying) return;
 
@@ -667,166 +658,169 @@ const { class: className = '' } = Astro.props;
 
       const tl = this.timeline;
       const q = (sel: string) => this.container.querySelector(sel) as HTMLElement;
-      const qAll = (sel: string) => this.container.querySelectorAll(sel);
 
       // ========================================
-      // SCENE 1: CHAT INTERFACE
+      // SCENE 1: WEB BROWSER
       // ========================================
       
-      // Show chat scene
-      tl.set(q('[data-scene="chat"]'), { visibility: 'visible' });
-      tl.to(q('[data-scene="chat"]'), { opacity: 1, duration: 0.4 });
-      tl.to(q('[data-scene="chat"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.2');
+      tl.set(q('[data-scene="web"]'), { visibility: 'visible' });
+      tl.to(q('[data-scene="web"]'), { opacity: 1, duration: 0.3 });
+      tl.to(q('[data-scene="web"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.1');
 
-      // User message appears
-      tl.to(q('[data-chat="user"]'), { 
-        opacity: 1, 
+      // Browser window appears
+      tl.to(q('.browser-window'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+
+      tl.to({}, { duration: 0.5 });
+
+      // User message
+      tl.to(q('[data-web="user"]'), {
+        opacity: 1,
         duration: 0.4,
         ease: 'power2.out'
-      }, '+=0.3');
+      });
 
-      // Pause - reading user message
-      tl.to({}, { duration: 1.0 });
+      tl.to({}, { duration: 1.2 });
 
-      // AI response appears
-      tl.to(q('[data-chat="ai"]'), { 
-        opacity: 1, 
+      // AI response
+      tl.to(q('[data-web="ai"]'), {
+        opacity: 1,
         duration: 0.5,
         ease: 'power2.out'
       });
 
-      // Pause - let the limitation sink in
-      tl.to({}, { duration: 1.5 });
+      // Input area
+      tl.to(q('[data-web="input"]'), {
+        opacity: 1,
+        duration: 0.3
+      }, '-=0.2');
 
-      // Show barrier and unreachable files
-      tl.to(q('[data-chat="barrier"]'), { opacity: 1, duration: 0.4 });
-      tl.to(q('[data-chat="files"]'), { opacity: 1, duration: 0.4 }, '-=0.2');
-
-      // Pause - show the separation
-      tl.to({}, { duration: 2.0 });
+      // Hold - let them read
+      tl.to({}, { duration: 3.0 });
 
       // ========================================
-      // TRANSITION: Chat fades out
+      // TRANSITION: Prompt travels
       // ========================================
-      tl.to(q('[data-scene="chat"]'), { 
-        opacity: 0, 
+
+      // Get positions for the floating prompt animation
+      const userBubble = q('[data-web="user"] .message-bubble');
+      const floatingPrompt = q('[data-element="floating-prompt"]');
+      
+      // Position floating prompt over the user message
+      tl.call(() => {
+        const rect = userBubble.getBoundingClientRect();
+        const containerRect = this.container.getBoundingClientRect();
+        gsap.set(floatingPrompt, {
+          top: rect.top - containerRect.top,
+          left: rect.left - containerRect.left,
+          transform: 'none',
+          visibility: 'visible'
+        });
+      });
+
+      // Fade out web scene except the user message briefly highlighted
+      tl.to(q('.browser-window'), {
+        opacity: 0.3,
+        duration: 0.3
+      });
+
+      // Show floating prompt
+      tl.to(floatingPrompt, {
+        opacity: 1,
+        duration: 0.2
+      });
+
+      // Fade out web completely
+      tl.to(q('[data-scene="web"]'), {
+        opacity: 0,
+        duration: 0.3
+      }, '+=0.2');
+
+      // Move floating prompt to center, then down toward terminal position
+      tl.to(floatingPrompt, {
+        top: '50%',
+        left: '50%',
+        xPercent: -50,
+        yPercent: -50,
         duration: 0.5,
+        ease: 'power2.inOut'
+      });
+
+      tl.to({}, { duration: 0.3 });
+
+      // Hide web scene, show terminal scene
+      tl.set(q('[data-scene="web"]'), { visibility: 'hidden' });
+      tl.set(q('[data-scene="terminal"]'), { visibility: 'visible' });
+      tl.to(q('[data-scene="terminal"]'), { opacity: 1, duration: 0.3 });
+      tl.to(q('[data-scene="terminal"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.1');
+
+      // Terminal window appears
+      tl.to(q('.terminal-window'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      }, '-=0.2');
+
+      // Move floating prompt toward the terminal prompt area and fade out
+      tl.to(floatingPrompt, {
+        top: '35%',
+        opacity: 0,
+        duration: 0.4,
         ease: 'power2.in'
       });
-      tl.set(q('[data-scene="chat"]'), { visibility: 'hidden' });
+
+      // Show the prompt in terminal (it "landed")
+      tl.to(q('[data-term="prompt"]'), {
+        opacity: 1,
+        duration: 0.3
+      }, '-=0.2');
+
+      tl.set(floatingPrompt, { visibility: 'hidden' });
 
       // ========================================
       // SCENE 2: TERMINAL
       // ========================================
-      
-      // Show terminal scene
-      tl.set(q('[data-scene="terminal"]'), { visibility: 'visible' });
-      tl.to(q('[data-scene="terminal"]'), { opacity: 1, duration: 0.4 });
-      tl.to(q('[data-scene="terminal"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.2');
 
-      // Show terminal window first
-      tl.to(q('[data-term="window"]'), { 
-        opacity: 1, 
+      tl.to({}, { duration: 0.8 });
+
+      // Response (includes context note about local files)
+      tl.to(q('[data-term="response"]'), {
+        opacity: 1,
         duration: 0.5,
         ease: 'power2.out'
       });
 
-      // Show prompt line and cursor
-      tl.to(q('[data-term="prompt"]'), { opacity: 1, duration: 0.2 });
-      tl.call(() => {
-        const cursor = q('[data-term="prompt"] .cursor');
-        if (cursor) cursor.classList.add('active');
-      });
-
-      // Type the command
-      tl.to({}, { duration: 0.3 }); // Brief pause before typing
-      tl.add(this.typeText(
-        q('[data-term="prompt"] .typed-text'), 
-        'llm "Summarize my project files"', 
-        1.5
-      ));
-
-      // Hide cursor after typing
-      tl.call(() => {
-        const cursor = q('[data-term="prompt"] .cursor');
-        if (cursor) cursor.classList.remove('active');
-      });
-
-      // Show files appearing above
-      tl.to(q('[data-term="files"]'), { opacity: 1, duration: 0.4 }, '-=0.3');
-      
-      // Show connection dots on files
-      tl.to(qAll('.connection-dot'), { 
-        opacity: 1, 
-        duration: 0.3,
-        stagger: 0.1
-      });
-
-      // Show connection lines
-      tl.to(q('[data-term="lines"]'), { opacity: 1, duration: 0.3 });
-
-      // Show machine label
-      tl.to(q('[data-term="machine"]'), { opacity: 1, duration: 0.3 }, '-=0.2');
-
-      // Terminal output - reading
-      tl.to(q('[data-term="reading"]'), { opacity: 1, duration: 0.3 }, '+=0.2');
-      tl.to({}, { duration: 0.5 });
-
-      // Terminal output - found files
-      tl.to(q('[data-term="found"]'), { opacity: 1, duration: 0.3 });
-      tl.to({}, { duration: 0.5 });
-
-      // Terminal output - summary (success)
-      tl.to(q('[data-term="summary"]'), { opacity: 1, duration: 0.4 });
-
-      // Pause - let the success sink in
-      tl.to({}, { duration: 2.5 });
-
-      // ========================================
-      // TRANSITION: Terminal fades out
-      // ========================================
-      tl.to(q('[data-scene="terminal"]'), { 
-        opacity: 0, 
-        duration: 0.5,
-        ease: 'power2.in'
-      });
-      tl.set(q('[data-scene="terminal"]'), { visibility: 'hidden' });
+      // Hold
+      tl.to({}, { duration: 3.0 });
 
       // ========================================
       // SCENE 3: INSIGHT
       // ========================================
-      
-      // Show insight scene
-      tl.set(q('[data-scene="insight"]'), { visibility: 'visible' });
-      tl.to(q('[data-scene="insight"]'), { opacity: 1, duration: 0.4 });
 
-      // Show comparison items
-      tl.to(q('[data-insight="chat"]'), { 
-        opacity: 1, 
-        duration: 0.4,
-        ease: 'power2.out'
+      // Fade out terminal
+      tl.to(q('[data-scene="terminal"]'), {
+        opacity: 0,
+        duration: 0.4
       });
-      
-      tl.to(q('[data-insight="vs"]'), { 
-        opacity: 1, 
-        duration: 0.3 
-      }, '-=0.2');
-      
-      tl.to(q('[data-insight="terminal"]'), { 
-        opacity: 1, 
-        duration: 0.4,
-        ease: 'power2.out'
-      }, '-=0.2');
+      tl.set(q('[data-scene="terminal"]'), { visibility: 'hidden' });
 
-      // Show insight text
-      tl.to(q('[data-insight="text"]'), { 
-        opacity: 1, 
+      // Show insight
+      tl.set(q('[data-scene="insight"]'), { visibility: 'visible' });
+      tl.to(q('[data-scene="insight"]'), { opacity: 1, duration: 0.3 });
+
+      tl.to(q('.insight-main'), {
+        opacity: 1,
         duration: 0.6,
         ease: 'power2.out'
-      }, '+=0.3');
+      });
 
-      // Hold at end
-      tl.to({}, { duration: 2.0 });
+      // Hold
+      tl.to({}, { duration: 3.0 });
     }
 
     private resetElements() {
@@ -837,27 +831,29 @@ const { class: className = '' } = Astro.props;
       gsap.set(qAll('.scene'), { opacity: 0, visibility: 'hidden' });
       gsap.set(qAll('.scene-label'), { opacity: 0 });
 
-      // Reset chat scene elements
-      gsap.set(qAll('[data-chat]'), { opacity: 0 });
-      gsap.set(qAll('.message'), { opacity: 0 });
+      // Reset web scene
+      gsap.set(q('.browser-window'), { opacity: 0, y: 10 });
+      gsap.set(q('[data-web="user"]'), { opacity: 0 });
+      gsap.set(q('[data-web="ai"]'), { opacity: 0 });
+      gsap.set(q('[data-web="input"]'), { opacity: 0 });
 
-      // Reset terminal scene elements
-      gsap.set(q('[data-term="window"]'), { opacity: 0 });
+      // Reset floating prompt
+      gsap.set(q('[data-element="floating-prompt"]'), { 
+        opacity: 0, 
+        visibility: 'hidden',
+        top: '50%',
+        left: '50%',
+        xPercent: -50,
+        yPercent: -50
+      });
+
+      // Reset terminal scene
+      gsap.set(q('.terminal-window'), { opacity: 0, y: 10 });
       gsap.set(q('[data-term="prompt"]'), { opacity: 0 });
-      gsap.set(q('[data-term="files"]'), { opacity: 0 });
-      gsap.set(q('[data-term="lines"]'), { opacity: 0 });
-      gsap.set(q('[data-term="machine"]'), { opacity: 0 });
-      gsap.set(qAll('.connection-dot'), { opacity: 0 });
-      gsap.set(qAll('.term-output'), { opacity: 0 });
-      
-      // Clear typed text and hide cursor
-      const typedText = q('[data-term="prompt"] .typed-text');
-      if (typedText) typedText.textContent = '';
-      const cursor = q('[data-term="prompt"] .cursor');
-      if (cursor) cursor.classList.remove('active');
+      gsap.set(q('[data-term="response"]'), { opacity: 0 });
 
-      // Reset insight scene elements
-      gsap.set(qAll('[data-insight]'), { opacity: 0 });
+      // Reset insight
+      gsap.set(q('.insight-main'), { opacity: 0 });
     }
 
     reset() {
