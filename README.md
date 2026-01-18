@@ -104,3 +104,38 @@ See PROJECT_BRIEF.md "Open Questions" section for decisions to make before imple
 
 **Last Updated:** January 14, 2026
 **Status:** Foundation Complete, Ready for Implementation
+
+## Website (GitHub Pages)
+
+- Overview: Static site generated with Astro, deployed via GitHub Actions to GitHub Pages as a project site at `https://nealriley.github.io/GETTING_STARTED`.
+- Repo structure (additions):
+    - `src/pages/` — site pages and section stubs
+    - `src/layouts/` — base layout + global styles
+    - `.github/workflows/deploy.yml` — build + deploy pipeline
+    - `astro.config.mjs` — site/base configuration for Pages
+
+### Run Locally
+
+```bash
+cd /workspaces/GETTING_STARTED
+npm install
+npm run dev
+```
+
+Then open the local dev server URL printed in the terminal.
+
+### Deploy (GitHub Pages)
+
+1. Push changes to `main`. The workflow builds and publishes automatically.
+2. In GitHub: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+3. The site will be available at: https://nealriley.github.io/GETTING_STARTED
+
+Notes:
+- `astro.config.mjs` sets `site` and `base` so links/assets resolve correctly under `/GETTING_STARTED/` on Pages.
+- For a custom domain, add it under Settings → Pages and create the appropriate DNS records.
+
+### Next Enhancements
+
+- Import Markdown into Astro content collections for rich rendering.
+- Add scroll-driven animations (e.g., GSAP + Lenis) as client islands.
+- Wire section routes to your Markdown sources and assets.

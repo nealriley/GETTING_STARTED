@@ -1,0 +1,77 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'GETTING STARTED', description = 'Interactive guide' }: Props = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      header {
+        position: sticky;
+        top: 0;
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        backdrop-filter: blur(4px);
+        z-index: 100;
+      }
+      .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header .wrap {
+        padding: 20px 24px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: #111827;
+      }
+      main { padding: 48px 0; }
+      footer {
+        border-top: 1px solid #e5e7eb;
+        margin-top: 64px;
+        padding: 32px 0;
+        background: #f9fafb;
+      }
+      footer .wrap { padding: 32px 24px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <a href="/GETTING_STARTED/" class="brand">
+          <span>GETTING STARTED</span>
+        </a>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        <slot />
+      </div>
+    </main>
+    <footer>
+      <div class="wrap">
+        <small>© {new Date().getFullYear()} — Getting Started</small>
+      </div>
+    </footer>
+  </body>
+</html>

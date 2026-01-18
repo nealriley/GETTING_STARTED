@@ -1,0 +1,411 @@
+---
+/**
+ * CreationAnimation.astro
+ * 
+ * Section 7: "More Than Just Code"
+ * 
+ * Shows that terminals/AI tools create MORE than code:
+ * - Documents
+ * - Images  
+ * - Visualizations
+ * - Audio
+ * - Scripts/Automation
+ * 
+ * Key insight: Terminals aren't coding tools. They're creation tools with a text interface.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['creation-animation', className]} data-creation-animation>
+  <!-- Header -->
+  <div class="header" data-element="header">
+    <span class="header-text">What can AI + Terminal create?</span>
+  </div>
+
+  <!-- Creation Grid -->
+  <div class="creation-grid">
+    <!-- Documents -->
+    <div class="creation-item" data-item="documents">
+      <div class="item-icon">📄</div>
+      <div class="item-content">
+        <span class="item-label">Documents</span>
+        <div class="item-examples">
+          <span class="example">Reports</span>
+          <span class="example">Proposals</span>
+          <span class="example">PDFs</span>
+        </div>
+      </div>
+      <div class="item-glow"></div>
+    </div>
+
+    <!-- Images -->
+    <div class="creation-item" data-item="images">
+      <div class="item-icon">🖼️</div>
+      <div class="item-content">
+        <span class="item-label">Images</span>
+        <div class="item-examples">
+          <span class="example">Graphics</span>
+          <span class="example">Diagrams</span>
+          <span class="example">Processed photos</span>
+        </div>
+      </div>
+      <div class="item-glow"></div>
+    </div>
+
+    <!-- Visualizations -->
+    <div class="creation-item" data-item="visualizations">
+      <div class="item-icon">📊</div>
+      <div class="item-content">
+        <span class="item-label">Visualizations</span>
+        <div class="item-examples">
+          <span class="example">Charts</span>
+          <span class="example">Graphs</span>
+          <span class="example">Dashboards</span>
+        </div>
+      </div>
+      <div class="item-glow"></div>
+    </div>
+
+    <!-- Audio -->
+    <div class="creation-item" data-item="audio">
+      <div class="item-icon">🎵</div>
+      <div class="item-content">
+        <span class="item-label">Audio</span>
+        <div class="item-examples">
+          <span class="example">Transcriptions</span>
+          <span class="example">Text-to-speech</span>
+          <span class="example">Conversions</span>
+        </div>
+      </div>
+      <div class="item-glow"></div>
+    </div>
+
+    <!-- Automation -->
+    <div class="creation-item" data-item="automation">
+      <div class="item-icon">⚙️</div>
+      <div class="item-content">
+        <span class="item-label">Automation</span>
+        <div class="item-examples">
+          <span class="example">Batch rename 500 files</span>
+          <span class="example">Nightly backups</span>
+          <span class="example">Data processing</span>
+        </div>
+      </div>
+      <div class="item-glow"></div>
+    </div>
+  </div>
+
+  <!-- The Reframe -->
+  <div class="reframe" data-element="reframe">
+    <div class="reframe-line strike" data-line="1">
+      <span class="old">Terminals are coding tools</span>
+    </div>
+    <div class="reframe-line new" data-line="2">
+      <span class="new-text">Terminals are <em>creation tools</em> with a text interface</span>
+    </div>
+  </div>
+
+  <!-- Final Question -->
+  <div class="final-question" data-element="question">
+    <span class="question-text">What do you want to create?</span>
+  </div>
+</div>
+
+<style>
+  .creation-animation {
+    height: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 0.5rem;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  .header-text {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: 'Lora', serif;
+  }
+
+  /* Creation Grid */
+  .creation-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0.5rem;
+    min-height: 0;
+  }
+
+  /* Make automation span full width on bottom */
+  .creation-item[data-item="automation"] {
+    grid-column: 1 / -1;
+  }
+
+  .creation-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .item-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .item-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .item-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.2rem;
+  }
+
+  .item-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+  }
+
+  .example {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .item-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .creation-item:hover .item-glow {
+    opacity: 1;
+  }
+
+  /* Reframe section */
+  .reframe {
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .reframe-line {
+    font-family: 'Lora', serif;
+    opacity: 0;
+  }
+
+  .reframe-line.strike .old {
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: line-through;
+    font-size: 0.85rem;
+  }
+
+  .reframe-line.new .new-text {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+  }
+
+  .reframe-line.new em {
+    color: #10b981;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Final Question */
+  .final-question {
+    text-align: center;
+    padding: 0.6rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .question-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-family: 'Lora', serif;
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .creation-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+    }
+
+    .creation-item[data-item="automation"] {
+      grid-column: 1 / -1;
+    }
+
+    .item-icon {
+      font-size: 1.25rem;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class CreationAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'creation') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      if (hash === 'creation') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => { this.isPlaying = false; }
+      });
+
+      const tl = this.timeline;
+
+      // Show header
+      tl.to(this.container.querySelector('[data-element="header"]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+
+      // Show creation items one by one
+      const items = ['documents', 'images', 'visualizations', 'audio', 'automation'];
+      items.forEach((item, i) => {
+        tl.to(this.container.querySelector(`[data-item="${item}"]`), {
+          opacity: 1,
+          scale: 1,
+          duration: 0.35,
+          ease: 'back.out(1.4)'
+        }, i === 0 ? '+=0.2' : '-=0.2');
+
+        // Brief glow effect
+        tl.to(this.container.querySelector(`[data-item="${item}"] .item-glow`), {
+          opacity: 1,
+          duration: 0.2
+        }, '-=0.2');
+
+        tl.to(this.container.querySelector(`[data-item="${item}"] .item-glow`), {
+          opacity: 0,
+          duration: 0.3
+        }, '+=0.1');
+      });
+
+      tl.to({}, { duration: 0.8 });
+
+      // Show reframe - strike through old thinking
+      tl.to(this.container.querySelector('[data-line="1"]'), {
+        opacity: 1,
+        duration: 0.4
+      });
+
+      tl.to({}, { duration: 0.8 });
+
+      // Show new thinking
+      tl.to(this.container.querySelector('[data-line="2"]'), {
+        opacity: 1,
+        duration: 0.4
+      });
+
+      tl.to({}, { duration: 1.0 });
+
+      // Show final question
+      tl.to(this.container.querySelector('[data-element="question"]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('[data-element="header"]'), { opacity: 0, y: -10 });
+      gsap.set(this.container.querySelectorAll('.creation-item'), { opacity: 0, scale: 0.95 });
+      gsap.set(this.container.querySelectorAll('.item-glow'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('.reframe-line'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="question"]'), { opacity: 0, y: 10 });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-creation-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new CreationAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

@@ -1,0 +1,167 @@
+---
+/**
+ * index.astro
+ * 
+ * Main entry point for the Getting Started educational experience.
+ * Full-screen immersive split-screen layout.
+ * Does NOT use BaseLayout to avoid wrapper constraints.
+ * 
+ * Loads section content from Astro Content Collections.
+ */
+
+import SplitLayout from '../components/SplitLayout.astro';
+import { getCollection } from 'astro:content';
+import type { SectionData } from '../lib/sections';
+
+// Load sections from content collection
+const sectionEntries = await getCollection('sections');
+
+// Sort by number and transform to SectionData format
+const SECTIONS: SectionData[] = await Promise.all(
+  sectionEntries
+    .sort((a, b) => a.data.number - b.data.number)
+    .map(async (entry) => {
+      const { Content } = await entry.render();
+      // Render markdown to HTML string
+      const html = await renderContentToHTML(entry);
+      
+      return {
+        id: entry.data.id,
+        number: entry.data.number,
+        title: entry.data.title,
+        content: html,
+        wordCount: entry.body.split(/\s+/).length,
+        hasAnimation: true,
+        animationComponent: entry.data.animation,
+      };
+    })
+);
+
+// Helper to render markdown content to HTML string
+async function renderContentToHTML(entry: typeof sectionEntries[0]): Promise<string> {
+  const { Content } = await entry.render();
+  // Use Astro's container API to render component to string
+  // For now, we'll use a simple markdown-to-HTML approach
+  const html = entry.body
+    // Convert headers
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    // Convert bold
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    // Convert italic
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // Convert inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Convert unordered lists (handle multi-line)
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    // Convert ordered lists
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+    // Convert code blocks
+    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+    // Convert blockquotes
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    // Convert paragraphs (lines not already wrapped)
+    .split('\n\n')
+    .map(block => {
+      block = block.trim();
+      if (!block) return '';
+      if (block.startsWith('<')) return block;
+      if (block.includes('<li>')) {
+        // Wrap consecutive list items in ul
+        return `<ul>${block}</ul>`;
+      }
+      return `<p>${block}</p>`;
+    })
+    .join('\n')
+    // Clean up nested paragraphs in lists
+    .replace(/<ul><p>/g, '<ul>')
+    .replace(/<\/p><\/ul>/g, '</ul>')
+    .replace(/<p><li>/g, '<li>')
+    .replace(/<\/li><\/p>/g, '</li>');
+  
+  return html;
+}
+
+const title = "Getting Started — AI Tools for the Technical Adjacent";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content="A foundation for AI-assisted technical work" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <SplitLayout sections={SECTIONS} initialSection={1} />
+  </body>
+</html>
+
+<style is:global>
+  /* Reset and base styles - Full-screen immersive experience */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    height: 100%;
+  }
+  
+  body {
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    background: #0a0a0f;
+    color: #e5e7eb;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  /* CSS Custom Properties - Dark theme */
+  :root {
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.4);
+    --border: rgba(255, 255, 255, 0.08);
+    --bg-dark: #0a0a0f;
+    --bg-panel: #0f0f14;
+    --accent: #3b82f6;
+    --accent-secondary: #8b5cf6;
+    --accent-dark: #2563eb;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+  }
+  
+  /* Focus styles for accessibility - dark theme */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  
+  /* Selection - dark theme */
+  ::selection {
+    background: rgba(139, 92, 246, 0.3);
+    color: #fff;
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

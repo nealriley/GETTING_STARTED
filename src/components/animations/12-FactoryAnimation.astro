@@ -1,0 +1,500 @@
+---
+/**
+ * FactoryAnimation.astro
+ * 
+ * Section 12: "The Factory Is the Teacher"
+ * 
+ * Shows documentation as "factory walls" that now WORK:
+ * - Static documentation (passive, reference only)
+ * - AI makes it productive (reads, applies, executes)
+ * - The gap has narrowed
+ * 
+ * Key insight: Documentation has become productive. It does work.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['factory-animation', className]} data-factory-animation>
+  <!-- Factory Walls (Documentation) -->
+  <div class="factory-section" data-element="factory">
+    <div class="section-label">The Factory Walls</div>
+    
+    <div class="walls-grid">
+      <div class="wall-item" data-wall="1">
+        <span class="wall-icon">📖</span>
+        <span class="wall-name">README.md</span>
+        <span class="wall-status" data-status>static</span>
+      </div>
+      <div class="wall-item" data-wall="2">
+        <span class="wall-icon">📋</span>
+        <span class="wall-name">STYLE_GUIDE.md</span>
+        <span class="wall-status" data-status>static</span>
+      </div>
+      <div class="wall-item" data-wall="3">
+        <span class="wall-icon">⚙️</span>
+        <span class="wall-name">AGENTS.md</span>
+        <span class="wall-status" data-status>static</span>
+      </div>
+      <div class="wall-item" data-wall="4">
+        <span class="wall-icon">❓</span>
+        <span class="wall-name">FAQ.md</span>
+        <span class="wall-status" data-status>static</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transformation -->
+  <div class="transformation" data-element="transform">
+    <div class="transform-line">
+      <span class="old-state">Humans read docs</span>
+      <span class="arrow">→</span>
+      <span class="new-state">AI <em>uses</em> docs</span>
+    </div>
+  </div>
+
+  <!-- The Result -->
+  <div class="result-section" data-element="result">
+    <div class="result-demo">
+      <div class="ai-reading" data-reading>
+        <span class="ai-icon">✦</span>
+        <span class="reading-text">Reading STYLE_GUIDE.md...</span>
+      </div>
+      <div class="ai-applying" data-applying>
+        <span class="check">✓</span>
+        <span class="applying-text">Applying code style conventions</span>
+      </div>
+      <div class="ai-result" data-done>
+        <span class="result-label">Output matches your standards</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Message -->
+  <div class="final-section" data-element="final">
+    <div class="gap-visual">
+      <div class="gap-side knowing">Knowing</div>
+      <div class="gap-bridge" data-bridge>
+        <span class="bridge-text">The gap has narrowed</span>
+      </div>
+      <div class="gap-side doing">Doing</div>
+    </div>
+    
+    <div class="call-to-action" data-cta>
+      <span class="cta-text">Build something.</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .factory-animation {
+    height: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Factory Walls */
+  .factory-section {
+    opacity: 0;
+  }
+
+  .walls-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .wall-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    font-size: 0.65rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+
+  .wall-item.active {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+
+  .wall-icon {
+    font-size: 0.9rem;
+  }
+
+  .wall-name {
+    flex: 1;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .wall-status {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .wall-item.active .wall-status {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+  }
+
+  /* Transformation */
+  .transformation {
+    text-align: center;
+    padding: 0.5rem;
+    opacity: 0;
+  }
+
+  .transform-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .old-state {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .arrow {
+    color: rgba(139, 92, 246, 0.6);
+    font-size: 1rem;
+  }
+
+  .new-state {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .new-state em {
+    color: #10b981;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Result Section */
+  .result-section {
+    padding: 0.75rem;
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    border-radius: 8px;
+    opacity: 0;
+  }
+
+  .result-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .ai-reading,
+  .ai-applying,
+  .ai-result {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    opacity: 0;
+  }
+
+  .ai-icon {
+    color: #8b5cf6;
+    font-size: 0.9rem;
+  }
+
+  .reading-text {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .check {
+    color: #10b981;
+    font-weight: bold;
+  }
+
+  .applying-text {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .ai-result {
+    padding-top: 0.3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .result-label {
+    color: #10b981;
+    font-weight: 500;
+  }
+
+  /* Final Section */
+  .final-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    opacity: 0;
+  }
+
+  .gap-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .gap-side {
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+
+  .gap-side.knowing {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: rgba(239, 68, 68, 0.8);
+  }
+
+  .gap-side.doing {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+  }
+
+  .gap-bridge {
+    padding: 0.3rem 0.75rem;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), rgba(16, 185, 129, 0.1));
+    border-radius: 4px;
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .bridge-text {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Lora', serif;
+    white-space: nowrap;
+  }
+
+  .call-to-action {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .cta-text {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .walls-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .gap-visual {
+      flex-wrap: wrap;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class FactoryAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'factory') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      if (hash === 'factory') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => { this.isPlaying = false; }
+      });
+
+      const tl = this.timeline;
+
+      // Show factory section
+      tl.to(this.container.querySelector('[data-element="factory"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Show wall items
+      for (let i = 1; i <= 4; i++) {
+        tl.to(this.container.querySelector(`[data-wall="${i}"]`), {
+          opacity: 1,
+          y: 0,
+          duration: 0.25,
+          ease: 'power2.out'
+        }, i === 1 ? '+=0.1' : '-=0.15');
+      }
+
+      tl.to({}, { duration: 0.6 });
+
+      // Show transformation
+      tl.to(this.container.querySelector('[data-element="transform"]'), {
+        opacity: 1,
+        duration: 0.4
+      });
+
+      tl.to({}, { duration: 0.5 });
+
+      // Show result section
+      tl.to(this.container.querySelector('[data-element="result"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Activate a wall item
+      const wall2 = this.container.querySelector('[data-wall="2"]');
+      tl.call(() => {
+        wall2?.classList.add('active');
+        const status = wall2?.querySelector('[data-status]');
+        if (status) status.textContent = 'active';
+      });
+
+      // Show AI reading
+      tl.to(this.container.querySelector('[data-reading]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 0.6 });
+
+      // Show AI applying
+      tl.to(this.container.querySelector('[data-applying]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 0.4 });
+
+      // Show result
+      tl.to(this.container.querySelector('[data-done]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 0.6 });
+
+      // Show final section
+      tl.to(this.container.querySelector('[data-element="final"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Show bridge
+      tl.to(this.container.querySelector('[data-bridge]'), {
+        opacity: 1,
+        scaleX: 1,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+
+      tl.to({}, { duration: 0.5 });
+
+      // Show CTA
+      tl.to(this.container.querySelector('[data-cta]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('[data-element="factory"]'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('.wall-item'), { opacity: 0, y: 10 });
+      gsap.set(this.container.querySelector('[data-element="transform"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="result"]'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('[data-reading], [data-applying], [data-done]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="final"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-bridge]'), { opacity: 0, scaleX: 0 });
+      gsap.set(this.container.querySelector('[data-cta]'), { opacity: 0, y: 10 });
+      
+      // Reset wall states
+      this.container.querySelectorAll('.wall-item').forEach(wall => {
+        wall.classList.remove('active');
+        const status = wall.querySelector('[data-status]');
+        if (status) status.textContent = 'static';
+      });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-factory-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new FactoryAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

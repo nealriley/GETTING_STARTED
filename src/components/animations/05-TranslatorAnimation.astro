@@ -1,0 +1,444 @@
+---
+/**
+ * TranslatorAnimation.astro
+ * 
+ * Section 5: AI as translator - you speak natural language,
+ * AI translates to terminal commands. You don't need to learn the syntax.
+ * 
+ * Full-screen single terminal. Slow, readable transitions.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['translator-animation', className]} data-translator-animation>
+  <div class="terminal-window">
+    <div class="terminal-chrome">
+      <div class="window-controls">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <span class="terminal-title">claude</span>
+    </div>
+    
+    <div class="terminal-content">
+      <!-- What you type (natural language) -->
+      <div class="you-type" data-element="you-type">
+        <span class="label">You type</span>
+        <div class="natural-input">
+          <span class="caret">❯</span>
+          <span class="text">"Find all PDFs larger than 1MB"</span>
+        </div>
+      </div>
+      
+      <!-- Translation arrow -->
+      <div class="translation-indicator" data-element="arrow">
+        <div class="arrow-line"></div>
+        <span class="arrow-label">AI translates</span>
+        <div class="arrow-line"></div>
+      </div>
+      
+      <!-- What it becomes (command) -->
+      <div class="becomes" data-element="becomes">
+        <span class="label">Becomes</span>
+        <div class="command-box">
+          <span class="prompt">$</span>
+          <code>find . -name "*.pdf" -size +1M</code>
+        </div>
+      </div>
+      
+      <!-- Execution result -->
+      <div class="result" data-element="result">
+        <div class="result-header">
+          <span class="result-icon">✓</span>
+          <span class="result-label">Result</span>
+        </div>
+        <div class="result-files">
+          <div class="result-line">
+            <span class="file-path">./reports/annual.pdf</span>
+            <span class="file-size">2.3 MB</span>
+          </div>
+          <div class="result-line">
+            <span class="file-path">./docs/manual.pdf</span>
+            <span class="file-size">1.5 MB</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Key insight -->
+      <div class="insight-box" data-element="insight">
+        <span class="insight-text"><strong>You describe what you want.</strong> AI handles the syntax.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .translator-animation {
+    height: 100%;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .terminal-window {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .terminal-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27ca40; }
+
+  .terminal-title {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+  }
+
+  .terminal-content {
+    flex: 1;
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    overflow: hidden;
+  }
+
+  /* Sections */
+  .you-type,
+  .becomes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 550px;
+    opacity: 0;
+  }
+
+  .label {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  /* Natural language input */
+  .natural-input {
+    width: 100%;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .caret {
+    color: #8b5cf6;
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+
+  .natural-input .text {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.2rem;
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+
+  /* Translation arrow */
+  .translation-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 450px;
+    padding: 0.5rem 0;
+    opacity: 0;
+  }
+
+  .arrow-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+  }
+
+  .arrow-label {
+    color: rgba(139, 92, 246, 0.8);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+  }
+
+  /* Command box */
+  .command-box {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 255, 0, 0.25);
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .prompt {
+    color: #00ff00;
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+
+  .command-box code {
+    color: #10b981;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  /* Result */
+  .result {
+    width: 100%;
+    max-width: 550px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    opacity: 0;
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .result-icon {
+    color: #27ca40;
+    font-size: 1.1rem;
+  }
+
+  .result-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .result-files {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .result-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .file-path {
+    color: #60a5fa;
+    font-size: 1rem;
+  }
+
+  .file-size {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+  }
+
+  /* Insight box */
+  .insight-box {
+    margin-top: 1rem;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    text-align: center;
+    opacity: 0;
+  }
+
+  .insight-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.15rem;
+    font-family: 'Lora', serif;
+    line-height: 1.5;
+  }
+
+  .insight-text strong {
+    color: #10b981;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .terminal-content {
+      padding: 1.5rem;
+    }
+
+    .natural-input .text,
+    .command-box code {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class TranslatorAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'terminal-translator') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      if (hash === 'terminal-translator') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => { this.isPlaying = false; }
+      });
+
+      const tl = this.timeline;
+
+      // Show terminal
+      tl.to(this.container.querySelector('.terminal-window'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+
+      // What you type
+      tl.to(this.container.querySelector('[data-element="you-type"]'), {
+        opacity: 1,
+        duration: 0.6
+      });
+
+      tl.to({}, { duration: 2.5 }); // Read the natural language
+
+      // Translation arrow
+      tl.to(this.container.querySelector('[data-element="arrow"]'), {
+        opacity: 1,
+        duration: 0.5
+      });
+
+      tl.to({}, { duration: 1.0 });
+
+      // What it becomes
+      tl.to(this.container.querySelector('[data-element="becomes"]'), {
+        opacity: 1,
+        duration: 0.6
+      });
+
+      tl.to({}, { duration: 2.5 }); // See the command
+
+      // Result
+      tl.to(this.container.querySelector('[data-element="result"]'), {
+        opacity: 1,
+        duration: 0.5
+      });
+
+      tl.to({}, { duration: 2.0 });
+
+      // Insight
+      tl.to(this.container.querySelector('[data-element="insight"]'), {
+        opacity: 1,
+        duration: 0.6
+      });
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('.terminal-window'), { opacity: 0, y: 10 });
+      gsap.set(this.container.querySelector('[data-element="you-type"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="arrow"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="becomes"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="result"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="insight"]'), { opacity: 0 });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-translator-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new TranslatorAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

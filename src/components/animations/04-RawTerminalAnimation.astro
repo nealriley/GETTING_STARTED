@@ -1,0 +1,331 @@
+---
+/**
+ * RawTerminalAnimation.astro
+ * 
+ * Section 4: Shows raw terminal command - the SAME action as Claude,
+ * just with different syntax. Text in, text out. Same pattern.
+ * 
+ * Full-screen single terminal. Slow, readable transitions.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['raw-terminal-animation', className]} data-raw-terminal-animation>
+  <div class="terminal-window">
+    <div class="terminal-chrome">
+      <div class="window-controls">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <span class="terminal-title">terminal</span>
+    </div>
+    
+    <div class="terminal-content">
+      <!-- The command -->
+      <div class="terminal-line" data-element="command">
+        <span class="prompt">$</span>
+        <span class="command-text">ls</span>
+      </div>
+      
+      <!-- The output -->
+      <div class="terminal-output" data-element="output">
+        <span class="file">document.pdf</span>
+        <span class="file">notes.txt</span>
+        <span class="file">photo.jpg</span>
+      </div>
+      
+      <!-- New prompt with cursor -->
+      <div class="terminal-line" data-element="new-prompt">
+        <span class="prompt">$</span>
+        <span class="cursor"></span>
+      </div>
+      
+      <!-- Key insight -->
+      <div class="insight-box" data-element="insight">
+        <span class="insight-icon">=</span>
+        <span class="insight-text">Same result. Same pattern. <strong>Text in, text out.</strong></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .raw-terminal-animation {
+    height: 100%;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .terminal-window {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .terminal-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27ca40; }
+
+  .terminal-title {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+  }
+
+  .terminal-content {
+    flex: 1;
+    padding: 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+    overflow: hidden;
+  }
+
+  /* Terminal lines */
+  .terminal-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+  }
+
+  .prompt {
+    color: #00ff00;
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+
+  .command-text {
+    color: #ffffff;
+    font-size: 1.8rem;
+  }
+
+  /* Output */
+  .terminal-output {
+    padding-left: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 3rem;
+    opacity: 0;
+  }
+
+  .file {
+    color: #60a5fa;
+    font-size: 1.4rem;
+  }
+
+  /* Cursor */
+  .cursor {
+    display: inline-block;
+    width: 14px;
+    height: 1.8rem;
+    background: #00ff00;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Insight box */
+  .insight-box {
+    margin-top: 2rem;
+    padding: 1.5rem 2rem;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    opacity: 0;
+  }
+
+  .insight-icon {
+    font-size: 2rem;
+    color: #10b981;
+    font-weight: bold;
+  }
+
+  .insight-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+    font-family: 'Lora', serif;
+    line-height: 1.5;
+  }
+
+  .insight-text strong {
+    color: #10b981;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .terminal-content {
+      padding: 1.5rem 2rem;
+    }
+
+    .prompt,
+    .command-text {
+      font-size: 1.4rem;
+    }
+
+    .file {
+      font-size: 1.1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class RawTerminalAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'terminal-raw') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      if (hash === 'terminal-raw') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => { this.isPlaying = false; }
+      });
+
+      const tl = this.timeline;
+
+      // Show terminal
+      tl.to(this.container.querySelector('.terminal-window'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+
+      // Command appears
+      tl.to(this.container.querySelector('[data-element="command"]'), {
+        opacity: 1,
+        duration: 0.5
+      });
+
+      tl.to({}, { duration: 1.5 }); // Let them see the command
+
+      // Output
+      tl.to(this.container.querySelector('[data-element="output"]'), {
+        opacity: 1,
+        duration: 0.5
+      });
+
+      tl.to({}, { duration: 2.0 }); // Let them see it matches
+
+      // New prompt with cursor
+      tl.to(this.container.querySelector('[data-element="new-prompt"]'), {
+        opacity: 1,
+        duration: 0.4
+      });
+
+      tl.to({}, { duration: 2.0 });
+
+      // Insight
+      tl.to(this.container.querySelector('[data-element="insight"]'), {
+        opacity: 1,
+        duration: 0.6
+      });
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('.terminal-window'), { opacity: 0, y: 10 });
+      gsap.set(this.container.querySelector('[data-element="command"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="output"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="new-prompt"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="insight"]'), { opacity: 0 });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-raw-terminal-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new RawTerminalAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

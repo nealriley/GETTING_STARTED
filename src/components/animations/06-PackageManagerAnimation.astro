@@ -1,0 +1,553 @@
+---
+/**
+ * PackageManagerAnimation.astro
+ * 
+ * Section 4: "The Original App Stores"
+ * Shows different package managers installing the same tool,
+ * emphasizing they're all just "app stores" with text interfaces.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['package-manager-animation', className]} data-package-manager-animation>
+  <!-- Timeline header -->
+  <div class="timeline-header" data-timeline>
+    <div class="timeline-item old" data-timeline-item="old">
+      <span class="year">1990s</span>
+      <span class="label">Package Managers</span>
+    </div>
+    <div class="timeline-arrow">→</div>
+    <div class="timeline-item new" data-timeline-item="new">
+      <span class="year">2008</span>
+      <span class="label">App Store</span>
+    </div>
+  </div>
+
+  <!-- Main content: package manager demos -->
+  <div class="package-demos">
+    <!-- Installing ripgrep across platforms -->
+    <div class="install-task" data-task-header>
+      <span class="task-icon">🔍</span>
+      <span class="task-text">Install a fast search tool (ripgrep)</span>
+    </div>
+
+    <div class="terminals-grid">
+      <!-- macOS / Homebrew -->
+      <div class="mini-terminal" data-terminal="brew">
+        <div class="mini-header">
+          <span class="platform-badge macos">macOS</span>
+          <span class="manager-name">Homebrew</span>
+        </div>
+        <div class="mini-body">
+          <div class="term-line" data-line="1">
+            <span class="prompt">$</span>
+            <span class="cmd">brew install ripgrep</span>
+          </div>
+          <div class="term-output" data-line="2">
+            ==> Downloading ripgrep...
+          </div>
+          <div class="term-output success" data-line="3">
+            ✓ ripgrep installed
+          </div>
+        </div>
+      </div>
+
+      <!-- Linux / apt -->
+      <div class="mini-terminal" data-terminal="apt">
+        <div class="mini-header">
+          <span class="platform-badge linux">Linux</span>
+          <span class="manager-name">apt</span>
+        </div>
+        <div class="mini-body">
+          <div class="term-line" data-line="1">
+            <span class="prompt">$</span>
+            <span class="cmd">apt install ripgrep</span>
+          </div>
+          <div class="term-output" data-line="2">
+            Reading package lists...
+          </div>
+          <div class="term-output success" data-line="3">
+            ✓ ripgrep installed
+          </div>
+        </div>
+      </div>
+
+      <!-- Windows / winget -->
+      <div class="mini-terminal" data-terminal="winget">
+        <div class="mini-header">
+          <span class="platform-badge windows">Windows</span>
+          <span class="manager-name">winget</span>
+        </div>
+        <div class="mini-body">
+          <div class="term-line" data-line="1">
+            <span class="prompt">></span>
+            <span class="cmd">winget install ripgrep</span>
+          </div>
+          <div class="term-output" data-line="2">
+            Found: BurntSushi.ripgrep
+          </div>
+          <div class="term-output success" data-line="3">
+            ✓ ripgrep installed
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Language-specific package managers -->
+    <div class="ecosystem-row" data-ecosystem>
+      <div class="ecosystem-item" data-eco="npm">
+        <span class="eco-badge js">npm</span>
+        <code>npm install prettier</code>
+      </div>
+      <div class="ecosystem-item" data-eco="pip">
+        <span class="eco-badge python">pip</span>
+        <code>pip install pandas</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom insight -->
+  <div class="insight" data-insight>
+    <span class="insight-main">There's a package for that.</span>
+    <span class="insight-sub">2+ million packages. One command to install.</span>
+  </div>
+</div>
+
+<style>
+  .package-manager-animation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    height: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+  }
+
+  /* Timeline */
+  .timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    opacity: 0;
+  }
+
+  .timeline-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  .timeline-item.old {
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
+
+  .timeline-item.new {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .year {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .label {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .timeline-arrow {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.2rem;
+  }
+
+  /* Package demos */
+  .package-demos {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 0;
+  }
+
+  .install-task {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  .task-icon {
+    font-size: 1rem;
+  }
+
+  .task-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Lora', serif;
+    font-size: 0.75rem;
+  }
+
+  /* Terminals grid */
+  .terminals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .mini-terminal {
+    display: flex;
+    flex-direction: column;
+    background: #0d0d0d;
+    border-radius: 6px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  .mini-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.5rem;
+    background: #2d2d2d;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .platform-badge {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.35rem;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .platform-badge.macos {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  .platform-badge.linux {
+    background: rgba(255, 153, 0, 0.2);
+    color: #ff9900;
+  }
+
+  .platform-badge.windows {
+    background: rgba(0, 120, 212, 0.2);
+    color: #0078d4;
+  }
+
+  .manager-name {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.6rem;
+  }
+
+  .mini-body {
+    flex: 1;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .term-line {
+    display: flex;
+    gap: 0.4rem;
+    opacity: 0;
+  }
+
+  .prompt {
+    color: #00ff00;
+    font-weight: 600;
+  }
+
+  .cmd {
+    color: #fff;
+  }
+
+  .term-output {
+    color: #666;
+    padding-left: 0.8rem;
+    font-size: 0.6rem;
+    opacity: 0;
+  }
+
+  .term-output.success {
+    color: #27ca40;
+  }
+
+  /* Ecosystem row */
+  .ecosystem-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .ecosystem-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .eco-badge {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .eco-badge.js {
+    background: rgba(247, 223, 30, 0.2);
+    color: #f7df1e;
+  }
+
+  .eco-badge.python {
+    background: rgba(55, 118, 171, 0.2);
+    color: #3776ab;
+  }
+
+  .ecosystem-item code {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.65rem;
+  }
+
+  /* Insight */
+  .insight {
+    text-align: center;
+    padding: 0.6rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .insight-main {
+    display: block;
+    color: #10b981;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .insight-sub {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.65rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .terminals-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, 1fr);
+    }
+
+    .package-manager-animation {
+      font-size: 0.65rem;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class PackageManagerAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'packages') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      if (hash === 'packages') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => {
+          this.isPlaying = false;
+        }
+      });
+
+      const tl = this.timeline;
+
+      // Show timeline header
+      tl.to(this.container.querySelector('[data-timeline]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Animate timeline items
+      tl.to(this.container.querySelector('[data-timeline-item="old"]'), {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: 'back.out(1.7)'
+      });
+
+      tl.to(this.container.querySelector('[data-timeline-item="new"]'), {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: 'back.out(1.7)'
+      }, '-=0.2');
+
+      // Show task header
+      tl.to(this.container.querySelector('[data-task-header]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+
+      // Show terminals
+      const terminals = ['brew', 'apt', 'winget'];
+      terminals.forEach((term, i) => {
+        tl.to(this.container.querySelector(`[data-terminal="${term}"]`), {
+          opacity: 1,
+          y: 0,
+          duration: 0.3,
+          ease: 'power2.out'
+        }, i === 0 ? '+=0.1' : '-=0.2');
+      });
+
+      // Animate terminal lines for each terminal
+      terminals.forEach((term) => {
+        const terminal = this.container.querySelector(`[data-terminal="${term}"]`);
+        if (!terminal) return;
+
+        // Command line
+        tl.to(terminal.querySelector('[data-line="1"]'), {
+          opacity: 1,
+          duration: 0.2
+        }, '-=0.3');
+      });
+
+      // Small pause
+      tl.to({}, { duration: 0.3 });
+
+      // Output lines
+      terminals.forEach((term) => {
+        const terminal = this.container.querySelector(`[data-terminal="${term}"]`);
+        if (!terminal) return;
+
+        tl.to(terminal.querySelector('[data-line="2"]'), {
+          opacity: 1,
+          duration: 0.2
+        }, '-=0.15');
+      });
+
+      // Success lines
+      tl.to({}, { duration: 0.4 });
+      
+      terminals.forEach((term) => {
+        const terminal = this.container.querySelector(`[data-terminal="${term}"]`);
+        if (!terminal) return;
+
+        tl.to(terminal.querySelector('[data-line="3"]'), {
+          opacity: 1,
+          duration: 0.2
+        }, '-=0.15');
+      });
+
+      // Show ecosystem items
+      tl.to(this.container.querySelectorAll('.ecosystem-item'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        stagger: 0.1,
+        ease: 'power2.out'
+      }, '+=0.2');
+
+      // Show insight
+      tl.to(this.container.querySelector('[data-insight]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, '+=0.2');
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('[data-timeline]'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('[data-timeline-item]'), { opacity: 0, scale: 0.9 });
+      gsap.set(this.container.querySelector('[data-task-header]'), { opacity: 0, y: -10 });
+      gsap.set(this.container.querySelectorAll('.mini-terminal'), { opacity: 0, y: 15 });
+      gsap.set(this.container.querySelectorAll('.term-line, .term-output'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('.ecosystem-item'), { opacity: 0, y: 10 });
+      gsap.set(this.container.querySelector('[data-insight]'), { opacity: 0, y: 10 });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-package-manager-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new PackageManagerAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

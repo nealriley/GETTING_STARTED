@@ -1,0 +1,62 @@
+{
+  "name": "GETTING_STARTED - Astro Development",
+  
+  // Use Node.js 20 LTS image optimized for JavaScript development
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20-bookworm",
+  
+  // Install dependencies after container is created
+  "postCreateCommand": "npm install",
+  
+  // Forward Astro dev server port (4321 is Astro's default)
+  "forwardPorts": [4321],
+  
+  // Port-specific settings
+  "portsAttributes": {
+    "4321": {
+      "label": "Astro Dev Server",
+      "onAutoForward": "openPreview",
+      "protocol": "http"
+    }
+  },
+  
+  // Silence other auto-forwarded ports
+  "otherPortsAttributes": {
+    "onAutoForward": "silent"
+  },
+  
+  // VS Code specific customizations
+  "customizations": {
+    "vscode": {
+      // Extensions to install in the container
+      "extensions": [
+        "astro-build.astro-vscode",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      
+      // VS Code settings
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        
+        // Astro language support
+        "astro.language-server.ls.typescript.enabled": true,
+        
+        // File associations
+        "files.associations": {
+          "*.astro": "astro"
+        }
+      }
+    }
+  },
+  
+  // Recommended minimum host requirements
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb",
+    "storage": "16gb"
+  }
+}

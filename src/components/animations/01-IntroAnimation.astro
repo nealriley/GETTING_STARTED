@@ -1,0 +1,453 @@
+---
+/**
+ * IntroAnimation.astro
+ * 
+ * Section 1: "For the Technical Adjacent"
+ * 
+ * A CLI "getting started" style animation:
+ * - Shows a terminal with a welcome prompt
+ * - Types out key concepts
+ * - Invites user to continue (press -> to continue)
+ * 
+ * Sets the tone: approachable, terminal-familiar, inviting.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['intro-animation', className]} data-intro-animation>
+  <div class="terminal-window">
+    <div class="terminal-chrome">
+      <div class="window-controls">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <span class="terminal-title">getting-started</span>
+    </div>
+    
+    <div class="terminal-content">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner" data-element="banner">
+        <pre class="ascii-art">
+ ┌─────────────────────────────────────┐
+ │     GETTING STARTED                 │
+ │     ─────────────────               │
+ │     For the Technical Adjacent      │
+ └─────────────────────────────────────┘
+        </pre>
+      </div>
+
+      <!-- Typed Lines -->
+      <div class="typed-section">
+        <div class="typed-line" data-line="1">
+          <span class="prompt">$</span>
+          <span class="command">whoami</span>
+        </div>
+        <div class="typed-output" data-line="2">
+          UX researcher, PM, designer, data analyst...
+        </div>
+        <div class="typed-output sub" data-line="3">
+          Someone who works WITH technical systems
+        </div>
+
+        <div class="typed-line" data-line="4">
+          <span class="prompt">$</span>
+          <span class="command">what-you'll-learn</span>
+        </div>
+        <div class="typed-output list" data-line="5">
+          <span class="list-item">→ Terminals are just chat interfaces</span>
+          <span class="list-item">→ AI speaks fluent terminal</span>
+          <span class="list-item">→ You can create more than code</span>
+          <span class="list-item">→ Structure unlocks power</span>
+        </div>
+
+        <div class="typed-line" data-line="6">
+          <span class="prompt">$</span>
+          <span class="command">ready?</span>
+        </div>
+        <div class="typed-output ready" data-line="7">
+          <span class="ready-text">The gap narrows. Let's begin.</span>
+        </div>
+      </div>
+
+      <!-- Continue Prompt -->
+      <div class="continue-prompt" data-element="continue">
+        <span class="continue-text">Press</span>
+        <span class="key-hint">→</span>
+        <span class="continue-text">to continue</span>
+        <span class="cursor"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .intro-animation {
+    height: 100%;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .terminal-window {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .terminal-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27ca40; }
+
+  .terminal-title {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+  }
+
+  .terminal-content {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  /* Welcome Banner */
+  .welcome-banner {
+    opacity: 0;
+  }
+
+  .ascii-art {
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: #8b5cf6;
+    margin: 0;
+  }
+
+  /* Typed Section */
+  .typed-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .typed-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+  }
+
+  .prompt {
+    color: #00ff00;
+    font-weight: bold;
+  }
+
+  .command {
+    color: #60a5fa;
+  }
+
+  .typed-output {
+    padding-left: 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    opacity: 0;
+  }
+
+  .typed-output.sub {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .typed-output.list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .list-item {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.8rem;
+  }
+
+  .list-item::before {
+    content: '';
+  }
+
+  .typed-output.ready {
+    margin-top: 0.5rem;
+  }
+
+  .ready-text {
+    color: #10b981;
+    font-size: 0.9rem;
+    font-style: italic;
+    font-family: 'Lora', serif;
+  }
+
+  /* Continue Prompt */
+  .continue-prompt {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(139, 92, 246, 0.08);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 8px;
+    opacity: 0;
+  }
+
+  .continue-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+  }
+
+  .key-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: #8b5cf6;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.1em;
+    background: rgba(139, 92, 246, 0.8);
+    animation: blink 1s step-end infinite;
+    margin-left: 0.25rem;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .terminal-content {
+      padding: 1rem;
+    }
+
+    .ascii-art {
+      font-size: 0.6rem;
+    }
+
+    .typed-output,
+    .list-item {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class IntroAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'intro') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      // Play on intro section or when no hash (default)
+      if (hash === 'intro' || hash === '') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => { this.isPlaying = false; }
+      });
+
+      const tl = this.timeline;
+
+      // Show terminal window
+      tl.to(this.container.querySelector('.terminal-window'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+
+      // Show banner
+      tl.to(this.container.querySelector('[data-element="banner"]'), {
+        opacity: 1,
+        duration: 0.4
+      });
+
+      tl.to({}, { duration: 0.5 });
+
+      // Line 1: whoami command
+      tl.to(this.container.querySelector('[data-line="1"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 0.3 });
+
+      // Line 2: whoami output
+      tl.to(this.container.querySelector('[data-line="2"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Line 3: sub output
+      tl.to(this.container.querySelector('[data-line="3"]'), {
+        opacity: 1,
+        duration: 0.3
+      }, '+=0.2');
+
+      tl.to({}, { duration: 0.5 });
+
+      // Line 4: what-you'll-learn command
+      tl.to(this.container.querySelector('[data-line="4"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 0.3 });
+
+      // Line 5: list items (staggered)
+      tl.to(this.container.querySelector('[data-line="5"]'), {
+        opacity: 1,
+        duration: 0.2
+      });
+
+      // Stagger reveal list items
+      tl.to(this.container.querySelectorAll('.list-item'), {
+        opacity: 1,
+        x: 0,
+        duration: 0.2,
+        stagger: 0.15
+      });
+
+      tl.to({}, { duration: 0.5 });
+
+      // Line 6: ready? command
+      tl.to(this.container.querySelector('[data-line="6"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 0.3 });
+
+      // Line 7: ready output
+      tl.to(this.container.querySelector('[data-line="7"]'), {
+        opacity: 1,
+        duration: 0.4
+      });
+
+      tl.to({}, { duration: 0.6 });
+
+      // Show continue prompt
+      tl.to(this.container.querySelector('[data-element="continue"]'), {
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('.terminal-window'), { opacity: 0, y: 10 });
+      gsap.set(this.container.querySelector('[data-element="banner"]'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('.typed-line, .typed-output'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('.list-item'), { opacity: 0, x: -5 });
+      gsap.set(this.container.querySelector('[data-element="continue"]'), { opacity: 0 });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-intro-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new IntroAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

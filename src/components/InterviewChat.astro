@@ -1,0 +1,487 @@
+---
+// Interview Chat component - animated conversation through key topics
+// Left: topic description, Right: chat messages
+---
+
+<div class="interview-container">
+  <div class="left-panel">
+    <div class="topic-content">
+      <h2 class="topic-title">Setting the Stage</h2>
+      <p class="topic-description">
+        Understanding who this guide is for and why—the "technical adjacent" 
+        professionals who work with tech every day but lack the foundational knowledge.
+      </p>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="chat-container">
+      <div class="messages">
+        <div class="message user">
+          <span class="sender">Q</span>
+          <p>So, what are we building here? Who is this for?</p>
+        </div>
+        <div class="message assistant">
+          <span class="sender">A</span>
+          <p>Throughout my career, a passion of mine has always been helping people who don't necessarily come from a technical background.</p>
+        </div>
+        <div class="message user">
+          <span class="sender">Q</span>
+          <p>Can you give me a specific person you're thinking of?</p>
+        </div>
+        <div class="message assistant">
+          <span class="sender">A</span>
+          <p>Yeah, actually. I was at a Christmas lunch recently, talking with a UX researcher. Non-technical role, but she interacts with technical systems every day.</p>
+        </div>
+        <div class="message user">
+          <span class="sender">Q</span>
+          <p>So we're writing for the "technical adjacent"?</p>
+        </div>
+        <div class="message assistant">
+          <span class="sender">A</span>
+          <p>Exactly. UX researchers, product managers, designers, data analysts. People who work <em>with</em> technical systems every day without needing to know how servers work.</p>
+        </div>
+      </div>
+    </div>
+    <div class="auto-advance-timer">
+      <span class="timer-label">Next section in</span>
+      <span class="timer-count">10</span>
+      <span class="timer-label">second</span>
+    </div>
+    <div class="chat-controls">
+      <div class="section-info">
+        <span class="current-section">Setting the Stage</span>
+        <a href="#" class="next-section-link"><span class="next-label">Next:</span> The Interface Problem</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .interview-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    background: #fff;
+  }
+
+  .left-panel {
+    padding: 4rem 3rem;
+    background: #f9fafb;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topic-content {
+    max-width: 100%;
+  }
+
+  .topic-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 24px 0;
+    line-height: 1.2;
+  }
+
+  .topic-description {
+    font-size: 1.125rem;
+    color: #4b5563;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .right-panel {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 2rem;
+  }
+
+  .messages {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .message {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .message.user {
+    justify-content: flex-start;
+  }
+
+  .message.assistant {
+    justify-content: flex-start;
+  }
+
+  .sender {
+    display: none;
+  }
+
+  .message p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #4b5563;
+    padding: 12px 16px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    max-width: 90%;
+  }
+
+  .message em {
+    font-style: italic;
+    color: #111827;
+  }
+
+  .chat-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .section-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .current-section {
+    font-weight: 500;
+    color: #111827;
+  }
+
+  .next-label {
+    color: #4b5563;
+    font-weight: 400;
+  }
+
+  .next-section-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 160ms ease;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+  }
+
+  .next-section-link:hover {
+    color: #2563eb;
+    border-bottom-color: #3b82f6;
+  }
+
+  .next-section-link:active {
+    color: #1d4ed8;
+  }
+
+  .auto-advance-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #4b5563;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .timer-count {
+    display: inline-block;
+    min-width: 24px;
+    text-align: center;
+    font-weight: 600;
+    color: #3b82f6;
+  }
+
+  /* Scroll styling */
+  .chat-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-container::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+  }
+
+  .chat-container::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+
+  @media (max-width: 1024px) {
+    .interview-container {
+      grid-template-columns: 1fr;
+    }
+
+    .left-panel {
+      border-right: none;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 3rem 2rem;
+      min-height: 30vh;
+    }
+
+    .right-panel {
+      min-height: 70vh;
+    }
+
+    .message p {
+      max-width: 100%;
+    }
+
+    .topic-title {
+      font-size: 1.875rem;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  // Interview data structure
+  const topics = [
+    {
+      title: "Setting the Stage",
+      description: "Understanding who this guide is for and why—the 'technical adjacent' professionals who work with tech every day but lack the foundational knowledge.",
+      messages: [
+        { role: 'user', text: 'So, what are we building here? Who is this for?' },
+        { role: 'assistant', text: 'Throughout my career, a passion of mine has always been helping people who don\'t necessarily come from a technical background.' },
+        { role: 'user', text: 'Can you give me a specific person you\'re thinking of?' },
+        { role: 'assistant', text: 'Yeah, actually. I was at a Christmas lunch recently, talking with a UX researcher. Non-technical role, but she interacts with technical systems every day.' },
+        { role: 'user', text: 'So we\'re writing for the "technical adjacent"?' },
+        { role: 'assistant', text: 'Exactly. UX researchers, product managers, designers, data analysts. People who work <em>with</em> technical systems every day.' }
+      ]
+    },
+    {
+      title: "The Interface Problem",
+      description: "Different interfaces to the same AI model create drastically different experiences. The medium shapes what's possible.",
+      messages: [
+        { role: 'user', text: 'You mentioned different interfaces to the same model. What\'s the core message?' },
+        { role: 'assistant', text: 'Picture this: You\'re using Claude. Maybe through the website chat. Maybe through Claude Code in your terminal. Maybe through Cowork.' },
+        { role: 'user', text: 'Why does that matter?' },
+        { role: 'assistant', text: 'Same model. Drastically different experiences. The interface shapes everything—what you can do, how you do it, what feels natural.' },
+        { role: 'user', text: 'There\'s a philosophical angle here, isn\'t there?' },
+        { role: 'assistant', text: '"The medium is the message" (McLuhan, 1964). For AI tools, the interface determines what\'s possible. <em>The model isn\'t the interface.</em>' }
+      ]
+    },
+    {
+      title: "The Terminal",
+      description: "Demystifying the command line—a text-based interface that's been running the world for decades and remains fundamental to modern computing.",
+      messages: [
+        { role: 'user', text: 'How do we introduce terminals without scaring people off?' },
+        { role: 'assistant', text: 'It\'s a conceptual leap backward in time. Most of us got to skip a generation with icons and mice.' },
+        { role: 'user', text: 'Should we acknowledge the intimidation factor?' },
+        { role: 'assistant', text: 'Be empathetic through tone, not by calling out fear. The terminal: a way to talk to computers using text.' },
+        { role: 'user', text: 'There\'s an interesting parallel to chat interfaces here...' },
+        { role: 'assistant', text: 'Yes! The terminal is fundamentally turn-based dialogue. You type a command. Computer responds. You type another command. It\'s the original chat interface.' }
+      ]
+    },
+    {
+      title: "Package Managers",
+      description: "Hidden app stores on your computer offering millions of free, open-source tools—accessible through the terminal.",
+      messages: [
+        { role: 'user', text: 'You mentioned package managers. How do we explain those?' },
+        { role: 'assistant', text: 'There\'s more than one "app store" on your computer. GUI ones like the Mac App Store. But also CLI package managers.' },
+        { role: 'user', text: 'What are the main ones?' },
+        { role: 'assistant', text: 'Homebrew for macOS. npm for JavaScript. pip for Python. Cargo for Rust. apt/yum for Linux.' },
+        { role: 'user', text: 'Why does this matter for AI tools?' },
+        { role: 'assistant', text: 'Claude suggests "brew install ripgrep" for fast searching. Without knowing what brew is, you\'re lost. We bridge that gap.' }
+      ]
+    },
+    {
+      title: "More Than Just Code",
+      description: "The same capabilities that make AI excellent at code make it powerful for research, writing, analysis, and thinking.",
+      messages: [
+        { role: 'user', text: 'You said AI investment in coding spawned innovations elsewhere. What do you mean?' },
+        { role: 'assistant', text: 'These systems can read and write to disk. That sounds mundane, but it\'s transformative.' },
+        { role: 'user', text: 'Why does being good at code translate to other things?' },
+        { role: 'assistant', text: 'Source code is structured text. So is a webpage, research paper, meeting notes, expense report. The patterns transfer.' },
+        { role: 'user', text: 'What are the key use cases?' },
+        { role: 'assistant', text: 'Research synthesis. Technical writing. Mechanical rubber duck—using AI as a thinking partner. Acting as an interrogator, not just a generator.' }
+      ]
+    },
+    {
+      title: "Markdown Magic",
+      description: "Text-based, version-controlled files that serve as persistent context, executable specifications, and accumulated knowledge.",
+      messages: [
+        { role: 'user', text: 'How did files become important for working with AI?' },
+        { role: 'assistant', text: 'Chat is ephemeral. Files persist. You can save prompts, skills, and agent definitions as markdown.' },
+        { role: 'user', text: 'Why markdown specifically?' },
+        { role: 'assistant', text: 'Human readable. Machine parseable. Structured. Portable. Version control friendly. Lightweight. The sweet spot.' },
+        { role: 'user', text: 'You mentioned describing things into existence. What?' },
+        { role: 'assistant', text: 'Markdown files are executable specifications. You describe a capability, and the AI gains it. You shaped its personality through description.' }
+      ]
+    },
+    {
+      title: "Structure & Context",
+      description: "Prompt structure matters as much as content. Context is the difference between garbage output and exactly what you need.",
+      messages: [
+        { role: 'user', text: 'You said structure in prompts matters. How?' },
+        { role: 'assistant', text: 'The model developed preferences for patterns during training. When you provide structured input, you\'re speaking a language it understands.' },
+        { role: 'user', text: 'What does good structure look like?' },
+        { role: 'assistant', text: 'Grouping related concepts. Labeling different types of content. Logical organization of what, how, examples, constraints.' },
+        { role: 'user', text: 'And context?' },
+        { role: 'assistant', text: '"Press the right buttons, for gods sake." Feed the AI good context and you unlock wisdom. Starve it of context and you\'re punching random codes.' }
+      ]
+    },
+    {
+      title: "Decorators",
+      description: "Formatting conventions and markers that help AI parse and understand intent more clearly—XML tags, CSV headers, and more.",
+      messages: [
+        { role: 'user', text: 'What are "decorators" in prompts?' },
+        { role: 'assistant', text: 'Models recognize certain patterns—certain decorators—that help them parse your intent more clearly.' },
+        { role: 'user', text: 'What\'s the most effective?' },
+        { role: 'assistant', text: 'XML tags. Both Anthropic and OpenAI recommend them. They create clear, unambiguous separations between content types.' },
+        { role: 'user', text: 'Can you build your own?' },
+        { role: 'assistant', text: 'Absolutely. Create conventions and use them consistently. The model learns your pattern and applies it going forward. Structure breeds understanding.' }
+      ]
+    },
+    {
+      title: "The Factory Is the Teacher",
+      description: "Documentation is accumulated wisdom. When you give AI access to context, you're unlocking decades of collective experience stored in code and documentation.",
+      messages: [
+        { role: 'user', text: 'What does "the factory is the teacher" mean?' },
+        { role: 'assistant', text: 'The means of production itself has become a sage. Every README, bug report, Stack Overflow answer—the walls of the factory.' },
+        { role: 'user', text: 'So documentation matters more than people realize?' },
+        { role: 'assistant', text: 'This is why documentation matters. This is why READMEs exist. They are the factory teaching the next generation.' },
+        { role: 'user', text: 'When you write good documentation...' },
+        { role: 'assistant', text: 'You\'re not just helping the next human. You\'re contributing to training data. You\'re adding to the walls of the factory.' }
+      ]
+    }
+  ];
+
+  // DOM elements
+  const leftPanel = document.querySelector('.left-panel');
+  const messagesContainer = document.querySelector('.messages');
+  const currentSectionEl = document.querySelector('.current-section');
+  const nextSectionLink = document.querySelector('.next-section-link');
+  const timerEl = document.querySelector('.auto-advance-timer');
+  const timerCount = document.querySelector('.timer-count');
+  let currentTopic = 0;
+  let autoAdvanceTimeout: number | null = null;
+  let timerInterval: number | null = null;
+  let isAutoAdvancing = false;
+
+  // Render topic and messages with 2-second delays
+  function renderTopic(index: number) {
+    const topic = topics[index];
+    const nextTopic = (index + 1) % topics.length;
+    
+    // Clear any pending auto-advance and timer
+    if (autoAdvanceTimeout) clearTimeout(autoAdvanceTimeout);
+    if (timerInterval) clearInterval(timerInterval);
+    if (timerEl) {
+      gsap.to(timerEl, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.out'
+      });
+    }
+    isAutoAdvancing = false;
+
+    // Update left panel
+    const topicTitle = leftPanel.querySelector('.topic-title');
+    const topicDescription = leftPanel.querySelector('.topic-description');
+    topicTitle!.textContent = topic.title;
+    topicDescription!.innerHTML = topic.description;
+
+    // Update section info
+    if (currentSectionEl) currentSectionEl.textContent = topic.title;
+    if (nextSectionLink) {
+      nextSectionLink.innerHTML = `<span class="next-label">Next:</span> ${topics[nextTopic].title}`;
+      nextSectionLink.onclick = (e) => {
+        e.preventDefault();
+        renderTopic(nextTopic);
+      };
+    }
+
+    // Clear and rebuild messages
+    messagesContainer.innerHTML = '';
+    topic.messages.forEach((msg, i) => {
+      const msgEl = document.createElement('div');
+      msgEl.className = `message ${msg.role}`;
+      msgEl.innerHTML = `
+        <span class="sender">${msg.role === 'user' ? 'Q' : 'A'}</span>
+        <p>${msg.text}</p>
+      `;
+      messagesContainer.appendChild(msgEl);
+    });
+
+    // Animate messages in with 2-second delays
+    const messages = messagesContainer.querySelectorAll('.message');
+    gsap.set(messages, { opacity: 0, y: 20 });
+    
+    messages.forEach((msg, i) => {
+      gsap.to(msg, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        delay: i * 2,
+        ease: 'power2.out'
+      });
+    });
+
+    // Calculate when all animations are done
+    const totalAnimationTime = (messages.length - 1) * 2 + 0.5;
+    
+    // After animations complete, show timer and then wait 10 seconds before advancing
+    autoAdvanceTimeout = window.setTimeout(() => {
+      isAutoAdvancing = true;
+      
+      // Show timer with fade-in
+      if (timerEl) {
+        gsap.to(timerEl, {
+          opacity: 1,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      }
+      
+      let secondsLeft = 10;
+      if (timerCount) timerCount.textContent = '10';
+      
+      // Countdown starts immediately when timer shows
+      timerInterval = window.setInterval(() => {
+        secondsLeft--;
+        if (timerCount) timerCount.textContent = secondsLeft.toString();
+        
+        if (secondsLeft <= 0) {
+          if (timerInterval) clearInterval(timerInterval);
+          renderTopic(nextTopic);
+        }
+      }, 1000);
+    }, totalAnimationTime * 1000);
+
+    // Scroll to top
+    messagesContainer.scrollTo({ top: 0, behavior: 'smooth' });
+
+    currentTopic = index;
+  }
+
+  // Initialize
+  renderTopic(0);
+</script>

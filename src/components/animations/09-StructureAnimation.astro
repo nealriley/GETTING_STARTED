@@ -1,0 +1,489 @@
+---
+/**
+ * StructureAnimation.astro
+ * 
+ * Section 7: "A Little Bit of Structure Goes a Long Way"
+ * Animates the transformation from unstructured text to structured markdown.
+ * 
+ * Key visuals:
+ * - Messy paragraph transforms into organized markdown
+ * - Headers, tables, and lists emerge from chaos
+ * - Before/after comparison
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['structure-animation', className]} data-structure-animation>
+  <!-- Phase 1: Unstructured messy text -->
+  <div class="phase unstructured" data-phase="unstructured">
+    <div class="label">Unstructured Input</div>
+    <div class="text-block messy">
+      <span class="word" data-word="1">I need help</span>
+      <span class="word" data-word="2">with our</span>
+      <span class="word" data-word="3">Q3 report.</span>
+      <span class="word" data-word="4">Sales were up</span>
+      <span class="word" data-word="5">but costs</span>
+      <span class="word" data-word="6">increased too.</span>
+      <span class="word" data-word="7">Marketing did</span>
+      <span class="word" data-word="8">that campaign</span>
+      <span class="word" data-word="9">in August.</span>
+      <span class="word" data-word="10">We should probably</span>
+      <span class="word" data-word="11">mention the new</span>
+      <span class="word" data-word="12">product launch.</span>
+      <span class="word" data-word="13">Oh and the team</span>
+      <span class="word" data-word="14">grew by</span>
+      <span class="word" data-word="15">3 people...</span>
+    </div>
+  </div>
+
+  <!-- Transformation arrow -->
+  <div class="transform-indicator" data-transform-arrow>
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </div>
+
+  <!-- Phase 2: Structured markdown -->
+  <div class="phase structured" data-phase="structured">
+    <div class="label">Structured Output</div>
+    <div class="text-block organized">
+      <div class="md-section" data-md="header">
+        <span class="md-syntax">## </span><span class="md-content">Audience</span>
+      </div>
+      <div class="md-line" data-md="audience">
+        <span class="md-content">CEO, board members</span>
+      </div>
+      
+      <div class="md-section" data-md="metrics-header">
+        <span class="md-syntax">## </span><span class="md-content">Key Metrics</span>
+      </div>
+      <div class="md-table" data-md="table">
+        <div class="table-row header">
+          <span class="cell">Metric</span>
+          <span class="cell">Q3 2025</span>
+          <span class="cell">Q3 2024</span>
+          <span class="cell">Change</span>
+        </div>
+        <div class="table-row" data-row="revenue">
+          <span class="cell">Revenue</span>
+          <span class="cell num">$2.4M</span>
+          <span class="cell num">$2.3M</span>
+          <span class="cell positive">+4.3%</span>
+        </div>
+        <div class="table-row" data-row="costs">
+          <span class="cell">Costs</span>
+          <span class="cell num">$1.95M</span>
+          <span class="cell num">$1.8M</span>
+          <span class="cell negative">+8.3%</span>
+        </div>
+      </div>
+      
+      <div class="md-section" data-md="events-header">
+        <span class="md-syntax">## </span><span class="md-content">Notable Events</span>
+      </div>
+      <div class="md-list" data-md="list">
+        <div class="list-item" data-item="1">
+          <span class="md-syntax">- </span><span class="md-content">August marketing campaign</span><span class="tag success">+12% leads</span>
+        </div>
+        <div class="list-item" data-item="2">
+          <span class="md-syntax">- </span><span class="md-content">New product launch (September)</span>
+        </div>
+        <div class="list-item" data-item="3">
+          <span class="md-syntax">- </span><span class="md-content">Team expansion</span><span class="tag info">+3 engineers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result comparison (appears at end) -->
+  <div class="result-badge" data-result>
+    <span class="result-text">Same information. Better results.</span>
+  </div>
+</div>
+
+<style>
+  .structure-animation {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    height: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    overflow: hidden;
+  }
+
+  .phase {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.4);
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .text-block {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  /* Unstructured messy text */
+  .messy {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.8;
+  }
+
+  .messy .word {
+    display: inline;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+  }
+
+  /* Structured organized text */
+  .organized {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .md-section {
+    margin-top: 0.5rem;
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  .md-section:first-child {
+    margin-top: 0;
+  }
+
+  .md-syntax {
+    color: #8b5cf6;
+    font-weight: 600;
+  }
+
+  .md-content {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .md-line {
+    padding-left: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  /* Table styles */
+  .md-table {
+    margin: 0.25rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 0.8fr;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .table-row:last-child {
+    border-bottom: none;
+  }
+
+  .table-row.header {
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.7rem;
+  }
+
+  .cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cell.num {
+    color: #60a5fa;
+  }
+
+  .cell.positive {
+    color: #10b981;
+  }
+
+  .cell.negative {
+    color: #f59e0b;
+  }
+
+  /* List styles */
+  .md-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-left: 0.25rem;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  .tag {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-left: auto;
+  }
+
+  .tag.success {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+  }
+
+  .tag.info {
+    background: rgba(96, 165, 250, 0.2);
+    color: #60a5fa;
+  }
+
+  /* Transform arrow */
+  .transform-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(139, 92, 246, 0.6);
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  /* Result badge */
+  .result-badge {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    opacity: 0;
+  }
+
+  .result-text {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .structure-animation {
+      font-size: 0.7rem;
+    }
+    
+    .table-row {
+      grid-template-columns: 1fr 0.8fr 0.8fr 0.7fr;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class StructureAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      // Listen for section changes
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'structure') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      // Check if we're already on this section
+      const hash = window.location.hash.slice(1);
+      if (hash === 'structure') {
+        // Delay to let page render
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+      
+      // Kill any existing timeline without resetting isPlaying
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      
+      // Reset element states
+      gsap.set(this.container.querySelectorAll('.phase'), { opacity: 0, y: 20 });
+      gsap.set(this.container.querySelectorAll('.messy .word'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-transform-arrow]'), { opacity: 0, scale: 0.5 });
+      gsap.set(this.container.querySelectorAll('.md-section'), { opacity: 0, x: -10 });
+      gsap.set(this.container.querySelector('[data-md="audience"]'), { opacity: 0, x: -10 });
+      gsap.set(this.container.querySelector('[data-md="table"]'), { opacity: 0, scale: 0.95 });
+      gsap.set(this.container.querySelectorAll('.list-item'), { opacity: 0, x: -10 });
+      gsap.set(this.container.querySelector('[data-result]'), { opacity: 0, y: 20 });
+      
+      this.isPlaying = true;
+
+      // Create timeline
+      this.timeline = gsap.timeline({
+        onComplete: () => {
+          this.isPlaying = false;
+        }
+      });
+
+      const tl = this.timeline;
+
+      // Phase 1: Show unstructured text
+      tl.to(this.container.querySelector('[data-phase="unstructured"]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+
+      // Reveal messy words one by one
+      const words = this.container.querySelectorAll('.messy .word');
+      tl.to(words, {
+        opacity: 1,
+        duration: 0.05,
+        stagger: 0.03,
+        ease: 'none'
+      }, '-=0.1');
+
+      // Pause to let user read
+      tl.to({}, { duration: 1.2 });
+
+      // Show transform arrow
+      tl.to(this.container.querySelector('[data-transform-arrow]'), {
+        opacity: 1,
+        scale: 1,
+        duration: 0.3,
+        ease: 'back.out(1.7)'
+      });
+
+      // Phase 2: Show structured output
+      tl.to(this.container.querySelector('[data-phase="structured"]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+
+      // Animate markdown sections appearing
+      const headers = this.container.querySelectorAll('.md-section');
+      tl.to(headers, {
+        opacity: 1,
+        x: 0,
+        duration: 0.3,
+        stagger: 0.15,
+        ease: 'power2.out'
+      }, '-=0.2');
+
+      // Animate audience line
+      tl.to(this.container.querySelector('[data-md="audience"]'), {
+        opacity: 1,
+        x: 0,
+        duration: 0.2,
+        ease: 'power2.out'
+      }, '-=0.1');
+
+      // Animate table
+      tl.to(this.container.querySelector('[data-md="table"]'), {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+
+      // Animate list items
+      const listItems = this.container.querySelectorAll('.list-item');
+      tl.to(listItems, {
+        opacity: 1,
+        x: 0,
+        duration: 0.25,
+        stagger: 0.1,
+        ease: 'power2.out'
+      }, '-=0.2');
+
+      // Show result badge
+      tl.to(this.container.querySelector('[data-result]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'back.out(1.7)'
+      }, '+=0.3');
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+
+      // Reset all elements
+      gsap.set(this.container.querySelectorAll('.phase'), { opacity: 0, y: 20 });
+      gsap.set(this.container.querySelectorAll('.messy .word'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-transform-arrow]'), { opacity: 0, scale: 0.5 });
+      gsap.set(this.container.querySelectorAll('.md-section'), { opacity: 0, x: -10 });
+      gsap.set(this.container.querySelector('[data-md="audience"]'), { opacity: 0, x: -10 });
+      gsap.set(this.container.querySelector('[data-md="table"]'), { opacity: 0, scale: 0.95 });
+      gsap.set(this.container.querySelectorAll('.list-item'), { opacity: 0, x: -10 });
+      gsap.set(this.container.querySelector('[data-result]'), { opacity: 0, y: 20 });
+    }
+  }
+
+  // Initialize - use a single instance tracked on the element
+  function initAnimation() {
+    const container = document.querySelector('[data-structure-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new StructureAnimationController(container);
+    }
+  }
+
+  // Try immediately and on DOMContentLoaded
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

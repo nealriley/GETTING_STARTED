@@ -1,0 +1,546 @@
+---
+/**
+ * InterfacesAnimation.astro
+ * 
+ * Section 2: "Not All Models Are the Same, Not All Interfaces Either"
+ * 
+ * Shows the same AI "orb" accessed through different interfaces:
+ * - Web chat (limited - can't access files)
+ * - CLI tool (powerful - full system access)
+ * - Desktop app (middle ground - GUI with file access)
+ * 
+ * Key insight: Same intelligence, different access. Interface IS the experience.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['interfaces-animation', className]} data-interfaces-animation>
+  <!-- The Core Model Orb -->
+  <div class="orb-container" data-element="orb">
+    <div class="orb">
+      <div class="orb-glow"></div>
+      <div class="orb-core"></div>
+    </div>
+    <span class="orb-label">The Model</span>
+  </div>
+
+  <!-- Interface Cards -->
+  <div class="interfaces-grid">
+    <!-- Web Chat -->
+    <div class="interface-card" data-interface="web">
+      <div class="card-header">
+        <span class="interface-icon">🌐</span>
+        <span class="interface-name">Web Chat</span>
+      </div>
+      <div class="card-body">
+        <div class="mini-chat">
+          <div class="chat-msg user" data-line="1">Analyze my project files</div>
+          <div class="chat-msg assistant" data-line="2">
+            <span class="limited">I don't have access to your files.</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="access-badge limited">Chat only</span>
+      </div>
+    </div>
+
+    <!-- CLI Tool -->
+    <div class="interface-card" data-interface="cli">
+      <div class="card-header">
+        <span class="interface-icon">⌨️</span>
+        <span class="interface-name">CLI Tool</span>
+      </div>
+      <div class="card-body">
+        <div class="mini-terminal">
+          <div class="term-line" data-line="1">
+            <span class="prompt">❯</span> Analyze my project files
+          </div>
+          <div class="term-line output" data-line="2">
+            Found 47 files. Analyzing...
+          </div>
+          <div class="term-line success" data-line="3">
+            ✓ Analysis complete
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="access-badge full">Full access</span>
+      </div>
+    </div>
+
+    <!-- Desktop App -->
+    <div class="interface-card" data-interface="desktop">
+      <div class="card-header">
+        <span class="interface-icon">🖥️</span>
+        <span class="interface-name">Desktop App</span>
+      </div>
+      <div class="card-body">
+        <div class="mini-gui">
+          <div class="gui-element" data-line="1">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">my-project/</span>
+          </div>
+          <div class="gui-element analyzing" data-line="2">
+            <span class="spinner">◐</span>
+            <span>Reading folder...</span>
+          </div>
+          <div class="gui-element done" data-line="3">
+            <span class="check">✓</span>
+            <span>47 files loaded</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="access-badge full">File access</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight-box" data-element="insight">
+    <div class="insight-line main">Same intelligence. Different access.</div>
+    <div class="insight-line sub">The interface IS the experience.</div>
+  </div>
+</div>
+
+<style>
+  .interfaces-animation {
+    height: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Orb */
+  .orb-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  .orb {
+    width: 50px;
+    height: 50px;
+    position: relative;
+  }
+
+  .orb-glow {
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .orb-core {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1, #3b82f6);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+  }
+
+  .orb-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+  }
+
+  /* Interface Grid */
+  .interfaces-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    min-height: 0;
+  }
+
+  /* Interface Cards */
+  .interface-card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .interface-icon {
+    font-size: 1rem;
+  }
+
+  .interface-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .card-body {
+    flex: 1;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.7rem;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    justify-content: center;
+  }
+
+  .access-badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .access-badge.limited {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .access-badge.full {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  /* Mini Chat (Web) */
+  .mini-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .chat-msg {
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    max-width: 90%;
+    opacity: 0;
+  }
+
+  .chat-msg.user {
+    background: #2563eb;
+    color: white;
+    align-self: flex-end;
+    border-radius: 8px 8px 2px 8px;
+  }
+
+  .chat-msg.assistant {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    align-self: flex-start;
+    border-radius: 2px 8px 8px 8px;
+  }
+
+  .chat-msg .limited {
+    color: rgba(239, 68, 68, 0.9);
+  }
+
+  /* Mini Terminal (CLI) */
+  .mini-terminal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    background: #0a0a0a;
+    padding: 0.5rem;
+    border-radius: 6px;
+  }
+
+  .term-line {
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 0;
+  }
+
+  .term-line .prompt {
+    color: #8b5cf6;
+    font-weight: bold;
+  }
+
+  .term-line.output {
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 1rem;
+  }
+
+  .term-line.success {
+    color: #10b981;
+    padding-left: 1rem;
+  }
+
+  /* Mini GUI (Desktop) */
+  .mini-gui {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .gui-element {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+  }
+
+  .folder-icon {
+    font-size: 0.9rem;
+  }
+
+  .folder-name {
+    color: #60a5fa;
+  }
+
+  .gui-element.analyzing .spinner {
+    animation: spin 0.8s linear infinite;
+  }
+
+  .gui-element.done .check {
+    color: #10b981;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Insight */
+  .insight-box {
+    text-align: center;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .insight-line {
+    font-family: 'Lora', serif;
+  }
+
+  .insight-line.main {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  .insight-line.sub {
+    color: rgba(139, 92, 246, 0.9);
+    font-size: 0.8rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .interfaces-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, 1fr);
+    }
+
+    .card-body {
+      padding: 0.5rem;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class InterfacesAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'interfaces') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      if (hash === 'interfaces') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => { this.isPlaying = false; }
+      });
+
+      const tl = this.timeline;
+
+      // Show the orb first
+      tl.to(this.container.querySelector('[data-element="orb"]'), {
+        opacity: 1,
+        scale: 1,
+        duration: 0.6,
+        ease: 'back.out(1.7)'
+      });
+
+      tl.to({}, { duration: 1.0 });
+
+      // Show interface cards one by one
+      const cards = ['web', 'cli', 'desktop'];
+      cards.forEach((card, i) => {
+        tl.to(this.container.querySelector(`[data-interface="${card}"]`), {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          ease: 'power2.out'
+        }, i === 0 ? '+=0.2' : '-=0.2');
+      });
+
+      tl.to({}, { duration: 0.5 });
+
+      // Animate web chat
+      tl.to(this.container.querySelector('[data-interface="web"] [data-line="1"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 0.8 });
+
+      tl.to(this.container.querySelector('[data-interface="web"] [data-line="2"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Animate CLI terminal
+      tl.to(this.container.querySelector('[data-interface="cli"] [data-line="1"]'), {
+        opacity: 1,
+        duration: 0.3
+      }, '-=0.1');
+
+      tl.to({}, { duration: 0.6 });
+
+      tl.to(this.container.querySelector('[data-interface="cli"] [data-line="2"]'), {
+        opacity: 1,
+        duration: 0.2
+      });
+
+      tl.to({}, { duration: 0.5 });
+
+      tl.to(this.container.querySelector('[data-interface="cli"] [data-line="3"]'), {
+        opacity: 1,
+        duration: 0.2
+      });
+
+      // Animate desktop GUI
+      tl.to(this.container.querySelector('[data-interface="desktop"] [data-line="1"]'), {
+        opacity: 1,
+        duration: 0.3
+      }, '-=0.3');
+
+      tl.to({}, { duration: 0.5 });
+
+      tl.to(this.container.querySelector('[data-interface="desktop"] [data-line="2"]'), {
+        opacity: 1,
+        duration: 0.2
+      });
+
+      tl.to({}, { duration: 0.6 });
+
+      tl.to(this.container.querySelector('[data-interface="desktop"] [data-line="3"]'), {
+        opacity: 1,
+        duration: 0.2
+      });
+
+      tl.to({}, { duration: 1.0 });
+
+      // Show insight
+      tl.to(this.container.querySelector('[data-element="insight"]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('[data-element="orb"]'), { opacity: 0, scale: 0.8 });
+      gsap.set(this.container.querySelectorAll('.interface-card'), { opacity: 0, y: 20 });
+      gsap.set(this.container.querySelectorAll('.chat-msg, .term-line, .gui-element'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="insight"]'), { opacity: 0, y: 10 });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-interfaces-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new InterfacesAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>

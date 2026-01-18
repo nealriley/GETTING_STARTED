@@ -1,0 +1,394 @@
+---
+/**
+ * DecoratorsAnimation.astro
+ * 
+ * Section 11: "Decorating Your Prompts"
+ * 
+ * Shows how structure/format reduces ambiguity for AI:
+ * - Unstructured prompt → confused response
+ * - Same content with boundaries (XML, Markdown, Labels) → clear response
+ * 
+ * Key insight: Structure is a language. AI reads it fluently.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['decorators-animation', className]} data-decorators-animation>
+  <!-- Unstructured Example -->
+  <div class="example-block" data-example="unstructured">
+    <div class="example-label">Without Structure</div>
+    <div class="example-content messy">
+      <span class="text-blob">Here's some context about my project we're building a dashboard for sales data and I want you to create a summary but keep it short and professional</span>
+    </div>
+    <div class="example-result confused" data-result="confused">
+      <span class="result-icon">🤔</span>
+      <span class="result-text">Where does context end? What's the task?</span>
+    </div>
+  </div>
+
+  <!-- Structured Examples -->
+  <div class="structured-section" data-element="structured">
+    <div class="section-label">With Structure</div>
+    
+    <div class="format-tabs">
+      <div class="format-tab" data-format="xml">
+        <span class="format-name">XML Tags</span>
+        <div class="format-preview">
+          <code><span class="tag">&lt;context&gt;</span>Building a sales dashboard<span class="tag">&lt;/context&gt;</span></code>
+          <code><span class="tag">&lt;task&gt;</span>Create a summary<span class="tag">&lt;/task&gt;</span></code>
+          <code><span class="tag">&lt;constraints&gt;</span>Short, professional<span class="tag">&lt;/constraints&gt;</span></code>
+        </div>
+      </div>
+
+      <div class="format-tab" data-format="markdown">
+        <span class="format-name">Markdown</span>
+        <div class="format-preview">
+          <code><span class="md">##</span> Context</code>
+          <code>Building a sales dashboard</code>
+          <code><span class="md">##</span> Task</code>
+          <code>Create a summary</code>
+        </div>
+      </div>
+
+      <div class="format-tab" data-format="labels">
+        <span class="format-name">Labels</span>
+        <div class="format-preview">
+          <code><span class="label-key">CONTEXT:</span> Building a sales dashboard</code>
+          <code><span class="label-key">TASK:</span> Create a summary</code>
+          <code><span class="label-key">CONSTRAINTS:</span> Short, professional</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="example-result clear" data-result="clear">
+      <span class="result-icon">✓</span>
+      <span class="result-text">Clear boundaries → precise response</span>
+    </div>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight-box" data-element="insight">
+    <div class="insight-main">Structure reduces ambiguity.</div>
+    <div class="insight-sub">The format matters less than consistency.</div>
+  </div>
+</div>
+
+<style>
+  .decorators-animation {
+    height: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+  }
+
+  /* Example blocks */
+  .example-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .example-label,
+  .section-label {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .example-content {
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+  }
+
+  .example-content.messy {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  .text-blob {
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    font-family: 'Lora', serif;
+    font-size: 0.75rem;
+  }
+
+  .example-result {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    opacity: 0;
+  }
+
+  .example-result.confused {
+    background: rgba(239, 68, 68, 0.1);
+    color: rgba(239, 68, 68, 0.9);
+  }
+
+  .example-result.clear {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+  }
+
+  .result-icon {
+    font-size: 0.9rem;
+  }
+
+  /* Structured Section */
+  .structured-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+  }
+
+  .format-tabs {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    min-height: 0;
+  }
+
+  .format-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.5rem;
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .format-name {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(16, 185, 129, 0.9);
+    text-align: center;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+  }
+
+  .format-preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    overflow: hidden;
+  }
+
+  .format-preview code {
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .format-preview .tag {
+    color: #8b5cf6;
+  }
+
+  .format-preview .md {
+    color: #8b5cf6;
+    font-weight: bold;
+  }
+
+  .format-preview .label-key {
+    color: #f59e0b;
+    font-weight: 600;
+  }
+
+  /* Insight */
+  .insight-box {
+    text-align: center;
+    padding: 0.6rem 1rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .insight-main {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    font-family: 'Lora', serif;
+    margin-bottom: 0.2rem;
+  }
+
+  .insight-sub {
+    font-size: 0.7rem;
+    color: rgba(139, 92, 246, 0.8);
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .format-tabs {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, 1fr);
+    }
+
+    .format-tab {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .format-name {
+      writing-mode: horizontal-tb;
+      border-bottom: none;
+      border-right: 1px solid rgba(16, 185, 129, 0.1);
+      padding-right: 0.5rem;
+      padding-bottom: 0;
+      min-width: 60px;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  class DecoratorsAnimationController {
+    private container: HTMLElement;
+    private timeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init() {
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id === 'decorators') {
+          this.play();
+        } else {
+          this.reset();
+        }
+      });
+
+      const hash = window.location.hash.slice(1);
+      if (hash === 'decorators') {
+        setTimeout(() => this.play(), 500);
+      }
+    }
+
+    play() {
+      if (this.isPlaying) return;
+
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      this.timeline = gsap.timeline({
+        onComplete: () => { this.isPlaying = false; }
+      });
+
+      const tl = this.timeline;
+
+      // Show unstructured example
+      tl.to(this.container.querySelector('[data-example="unstructured"]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+
+      tl.to({}, { duration: 1.0 });
+
+      // Show confused result
+      tl.to(this.container.querySelector('[data-result="confused"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      tl.to({}, { duration: 1.0 });
+
+      // Show structured section
+      tl.to(this.container.querySelector('[data-element="structured"]'), {
+        opacity: 1,
+        duration: 0.3
+      });
+
+      // Show format tabs one by one
+      const formats = ['xml', 'markdown', 'labels'];
+      formats.forEach((format, i) => {
+        tl.to(this.container.querySelector(`[data-format="${format}"]`), {
+          opacity: 1,
+          y: 0,
+          duration: 0.35,
+          ease: 'power2.out'
+        }, i === 0 ? '+=0.2' : '-=0.15');
+      });
+
+      tl.to({}, { duration: 0.8 });
+
+      // Show clear result
+      tl.to(this.container.querySelector('[data-result="clear"]'), {
+        opacity: 1,
+        duration: 0.4
+      });
+
+      tl.to({}, { duration: 0.8 });
+
+      // Show insight
+      tl.to(this.container.querySelector('[data-element="insight"]'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    }
+
+    private resetElements() {
+      gsap.set(this.container.querySelector('[data-example="unstructured"]'), { opacity: 0, y: 10 });
+      gsap.set(this.container.querySelector('[data-result="confused"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="structured"]'), { opacity: 0 });
+      gsap.set(this.container.querySelectorAll('.format-tab'), { opacity: 0, y: 10 });
+      gsap.set(this.container.querySelector('[data-result="clear"]'), { opacity: 0 });
+      gsap.set(this.container.querySelector('[data-element="insight"]'), { opacity: 0, y: 10 });
+    }
+
+    reset() {
+      if (this.timeline) {
+        this.timeline.kill();
+        this.timeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function initAnimation() {
+    const container = document.querySelector('[data-decorators-animation]') as HTMLElement;
+    if (container && !(container as any).__animationController) {
+      (container as any).__animationController = new DecoratorsAnimationController(container);
+    }
+  }
+
+  initAnimation();
+  document.addEventListener('DOMContentLoaded', initAnimation);
+</script>
