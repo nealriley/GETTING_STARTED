@@ -2,14 +2,15 @@
 /**
  * IntroAnimation.astro
  * 
- * Section 1: "For the Technical Adjacent"
+ * Section 1: "It all starts with the Terminal"
  * 
- * A CLI "getting started" style animation:
- * - Shows a terminal with a welcome prompt
- * - Types out key concepts
- * - Invites user to continue (press -> to continue)
+ * Shows a terminal with simulated user typing and AI responses.
+ * Demonstrates: your files, your tools, AI as collaborator.
  * 
- * Sets the tone: approachable, terminal-familiar, inviting.
+ * Key moments:
+ * - User typing simulation (humanizes terminal)
+ * - Backspace/retype (figuring out what to ask)
+ * - AI using real tools (not just chatting)
  */
 
 interface Props {
@@ -27,60 +28,77 @@ const { class: className = '' } = Astro.props;
         <span class="dot yellow"></span>
         <span class="dot green"></span>
       </div>
-      <span class="terminal-title">getting-started</span>
+      <span class="terminal-title">Terminal</span>
     </div>
     
     <div class="terminal-content">
-      <!-- Welcome Banner -->
-      <div class="welcome-banner" data-element="banner">
-        <pre class="ascii-art">
- ┌─────────────────────────────────────┐
- │     GETTING STARTED                 │
- │     ─────────────────               │
- │     For the Technical Adjacent      │
- └─────────────────────────────────────┘
-        </pre>
+      <!-- Line 1: GETTING_STARTED command -->
+      <div class="terminal-line" data-line="1">
+        <span class="prompt">$</span>
+        <span class="typed-text" data-typed="GETTING_STARTED"></span>
+        <span class="cursor active-cursor">█</span>
       </div>
-
-      <!-- Typed Lines -->
-      <div class="typed-section">
-        <div class="typed-line" data-line="1">
-          <span class="prompt">$</span>
-          <span class="command">whoami</span>
-        </div>
-        <div class="typed-output" data-line="2">
-          UX researcher, PM, designer, data analyst...
-        </div>
-        <div class="typed-output sub" data-line="3">
-          Someone who works WITH technical systems
-        </div>
-
-        <div class="typed-line" data-line="4">
-          <span class="prompt">$</span>
-          <span class="command">what-you'll-learn</span>
-        </div>
-        <div class="typed-output list" data-line="5">
-          <span class="list-item">→ Terminals are just chat interfaces</span>
-          <span class="list-item">→ AI speaks fluent terminal</span>
-          <span class="list-item">→ You can create more than code</span>
-          <span class="list-item">→ Structure unlocks power</span>
-        </div>
-
-        <div class="typed-line" data-line="6">
-          <span class="prompt">$</span>
-          <span class="command">ready?</span>
-        </div>
-        <div class="typed-output ready" data-line="7">
-          <span class="ready-text">The gap narrows. Let's begin.</span>
-        </div>
+      
+      <!-- Line 2-3: Welcome response -->
+      <div class="terminal-output" data-line="2">
+        <div class="welcome-text">Welcome to the terminal.</div>
+        <div class="welcome-sub">Your files. Your tools. Your machine.</div>
       </div>
-
-      <!-- Continue Prompt -->
-      <div class="continue-prompt" data-element="continue">
+      
+      <!-- Line 4: ls command -->
+      <div class="terminal-line" data-line="3">
+        <span class="prompt">$</span>
+        <span class="typed-text" data-typed="ls ~/projects"></span>
+        <span class="cursor">█</span>
+      </div>
+      
+      <!-- Line 5: File tree output -->
+      <div class="terminal-output file-tree" data-line="4">
+        <div class="tree-line" data-tree="1">research/</div>
+        <div class="tree-line" data-tree="2">├── data/</div>
+        <div class="tree-line" data-tree="3">│   └── survey-results.csv</div>
+        <div class="tree-line" data-tree="4">├── analysis/</div>
+        <div class="tree-line" data-tree="5">│   └── findings.md</div>
+        <div class="tree-line" data-tree="6">└── README.md</div>
+      </div>
+      
+      <!-- Line 6: Hesitant typing then real command -->
+      <div class="terminal-line" data-line="5">
+        <span class="prompt">$</span>
+        <span class="typed-text" data-typed="llm &quot;summarize findings.md&quot;"></span>
+        <span class="cursor">█</span>
+      </div>
+      
+      <!-- Line 7: AI summary response -->
+      <div class="terminal-output ai-response" data-line="6">
+        <div class="ai-status" data-ai="1">Reading findings.md...</div>
+        <div class="ai-result" data-ai="2">Summary: 3 key themes identified in user research.</div>
+      </div>
+      
+      <!-- Line 8: Chart command -->
+      <div class="terminal-line" data-line="7">
+        <span class="prompt">$</span>
+        <span class="typed-text" data-typed="llm &quot;chart from data.csv&quot;"></span>
+        <span class="cursor">█</span>
+      </div>
+      
+      <!-- Line 9: Tool usage output -->
+      <div class="terminal-output tool-output" data-line="8">
+        <div class="tool-step" data-tool="1"><span class="arrow">→</span> Reading survey-results.csv</div>
+        <div class="tool-step" data-tool="2"><span class="arrow">→</span> Using matplotlib</div>
+        <div class="tool-step success" data-tool="3"><span class="check">✓</span> Chart saved to charts/results.png</div>
+      </div>
+      
+      <!-- Closing message -->
+      <div class="closing-message" data-line="9">
+        AI that works where work happens.
+      </div>
+      
+      <!-- Continue prompt -->
+      <div class="continue-prompt" data-line="10">
         <span class="continue-text">Press</span>
         <span class="key-hint">→</span>
         <span class="continue-text">to continue</span>
-        <span class="cursor"></span>
       </div>
     </div>
   </div>
@@ -89,11 +107,14 @@ const { class: className = '' } = Astro.props;
 <style>
   .intro-animation {
     height: 100%;
-    padding: 1rem;
-    font-family: 'JetBrains Mono', monospace;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .terminal-window {
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -104,6 +125,7 @@ const { class: className = '' } = Astro.props;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     opacity: 0;
     transform: translateY(10px);
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
   }
 
   .terminal-chrome {
@@ -113,6 +135,7 @@ const { class: className = '' } = Astro.props;
     padding: 0.75rem 1rem;
     background: #1a1a1a;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
   }
 
   .window-controls {
@@ -132,110 +155,153 @@ const { class: className = '' } = Astro.props;
 
   .terminal-title {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .terminal-content {
-    flex: 1;
-    padding: 1.25rem 1.5rem;
+    padding: 1.5rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     overflow-y: auto;
+    font-size: 1rem;
+    line-height: 1.6;
+    flex: 1;
   }
 
-  /* Welcome Banner */
-  .welcome-banner {
-    opacity: 0;
-  }
-
-  .ascii-art {
-    font-size: 0.7rem;
-    line-height: 1.4;
-    color: #8b5cf6;
-    margin: 0;
-  }
-
-  /* Typed Section */
-  .typed-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .typed-line {
+  /* Terminal lines */
+  .terminal-line {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     opacity: 0;
+    min-height: 1.5em;
   }
 
   .prompt {
-    color: #00ff00;
-    font-weight: bold;
+    color: #22c55e;
+    font-weight: 600;
+    user-select: none;
   }
 
-  .command {
-    color: #60a5fa;
+  .typed-text {
+    color: #e2e8f0;
   }
 
-  .typed-output {
-    padding-left: 1.25rem;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.85rem;
+  .cursor {
+    color: #22c55e;
+    visibility: hidden;
+  }
+
+  .cursor.active {
+    visibility: visible;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Output blocks */
+  .terminal-output {
+    padding-left: 1rem;
     opacity: 0;
   }
 
-  .typed-output.sub {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
+  .welcome-text {
+    color: #a78bfa;
+    font-weight: 500;
   }
 
-  .typed-output.list {
+  .welcome-sub {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+
+  /* File tree */
+  .file-tree {
+    font-size: 0.9rem;
+  }
+
+  .tree-line {
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+  }
+
+  .tree-line:first-child {
+    color: #60a5fa;
+    font-weight: 500;
+  }
+
+  /* AI response */
+  .ai-response {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    margin-bottom: 0.5rem;
+    gap: 0.25rem;
   }
 
-  .list-item {
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 0.8rem;
-  }
-
-  .list-item::before {
-    content: '';
-  }
-
-  .typed-output.ready {
-    margin-top: 0.5rem;
-  }
-
-  .ready-text {
-    color: #10b981;
-    font-size: 0.9rem;
+  .ai-status {
+    color: rgba(255, 255, 255, 0.5);
     font-style: italic;
-    font-family: 'Lora', serif;
+    opacity: 0;
   }
 
-  /* Continue Prompt */
+  .ai-result {
+    color: #22c55e;
+    opacity: 0;
+  }
+
+  /* Tool output */
+  .tool-output {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .tool-step {
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 0;
+  }
+
+  .tool-step .arrow {
+    color: #60a5fa;
+    margin-right: 0.25rem;
+  }
+
+  .tool-step.success {
+    color: #22c55e;
+  }
+
+  .tool-step .check {
+    margin-right: 0.25rem;
+  }
+
+  /* Closing message */
+  .closing-message {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(139, 92, 246, 0.1);
+    border-left: 3px solid #8b5cf6;
+    color: #c4b5fd;
+    font-style: italic;
+    opacity: 0;
+  }
+
+  /* Continue prompt */
   .continue-prompt {
-    margin-top: auto;
+    margin-top: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem;
-    background: rgba(139, 92, 246, 0.08);
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    border-radius: 8px;
+    padding: 0.5rem;
     opacity: 0;
   }
 
   .continue-text {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
   }
 
   .key-hint {
@@ -252,33 +318,15 @@ const { class: className = '' } = Astro.props;
     font-weight: bold;
   }
 
-  .cursor {
-    display: inline-block;
-    width: 8px;
-    height: 1.1em;
-    background: rgba(139, 92, 246, 0.8);
-    animation: blink 1s step-end infinite;
-    margin-left: 0.25rem;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
   /* Responsive */
-  @media (max-width: 1200px) {
+  @media (max-width: 768px) {
     .terminal-content {
-      padding: 1rem;
+      font-size: 0.85rem;
+      padding: 1rem 1.25rem;
     }
-
-    .ascii-art {
-      font-size: 0.6rem;
-    }
-
-    .typed-output,
-    .list-item {
-      font-size: 0.75rem;
+    
+    .file-tree {
+      font-size: 0.8rem;
     }
   }
 
@@ -314,10 +362,60 @@ const { class: className = '' } = Astro.props;
       });
 
       const hash = window.location.hash.slice(1);
-      // Only play when explicitly on #intro (not on welcome screen with no hash)
       if (hash === 'intro') {
         setTimeout(() => this.play(), 500);
       }
+    }
+
+    private typeText(element: HTMLElement, text: string, duration: number): gsap.core.Tween {
+      const chars = text.split('');
+      element.textContent = '';
+      
+      return gsap.to({ charIndex: 0 }, {
+        charIndex: chars.length,
+        duration: duration,
+        ease: 'none',
+        onUpdate: function() {
+          const index = Math.floor(this.targets()[0].charIndex);
+          element.textContent = chars.slice(0, index).join('');
+        }
+      });
+    }
+
+    private typeWithBackspace(
+      element: HTMLElement, 
+      wrongText: string, 
+      correctText: string,
+      typeDuration: number,
+      backspaceDuration: number
+    ): gsap.core.Timeline {
+      const tl = gsap.timeline();
+      
+      // Type wrong text
+      tl.add(this.typeText(element, wrongText, typeDuration));
+      
+      // Pause
+      tl.to({}, { duration: 0.4 });
+      
+      // Backspace
+      const wrongChars = wrongText.split('');
+      tl.to({ charIndex: wrongChars.length }, {
+        charIndex: 0,
+        duration: backspaceDuration,
+        ease: 'none',
+        onUpdate: function() {
+          const index = Math.floor(this.targets()[0].charIndex);
+          element.textContent = wrongChars.slice(0, index).join('');
+        }
+      });
+      
+      // Pause
+      tl.to({}, { duration: 0.3 });
+      
+      // Type correct text
+      tl.add(this.typeText(element, correctText, typeDuration * 1.5));
+      
+      return tl;
     }
 
     play() {
@@ -336,99 +434,143 @@ const { class: className = '' } = Astro.props;
       });
 
       const tl = this.timeline;
+      const q = (sel: string) => this.container.querySelector(sel) as HTMLElement;
+      const qAll = (sel: string) => this.container.querySelectorAll(sel);
 
-      // Show terminal window
-      tl.to(this.container.querySelector('.terminal-window'), {
+      // Helper to show/hide cursor using class
+      const showCursor = (lineNum: number) => {
+        const cursor = q(`[data-line="${lineNum}"] .cursor`);
+        if (cursor) cursor.classList.add('active');
+      };
+      const hideCursor = (lineNum: number) => {
+        const cursor = q(`[data-line="${lineNum}"] .cursor`);
+        if (cursor) cursor.classList.remove('active');
+      };
+
+      // Phase 1: Terminal appears
+      tl.to(q('.terminal-window'), {
         opacity: 1,
         y: 0,
         duration: 0.6,
         ease: 'power2.out'
       });
 
-      // Show banner
-      tl.to(this.container.querySelector('[data-element="banner"]'), {
-        opacity: 1,
-        duration: 0.4
-      });
+      // Show first line and cursor
+      tl.to(q('[data-line="1"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => showCursor(1));
+      
+      // Pause with blinking cursor
+      tl.to({}, { duration: 0.8 });
 
-      tl.to({}, { duration: 0.5 });
-
-      // Line 1: whoami command
-      tl.to(this.container.querySelector('[data-line="1"]'), {
-        opacity: 1,
-        duration: 0.3
-      });
-
+      // Phase 2: Type "GETTING_STARTED"
+      tl.add(this.typeText(q('[data-typed="GETTING_STARTED"]'), 'GETTING_STARTED', 1.2));
+      tl.call(() => hideCursor(1));
+      
+      // Show response
       tl.to({}, { duration: 0.3 });
+      tl.to(q('[data-line="2"]'), { opacity: 1, duration: 0.4 });
+      
+      // Pause to read
+      tl.to({}, { duration: 2.0 });
 
-      // Line 2: whoami output
-      tl.to(this.container.querySelector('[data-line="2"]'), {
-        opacity: 1,
-        duration: 0.3
-      });
-
-      // Line 3: sub output
-      tl.to(this.container.querySelector('[data-line="3"]'), {
-        opacity: 1,
-        duration: 0.3
-      }, '+=0.2');
-
-      tl.to({}, { duration: 0.5 });
-
-      // Line 4: what-you'll-learn command
-      tl.to(this.container.querySelector('[data-line="4"]'), {
-        opacity: 1,
-        duration: 0.3
-      });
-
+      // Phase 3: Type "ls ~/projects"
+      tl.to(q('[data-line="3"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => showCursor(3));
+      tl.add(this.typeText(q('[data-typed="ls ~/projects"]'), 'ls ~/projects', 1.0));
+      tl.call(() => hideCursor(3));
+      
+      // Show file tree (staggered)
       tl.to({}, { duration: 0.3 });
-
-      // Line 5: list items (staggered)
-      tl.to(this.container.querySelector('[data-line="5"]'), {
+      tl.to(q('[data-line="4"]'), { opacity: 1, duration: 0.1 });
+      tl.to(qAll('.tree-line'), {
         opacity: 1,
-        duration: 0.2
+        duration: 0.15,
+        stagger: 0.12
       });
+      
+      // Pause
+      tl.to({}, { duration: 1.5 });
 
-      // Stagger reveal list items
-      tl.to(this.container.querySelectorAll('.list-item'), {
-        opacity: 1,
-        x: 0,
-        duration: 0.2,
-        stagger: 0.15
-      });
-
-      tl.to({}, { duration: 0.5 });
-
-      // Line 6: ready? command
-      tl.to(this.container.querySelector('[data-line="6"]'), {
-        opacity: 1,
-        duration: 0.3
-      });
-
+      // Phase 4: Hesitant typing then correct command
+      tl.to(q('[data-line="5"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => showCursor(5));
+      
+      // Type with backspace effect
+      const typedEl = q('[data-typed="llm \\"summarize findings.md\\""]');
+      tl.add(this.typeWithBackspace(
+        typedEl,
+        'how do I...',
+        'llm "summarize findings.md"',
+        0.8,
+        0.4
+      ));
+      tl.call(() => hideCursor(5));
+      
+      // Show AI response
       tl.to({}, { duration: 0.3 });
-
-      // Line 7: ready output
-      tl.to(this.container.querySelector('[data-line="7"]'), {
-        opacity: 1,
-        duration: 0.4
-      });
-
+      tl.to(q('[data-line="6"]'), { opacity: 1, duration: 0.1 });
+      tl.to(q('[data-ai="1"]'), { opacity: 1, duration: 0.3 });
       tl.to({}, { duration: 0.6 });
+      tl.to(q('[data-ai="2"]'), { opacity: 1, duration: 0.4 });
+      
+      // Pause
+      tl.to({}, { duration: 1.5 });
 
-      // Show continue prompt
-      tl.to(this.container.querySelector('[data-element="continue"]'), {
-        opacity: 1,
-        duration: 0.5,
+      // Phase 5: Chart command
+      tl.to(q('[data-line="7"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => showCursor(7));
+      tl.add(this.typeText(q('[data-typed="llm \\"chart from data.csv\\""]'), 'llm "chart from data.csv"', 1.2));
+      tl.call(() => hideCursor(7));
+      
+      // Show tool steps
+      tl.to({}, { duration: 0.3 });
+      tl.to(q('[data-line="8"]'), { opacity: 1, duration: 0.1 });
+      tl.to(q('[data-tool="1"]'), { opacity: 1, duration: 0.3 });
+      tl.to({}, { duration: 0.4 });
+      tl.to(q('[data-tool="2"]'), { opacity: 1, duration: 0.3 });
+      tl.to({}, { duration: 0.4 });
+      tl.to(q('[data-tool="3"]'), { opacity: 1, duration: 0.3 });
+      
+      // Pause
+      tl.to({}, { duration: 1.5 });
+
+      // Phase 6: Closing message
+      tl.to(q('[data-line="9"]'), { 
+        opacity: 1, 
+        duration: 0.8,
         ease: 'power2.out'
+      });
+      
+      // Continue prompt
+      tl.to({}, { duration: 1.0 });
+      tl.to(q('[data-line="10"]'), { 
+        opacity: 1, 
+        duration: 0.5 
       });
     }
 
     private resetElements() {
-      gsap.set(this.container.querySelector('.terminal-window'), { opacity: 0, y: 10 });
-      gsap.set(this.container.querySelector('[data-element="banner"]'), { opacity: 0 });
-      gsap.set(this.container.querySelectorAll('.typed-line, .typed-output'), { opacity: 0 });
-      gsap.set(this.container.querySelectorAll('.list-item'), { opacity: 0, x: -5 });
-      gsap.set(this.container.querySelector('[data-element="continue"]'), { opacity: 0 });
+      const q = (sel: string) => this.container.querySelector(sel) as HTMLElement;
+      const qAll = (sel: string) => this.container.querySelectorAll(sel);
+
+      gsap.set(q('.terminal-window'), { opacity: 0, y: 10 });
+      gsap.set(qAll('.terminal-line'), { opacity: 0 });
+      gsap.set(qAll('.terminal-output'), { opacity: 0 });
+      gsap.set(qAll('.tree-line'), { opacity: 0 });
+      gsap.set(qAll('[data-ai]'), { opacity: 0 });
+      gsap.set(qAll('[data-tool]'), { opacity: 0 });
+      gsap.set(q('.closing-message'), { opacity: 0 });
+      gsap.set(q('.continue-prompt'), { opacity: 0 });
+      
+      // Remove active class from all cursors
+      qAll('.cursor').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      // Clear typed text
+      qAll('.typed-text').forEach(el => {
+        (el as HTMLElement).textContent = '';
+      });
     }
 
     reset() {

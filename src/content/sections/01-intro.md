@@ -1,34 +1,31 @@
 ---
 id: "intro"
 number: 1
-title: "For the Technical Adjacent"
+title: "It all starts with the Terminal"
 animation: "01-IntroAnimation"
 ---
 
-You work with technical systems every day. Maybe you're a UX researcher analyzing user behavior data. A product manager writing specs that engineers will build. A designer handing off prototypes to developers. A data analyst pulling insights from dashboards.
+AI-powered tools have opened software development to people who never imagined writing code. "Vibe coders" are building apps, automating workflows, and creating tools—all without traditional programming training.
 
-You're not a developer. You don't need to be. But increasingly, concepts like "prompt engineering," "CLI tools," or "MCPs" come up in conversation, and the gap between understanding what they are and knowing how to actually use them feels vast.
+But here's what separates those who struggle from those who thrive: **understanding the systems underneath.**
 
-**This guide is for you.**
+You don't need to become a professional developer. But the more you understand about how terminals work, how AI processes context, and how to structure your requests, the more powerful these tools become. The gap between "frustrating black box" and "genuine superpower" is smaller than you think.
 
-## The Vibe Coder Phenomenon
+This guide is for the technical adjacent—UX researchers, product managers, designers, data analysts—people who work alongside engineers and want to harness AI tools more effectively.
 
-There's been a recent wave of "vibe coders" - people using AI tools to build software without traditional programming training. This has raised eyebrows among professional developers, and rightly so. Building production-grade, industrial-strength software is genuinely difficult.
+## Why the Terminal?
 
-But here's the thing: **you don't need to build production software.**
+You could use AI in a browser tab. But your work doesn't live in a browser tab.
 
-You don't need to be a professional chef to cook dinner. But you do need to know what dangers exist in a kitchen - which pans get hot, where the knives are, what happens if you leave the stove on.
+Your files, your projects, your tools—they live on your computer. The terminal is how you access them directly. It's the native interface to your machine.
 
-## The Gap That Narrows
+When AI meets the terminal, it stops being a conversation and starts being a collaborator:
 
-When you have a little knowledge under your belt, the gap between "knowing AI exists" and "using it effectively" narrows dramatically. This allows you to:
+- **It sees your actual project** — not a pasted snippet, the real thing
+- **It uses real tools** — the same ones developers use every day
+- **It works where you work** — no copying between browser and desktop
+- **It stays local** — your files, your machine, your control
 
-- **Automate repetitive tasks** that eat your time
-- **Process and analyze information** at scales you couldn't before
-- **Generate first drafts** of documents, reports, and communications
-- **Navigate technical systems** without waiting for developer availability
-- **Communicate more precisely** with technical colleagues
+This isn't about replacing chat interfaces. It's about bringing AI to the place where work actually happens.
 
-The goal isn't to become a developer. It's to become fluent enough in the underlying concepts that AI tools become genuinely useful rather than frustrating black boxes.
-
-*The gap narrows. Let's begin.*
+*Let's begin.*
