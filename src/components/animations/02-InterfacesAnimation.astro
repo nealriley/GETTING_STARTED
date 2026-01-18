@@ -752,7 +752,7 @@ const { class: className = '' } = Astro.props;
         ease: 'power2.out'
       });
 
-      tl.to({}, { duration: 1.2 });
+      tl.to({}, { duration: 1.5 });
 
       // AI response
       tl.to(q('[data-web="ai"]'), {
@@ -767,8 +767,8 @@ const { class: className = '' } = Astro.props;
         duration: 0.3
       }, '-=0.2');
 
-      // Hold - let them read
-      tl.to({}, { duration: 3.0 });
+      // Hold - let them read the web response
+      tl.to({}, { duration: 4.0 });
 
       // ========================================
       // TRANSITION: Prompt travels
@@ -854,7 +854,7 @@ const { class: className = '' } = Astro.props;
       // SCENE 2: TERMINAL
       // ========================================
 
-      tl.to({}, { duration: 0.5 });
+      tl.to({}, { duration: 0.8 });
 
       // Show thinking indicator
       tl.to(q('[data-term="thinking"]'), {
@@ -863,7 +863,7 @@ const { class: className = '' } = Astro.props;
       });
 
       // Hold on thinking
-      tl.to({}, { duration: 1.5 });
+      tl.to({}, { duration: 2.0 });
 
       // Hide thinking, show response
       tl.to(q('[data-term="thinking"]'), {
@@ -878,8 +878,8 @@ const { class: className = '' } = Astro.props;
         ease: 'power2.out'
       });
 
-      // Hold
-      tl.to({}, { duration: 3.0 });
+      // Hold - let them read the terminal response
+      tl.to({}, { duration: 4.5 });
 
       // ========================================
       // SCENE 3: INSIGHT
@@ -902,8 +902,8 @@ const { class: className = '' } = Astro.props;
         ease: 'power2.out'
       });
 
-      // Hold
-      tl.to({}, { duration: 3.0 });
+      // Hold on insight
+      tl.to({}, { duration: 4.0 });
     }
 
     private resetElements() {
