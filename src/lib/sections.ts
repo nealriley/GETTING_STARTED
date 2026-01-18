@@ -5,14 +5,18 @@
  * This file provides TypeScript interfaces and utility functions.
  */
 
+import type { SectionTimeline } from './timeline';
+
 export interface SectionData {
   id: string;
   number: number;
   title: string;
   content: string;
+  messages: string[];  // Content split into individual message blocks for chat-style display
   wordCount: number;
   hasAnimation: boolean;
   animationComponent: string | null;
+  timeline?: SectionTimeline;  // Optional timeline for interweaved content/animation
 }
 
 /**

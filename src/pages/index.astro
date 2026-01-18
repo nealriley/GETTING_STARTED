@@ -12,74 +12,113 @@
 import SplitLayout from '../components/SplitLayout.astro';
 import { getCollection } from 'astro:content';
 import type { SectionData } from '../lib/sections';
+import { getTimeline } from '../lib/timelines';
 
 // Load sections from content collection
 const sectionEntries = await getCollection('sections');
 
 // Sort by number and transform to SectionData format
-const SECTIONS: SectionData[] = await Promise.all(
-  sectionEntries
-    .sort((a, b) => a.data.number - b.data.number)
-    .map(async (entry) => {
-      const { Content } = await entry.render();
-      // Render markdown to HTML string
-      const html = await renderContentToHTML(entry);
-      
-      return {
-        id: entry.data.id,
-        number: entry.data.number,
-        title: entry.data.title,
-        content: html,
-        wordCount: entry.body.split(/\s+/).length,
-        hasAnimation: true,
-        animationComponent: entry.data.animation,
-      };
-    })
-);
+const SECTIONS: SectionData[] = sectionEntries
+  .sort((a, b) => a.data.number - b.data.number)
+  .map((entry) => {
+    // Parse content into messages for chat-style display
+    const messages = parseContentToMessages(entry.body);
+    // Also keep full HTML for backward compatibility
+    const html = renderContentToHTML(entry.body);
+    
+    return {
+      id: entry.data.id,
+      number: entry.data.number,
+      title: entry.data.title,
+      content: html,
+      messages: messages,
+      wordCount: entry.body.split(/\s+/).length,
+      hasAnimation: true,
+      animationComponent: entry.data.animation,
+      timeline: getTimeline(entry.data.id),  // Add timeline if defined
+    };
+  });
 
-// Helper to render markdown content to HTML string
-async function renderContentToHTML(entry: typeof sectionEntries[0]): Promise<string> {
-  const { Content } = await entry.render();
-  // Use Astro's container API to render component to string
-  // For now, we'll use a simple markdown-to-HTML approach
-  const html = entry.body
-    // Convert headers
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+/**
+ * Convert a markdown block to HTML
+ */
+function markdownBlockToHTML(block: string): string {
+  block = block.trim();
+  if (!block) return '';
+  
+  // Convert inline markdown first
+  let html = block
     // Convert bold
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Convert italic
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // Convert italic (but not inside URLs or already processed)
+    .replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em>$1</em>')
     // Convert inline code
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    // Convert unordered lists (handle multi-line)
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    // Convert ordered lists
-    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    // Convert code blocks
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-    // Convert blockquotes
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    // Convert paragraphs (lines not already wrapped)
-    .split('\n\n')
-    .map(block => {
-      block = block.trim();
-      if (!block) return '';
-      if (block.startsWith('<')) return block;
-      if (block.includes('<li>')) {
-        // Wrap consecutive list items in ul
-        return `<ul>${block}</ul>`;
-      }
-      return `<p>${block}</p>`;
-    })
-    .join('\n')
-    // Clean up nested paragraphs in lists
-    .replace(/<ul><p>/g, '<ul>')
-    .replace(/<\/p><\/ul>/g, '</ul>')
-    .replace(/<p><li>/g, '<li>')
-    .replace(/<\/li><\/p>/g, '</li>');
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
   
-  return html;
+  // Determine block type
+  if (html.startsWith('## ')) {
+    return `<h2>${html.slice(3)}</h2>`;
+  }
+  if (html.startsWith('### ')) {
+    return `<h3>${html.slice(4)}</h3>`;
+  }
+  if (html.startsWith('> ')) {
+    return `<blockquote>${html.slice(2)}</blockquote>`;
+  }
+  if (html.startsWith('- ') || /^\d+\. /.test(html)) {
+    // List block - convert all list items
+    const items = html.split('\n').map(line => {
+      if (line.startsWith('- ')) {
+        return `<li>${line.slice(2)}</li>`;
+      }
+      if (/^\d+\. /.test(line)) {
+        return `<li>${line.replace(/^\d+\. /, '')}</li>`;
+      }
+      return line;
+    }).join('');
+    return `<ul>${items}</ul>`;
+  }
+  if (html.startsWith('```')) {
+    // Code block
+    const match = html.match(/```(\w*)\n([\s\S]*?)```/);
+    if (match) {
+      return `<pre><code>${match[2]}</code></pre>`;
+    }
+  }
+  
+  // Regular paragraph
+  return `<p>${html}</p>`;
+}
+
+/**
+ * Parse markdown content into an array of HTML message blocks.
+ * Each paragraph/block becomes one "message" for chat-style display.
+ */
+function parseContentToMessages(markdown: string): string[] {
+  // Split on double newlines (paragraph boundaries)
+  const blocks = markdown.split(/\n\n+/);
+  
+  const messages: string[] = [];
+  
+  for (const block of blocks) {
+    const trimmed = block.trim();
+    if (!trimmed) continue;
+    
+    const html = markdownBlockToHTML(trimmed);
+    if (html) {
+      messages.push(html);
+    }
+  }
+  
+  return messages;
+}
+
+/**
+ * Render markdown content to a single HTML string (for backward compatibility)
+ */
+function renderContentToHTML(markdown: string): string {
+  const messages = parseContentToMessages(markdown);
+  return messages.join('\n');
 }
 
 const title = "Getting Started — AI Tools for the Technical Adjacent";

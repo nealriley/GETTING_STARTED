@@ -339,19 +339,21 @@ const { class: className = '' } = Astro.props;
     }
 
     private init() {
-      document.addEventListener('section:change', (e: Event) => {
+      // Listen for animation start trigger (from chat content completion)
+      document.addEventListener('animation:start', (e: Event) => {
         const detail = (e as CustomEvent).detail;
-        if (detail.sectionData?.id === 'factory') {
+        if (detail.sectionId === 'factory') {
           this.play();
-        } else {
-          this.reset();
         }
       });
 
-      const hash = window.location.hash.slice(1);
-      if (hash === 'factory') {
-        setTimeout(() => this.play(), 500);
-      }
+      // Reset when section changes away
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id !== 'factory') {
+          this.reset();
+        }
+      });
     }
 
     play() {

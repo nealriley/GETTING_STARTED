@@ -341,10 +341,20 @@ const { class: className = '' } = Astro.props;
 <script>
   import gsap from 'gsap';
 
+  /**
+   * Animation stages for the intro section:
+   * - terminal-appear: Terminal fades in, types GETTING_STARTED, shows welcome
+   * - file-tree: Types ls ~/projects, shows file tree
+   * - ai-commands: Types llm commands, shows AI responses and tool usage
+   * - closing: Shows closing message
+   */
+  type IntroStage = 'terminal-appear' | 'file-tree' | 'ai-commands' | 'closing';
+
   class IntroAnimationController {
     private container: HTMLElement;
-    private timeline: gsap.core.Timeline | null = null;
+    private currentTimeline: gsap.core.Timeline | null = null;
     private isPlaying = false;
+    private completedStages: Set<IntroStage> = new Set();
 
     constructor(container: HTMLElement) {
       this.container = container;
@@ -352,19 +362,56 @@ const { class: className = '' } = Astro.props;
     }
 
     private init() {
+      // Listen for stage-based animation triggers
+      document.addEventListener('animation:play-stage', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionId === 'intro') {
+          this.playStage(detail.stage as IntroStage);
+        }
+      });
+
+      // Legacy: full animation trigger (for backward compatibility)
+      document.addEventListener('animation:start', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionId === 'intro') {
+          this.playAll();
+        }
+      });
+
+      // Reset when section changes away
       document.addEventListener('section:change', (e: Event) => {
         const detail = (e as CustomEvent).detail;
-        if (detail.sectionData?.id === 'intro') {
-          this.play();
-        } else {
+        if (detail.sectionData?.id !== 'intro') {
           this.reset();
         }
       });
 
-      const hash = window.location.hash.slice(1);
-      if (hash === 'intro') {
-        setTimeout(() => this.play(), 500);
-      }
+      // Reset on replay request
+      document.addEventListener('animation:reset', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionId === 'intro') {
+          this.reset();
+        }
+      });
+    }
+
+    // Helper methods
+    private q(sel: string): HTMLElement {
+      return this.container.querySelector(sel) as HTMLElement;
+    }
+
+    private qAll(sel: string): NodeListOf<Element> {
+      return this.container.querySelectorAll(sel);
+    }
+
+    private showCursor(lineNum: number) {
+      const cursor = this.q(`[data-line="${lineNum}"] .cursor`);
+      if (cursor) cursor.classList.add('active');
+    }
+
+    private hideCursor(lineNum: number) {
+      const cursor = this.q(`[data-line="${lineNum}"] .cursor`);
+      if (cursor) cursor.classList.remove('active');
     }
 
     private typeText(element: HTMLElement, text: string, duration: number): gsap.core.Tween {
@@ -391,13 +438,9 @@ const { class: className = '' } = Astro.props;
     ): gsap.core.Timeline {
       const tl = gsap.timeline();
       
-      // Type wrong text
       tl.add(this.typeText(element, wrongText, typeDuration));
-      
-      // Pause
       tl.to({}, { duration: 0.4 });
       
-      // Backspace
       const wrongChars = wrongText.split('');
       tl.to({ charIndex: wrongChars.length }, {
         charIndex: 0,
@@ -409,46 +452,61 @@ const { class: className = '' } = Astro.props;
         }
       });
       
-      // Pause
       tl.to({}, { duration: 0.3 });
-      
-      // Type correct text
       tl.add(this.typeText(element, correctText, typeDuration * 1.5));
       
       return tl;
     }
 
-    play() {
+    /**
+     * Play a specific animation stage
+     */
+    playStage(stage: IntroStage) {
       if (this.isPlaying) return;
-
-      if (this.timeline) {
-        this.timeline.kill();
-        this.timeline = null;
+      
+      // Kill any existing timeline
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
       }
 
-      this.resetElements();
       this.isPlaying = true;
 
-      this.timeline = gsap.timeline({
-        onComplete: () => { this.isPlaying = false; }
+      const tl = gsap.timeline({
+        onComplete: () => {
+          this.isPlaying = false;
+          this.completedStages.add(stage);
+          // Dispatch stage complete event
+          document.dispatchEvent(new CustomEvent('animation:stage-complete', {
+            detail: { sectionId: 'intro', stage }
+          }));
+        }
       });
 
-      const tl = this.timeline;
-      const q = (sel: string) => this.container.querySelector(sel) as HTMLElement;
-      const qAll = (sel: string) => this.container.querySelectorAll(sel);
+      this.currentTimeline = tl;
 
-      // Helper to show/hide cursor using class
-      const showCursor = (lineNum: number) => {
-        const cursor = q(`[data-line="${lineNum}"] .cursor`);
-        if (cursor) cursor.classList.add('active');
-      };
-      const hideCursor = (lineNum: number) => {
-        const cursor = q(`[data-line="${lineNum}"] .cursor`);
-        if (cursor) cursor.classList.remove('active');
-      };
+      switch (stage) {
+        case 'terminal-appear':
+          this.buildTerminalAppearStage(tl);
+          break;
+        case 'file-tree':
+          this.buildFileTreeStage(tl);
+          break;
+        case 'ai-commands':
+          this.buildAiCommandsStage(tl);
+          break;
+        case 'closing':
+          this.buildClosingStage(tl);
+          break;
+      }
+    }
 
-      // Phase 1: Terminal appears
-      tl.to(q('.terminal-window'), {
+    /**
+     * Stage: Terminal appears, types GETTING_STARTED, shows welcome
+     */
+    private buildTerminalAppearStage(tl: gsap.core.Timeline) {
+      // Terminal window fades in
+      tl.to(this.q('.terminal-window'), {
         opacity: 1,
         y: 0,
         duration: 0.6,
@@ -456,47 +514,52 @@ const { class: className = '' } = Astro.props;
       });
 
       // Show first line and cursor
-      tl.to(q('[data-line="1"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => showCursor(1));
+      tl.to(this.q('[data-line="1"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => this.showCursor(1));
       
       // Pause with blinking cursor
       tl.to({}, { duration: 0.8 });
 
-      // Phase 2: Type "GETTING_STARTED"
-      tl.add(this.typeText(q('[data-typed="GETTING_STARTED"]'), 'GETTING_STARTED', 1.2));
-      tl.call(() => hideCursor(1));
+      // Type "GETTING_STARTED"
+      tl.add(this.typeText(this.q('[data-typed="GETTING_STARTED"]'), 'GETTING_STARTED', 1.2));
+      tl.call(() => this.hideCursor(1));
       
-      // Show response
+      // Show welcome response
       tl.to({}, { duration: 0.3 });
-      tl.to(q('[data-line="2"]'), { opacity: 1, duration: 0.4 });
-      
-      // Pause to read
-      tl.to({}, { duration: 2.0 });
+      tl.to(this.q('[data-line="2"]'), { opacity: 1, duration: 0.4 });
+    }
 
-      // Phase 3: Type "ls ~/projects"
-      tl.to(q('[data-line="3"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => showCursor(3));
-      tl.add(this.typeText(q('[data-typed="ls ~/projects"]'), 'ls ~/projects', 1.0));
-      tl.call(() => hideCursor(3));
+    /**
+     * Stage: Types ls ~/projects, shows file tree
+     */
+    private buildFileTreeStage(tl: gsap.core.Timeline) {
+      // Show ls command line
+      tl.to(this.q('[data-line="3"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => this.showCursor(3));
+      
+      // Type command
+      tl.add(this.typeText(this.q('[data-typed="ls ~/projects"]'), 'ls ~/projects', 1.0));
+      tl.call(() => this.hideCursor(3));
       
       // Show file tree (staggered)
       tl.to({}, { duration: 0.3 });
-      tl.to(q('[data-line="4"]'), { opacity: 1, duration: 0.1 });
-      tl.to(qAll('.tree-line'), {
+      tl.to(this.q('[data-line="4"]'), { opacity: 1, duration: 0.1 });
+      tl.to(this.qAll('.tree-line'), {
         opacity: 1,
         duration: 0.15,
         stagger: 0.12
       });
-      
-      // Pause
-      tl.to({}, { duration: 1.5 });
+    }
 
-      // Phase 4: Hesitant typing then correct command
-      tl.to(q('[data-line="5"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => showCursor(5));
+    /**
+     * Stage: AI commands - summarize and chart
+     */
+    private buildAiCommandsStage(tl: gsap.core.Timeline) {
+      // Summarize command with hesitant typing
+      tl.to(this.q('[data-line="5"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => this.showCursor(5));
       
-      // Type with backspace effect
-      const typedEl = q('[data-typed="llm \\"summarize findings.md\\""]');
+      const typedEl = this.q('[data-typed="llm \\"summarize findings.md\\""]');
       tl.add(this.typeWithBackspace(
         typedEl,
         'how do I...',
@@ -504,79 +567,104 @@ const { class: className = '' } = Astro.props;
         0.8,
         0.4
       ));
-      tl.call(() => hideCursor(5));
+      tl.call(() => this.hideCursor(5));
       
       // Show AI response
       tl.to({}, { duration: 0.3 });
-      tl.to(q('[data-line="6"]'), { opacity: 1, duration: 0.1 });
-      tl.to(q('[data-ai="1"]'), { opacity: 1, duration: 0.3 });
+      tl.to(this.q('[data-line="6"]'), { opacity: 1, duration: 0.1 });
+      tl.to(this.q('[data-ai="1"]'), { opacity: 1, duration: 0.3 });
       tl.to({}, { duration: 0.6 });
-      tl.to(q('[data-ai="2"]'), { opacity: 1, duration: 0.4 });
+      tl.to(this.q('[data-ai="2"]'), { opacity: 1, duration: 0.4 });
       
-      // Pause
-      tl.to({}, { duration: 1.5 });
+      tl.to({}, { duration: 1.0 });
 
-      // Phase 5: Chart command
-      tl.to(q('[data-line="7"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => showCursor(7));
-      tl.add(this.typeText(q('[data-typed="llm \\"chart from data.csv\\""]'), 'llm "chart from data.csv"', 1.2));
-      tl.call(() => hideCursor(7));
+      // Chart command
+      tl.to(this.q('[data-line="7"]'), { opacity: 1, duration: 0.1 });
+      tl.call(() => this.showCursor(7));
+      tl.add(this.typeText(this.q('[data-typed="llm \\"chart from data.csv\\""]'), 'llm "chart from data.csv"', 1.2));
+      tl.call(() => this.hideCursor(7));
       
       // Show tool steps
       tl.to({}, { duration: 0.3 });
-      tl.to(q('[data-line="8"]'), { opacity: 1, duration: 0.1 });
-      tl.to(q('[data-tool="1"]'), { opacity: 1, duration: 0.3 });
+      tl.to(this.q('[data-line="8"]'), { opacity: 1, duration: 0.1 });
+      tl.to(this.q('[data-tool="1"]'), { opacity: 1, duration: 0.3 });
       tl.to({}, { duration: 0.4 });
-      tl.to(q('[data-tool="2"]'), { opacity: 1, duration: 0.3 });
+      tl.to(this.q('[data-tool="2"]'), { opacity: 1, duration: 0.3 });
       tl.to({}, { duration: 0.4 });
-      tl.to(q('[data-tool="3"]'), { opacity: 1, duration: 0.3 });
-      
-      // Pause
-      tl.to({}, { duration: 1.5 });
+      tl.to(this.q('[data-tool="3"]'), { opacity: 1, duration: 0.3 });
+    }
 
-      // Phase 6: Closing message
-      tl.to(q('[data-line="9"]'), { 
+    /**
+     * Stage: Closing message
+     */
+    private buildClosingStage(tl: gsap.core.Timeline) {
+      tl.to(this.q('[data-line="9"]'), { 
         opacity: 1, 
         duration: 0.8,
         ease: 'power2.out'
       });
-      
-      // Continue prompt
-      tl.to({}, { duration: 1.0 });
-      tl.to(q('[data-line="10"]'), { 
-        opacity: 1, 
-        duration: 0.5 
+    }
+
+    /**
+     * Play all stages sequentially (legacy support)
+     */
+    playAll() {
+      if (this.isPlaying) return;
+
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      const tl = gsap.timeline({
+        onComplete: () => { 
+          this.isPlaying = false;
+          document.dispatchEvent(new CustomEvent('animation:stage-complete', {
+            detail: { sectionId: 'intro', stage: 'all' }
+          }));
+        }
       });
+
+      this.currentTimeline = tl;
+
+      // Build all stages
+      this.buildTerminalAppearStage(tl);
+      tl.to({}, { duration: 1.5 }); // pause between stages
+      this.buildFileTreeStage(tl);
+      tl.to({}, { duration: 1.5 });
+      this.buildAiCommandsStage(tl);
+      tl.to({}, { duration: 1.5 });
+      this.buildClosingStage(tl);
     }
 
     private resetElements() {
-      const q = (sel: string) => this.container.querySelector(sel) as HTMLElement;
-      const qAll = (sel: string) => this.container.querySelectorAll(sel);
-
-      gsap.set(q('.terminal-window'), { opacity: 0, y: 10 });
-      gsap.set(qAll('.terminal-line'), { opacity: 0 });
-      gsap.set(qAll('.terminal-output'), { opacity: 0 });
-      gsap.set(qAll('.tree-line'), { opacity: 0 });
-      gsap.set(qAll('[data-ai]'), { opacity: 0 });
-      gsap.set(qAll('[data-tool]'), { opacity: 0 });
-      gsap.set(q('.closing-message'), { opacity: 0 });
-      gsap.set(q('.continue-prompt'), { opacity: 0 });
+      gsap.set(this.q('.terminal-window'), { opacity: 0, y: 10 });
+      gsap.set(this.qAll('.terminal-line'), { opacity: 0 });
+      gsap.set(this.qAll('.terminal-output'), { opacity: 0 });
+      gsap.set(this.qAll('.tree-line'), { opacity: 0 });
+      gsap.set(this.qAll('[data-ai]'), { opacity: 0 });
+      gsap.set(this.qAll('[data-tool]'), { opacity: 0 });
+      gsap.set(this.q('.closing-message'), { opacity: 0 });
+      gsap.set(this.q('.continue-prompt'), { opacity: 0 });
       
-      // Remove active class from all cursors
-      qAll('.cursor').forEach(el => {
+      this.qAll('.cursor').forEach(el => {
         el.classList.remove('active');
       });
       
-      // Clear typed text
-      qAll('.typed-text').forEach(el => {
+      this.qAll('.typed-text').forEach(el => {
         (el as HTMLElement).textContent = '';
       });
+
+      this.completedStages.clear();
     }
 
     reset() {
-      if (this.timeline) {
-        this.timeline.kill();
-        this.timeline = null;
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
       }
       this.isPlaying = false;
       this.resetElements();

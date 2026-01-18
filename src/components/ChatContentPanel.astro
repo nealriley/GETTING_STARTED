@@ -1,0 +1,1037 @@
+---
+/**
+ * ChatContentPanel.astro
+ * 
+ * A chat-style content panel that reveals messages sequentially.
+ * Mimics modern AI chat interfaces with:
+ * - Message-by-message reveal (auto-timed with user acceleration)
+ * - Subtle alternating hues for visual rhythm
+ * - Triggers for animation panel (signals when to play animations)
+ * - Panel dimming coordination with animation side
+ * - Timeline support: interweaves content beats with animation stages
+ */
+
+import type { SectionTimeline, Beat, ContentBeat, AnimationBeat } from '../lib/timeline';
+import { TIMING } from '../lib/timeline';
+
+interface Props {
+  sectionTitle: string;
+  sectionNumber: number;
+  totalSections: number;
+  messages: string[];  // Array of HTML strings (parsed paragraphs)
+  sectionId: string;
+  timeline?: SectionTimeline;  // Optional timeline for interweaved content/animation
+}
+
+const { sectionTitle, sectionNumber, totalSections, messages, sectionId, timeline } = Astro.props;
+
+// Serialize timeline for client-side script (if present)
+const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
+---
+
+<div class="chat-content-panel" data-chat-panel data-section-id={sectionId} data-timeline={timelineJson}>
+  <!-- Chat Messages Container -->
+  <div class="chat-messages" data-chat-messages>
+    {/* Section title as first message */}
+    <div 
+      class="chat-message title-message section-title-message"
+      data-message-index="0"
+      data-message-type="title"
+    >
+      <div class="message-content">
+        <h1>{sectionTitle}</h1>
+      </div>
+    </div>
+    
+    {/* Content messages (index shifted by 1) */}
+    {messages.map((msg, index) => {
+      const isHeading = msg.startsWith('<h2>') || msg.startsWith('<h3>');
+      return (
+        <div 
+          class:list={['chat-message', { 'title-message': isHeading }]}
+          data-message-index={index + 1}
+          data-message-type={isHeading ? 'title' : 'content'}
+        >
+          <div class="message-content" set:html={msg} />
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Footer with speed controls and progress -->
+  <div class="chat-footer" data-chat-footer>
+    <div class="speed-controls" data-speed-controls>
+      <button class="speed-btn" data-speed="slow" title="Slower">
+        <span class="speed-label">Slower</span>
+      </button>
+      <span class="speed-display" data-speed-display>5.0s</span>
+      <button class="speed-btn" data-speed="fast" title="Faster">
+        <span class="speed-label">Faster</span>
+      </button>
+    </div>
+    
+    <div class="continue-hint" data-continue-hint>
+      <span class="hint-text">Click or press any key</span>
+      <span class="hint-icon">↓</span>
+    </div>
+    
+    <!-- Section complete actions -->
+    <div class="section-complete-actions" data-section-complete>
+      <button class="replay-btn" data-replay-btn title="Replay this section">
+        <span class="replay-icon">&#8635;</span>
+        <span class="replay-text">Replay</span>
+      </button>
+      <span class="next-hint">Click anywhere to continue</span>
+    </div>
+    
+    <div class="message-progress" data-message-progress>
+      <span class="progress-current">0</span>
+      <span class="progress-sep">/</span>
+      <span class="progress-total">{messages.length + 1}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .chat-content-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: linear-gradient(180deg, #0f0f14 0%, #0a0a0f 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Note: Content panel never dims - only animation panel dims/undims */
+
+  /* Messages Container */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* Individual Message */
+  .chat-message {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    padding: 0.875rem 1.25rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 2px solid transparent;
+  }
+
+  .chat-message.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Alternating subtle hues for content messages */
+  .chat-message[data-message-type="content"]:nth-of-type(odd) {
+    background: rgba(139, 92, 246, 0.03);
+    border-left-color: rgba(139, 92, 246, 0.2);
+  }
+
+  .chat-message[data-message-type="content"]:nth-of-type(even) {
+    background: rgba(59, 130, 246, 0.03);
+    border-left-color: rgba(59, 130, 246, 0.2);
+  }
+
+  /* Title/Heading messages - centered, distinct styling */
+  .chat-message.title-message {
+    background: transparent;
+    border-left: none;
+    border-radius: 0;
+    padding: 1.5rem 1rem;
+    margin: 1rem 0;
+    text-align: center;
+  }
+
+  .chat-message.title-message:first-child {
+    margin-top: 0;
+  }
+
+  .chat-message.title-message .message-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chat-message.title-message .message-content::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.4));
+    margin-bottom: 0.75rem;
+    border-radius: 1px;
+  }
+
+  .chat-message.title-message .message-content::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4));
+    margin-top: 0.75rem;
+    border-radius: 1px;
+  }
+
+  /* Message content styling */
+  .message-content {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.85;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Section title (h1) - the main title for each section */
+  .message-content :global(h1) {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.98);
+    margin: 0;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  /* Section title message gets extra prominence */
+  .section-title-message {
+    padding: 2rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title-message .message-content::before {
+    width: 60px;
+    height: 3px;
+    margin-bottom: 1rem;
+  }
+
+  .section-title-message .message-content::after {
+    width: 60px;
+    height: 3px;
+    margin-top: 1rem;
+  }
+
+  .message-content :global(h2) {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+
+  .message-content :global(h3) {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+  }
+
+  /* Subsection title messages */
+  .title-message .message-content :global(h2) {
+    font-size: 1.35rem;
+  }
+
+  .title-message .message-content :global(h3) {
+    font-size: 1.15rem;
+  }
+
+  .message-content :global(p) {
+    margin: 0;
+  }
+
+  .message-content :global(strong) {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+  }
+
+  .message-content :global(em) {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .message-content :global(code) {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 0.85em;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f472b6;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+  }
+
+  .message-content :global(ul),
+  .message-content :global(ol) {
+    margin: 0.5rem 0;
+    padding-left: 1.25rem;
+  }
+
+  .message-content :global(li) {
+    margin: 0.3rem 0;
+  }
+
+  .message-content :global(li::marker) {
+    color: rgba(139, 92, 246, 0.6);
+  }
+
+  /* Footer */
+  .chat-footer {
+    flex-shrink: 0;
+    padding: 0.6rem 1.25rem;
+    background: rgba(15, 15, 20, 0.95);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  /* Speed controls */
+  .speed-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .speed-btn {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .speed-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .speed-label {
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .speed-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(139, 92, 246, 0.7);
+    min-width: 2.5rem;
+    text-align: center;
+  }
+
+  /* Continue hint */
+  .continue-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .continue-hint.visible {
+    opacity: 1;
+  }
+
+  .hint-text {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .hint-icon {
+    font-size: 0.8rem;
+    color: rgba(139, 92, 246, 0.5);
+    animation: bounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+  }
+
+  /* Section complete actions */
+  .section-complete-actions {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .section-complete-actions.visible {
+    display: flex;
+  }
+
+  .replay-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 6px;
+    color: rgba(139, 92, 246, 0.9);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .replay-btn:hover {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.5);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .replay-icon {
+    font-size: 0.9rem;
+  }
+
+  .next-hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+  }
+
+  /* Progress */
+  .message-progress {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  .progress-current {
+    color: rgba(139, 92, 246, 0.7);
+  }
+
+  /* Scrollbar */
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .chat-header {
+      padding: 1rem 1.25rem 0.75rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+    }
+
+    .chat-messages {
+      padding: 1rem 1rem 1.5rem;
+    }
+
+    .chat-message {
+      padding: 0.75rem 1rem;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .chat-message {
+      transition: opacity 0.1s ease-out;
+      transform: none !important;
+    }
+
+    .hint-icon {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Timeline types (mirrored from src/lib/timeline.ts for client-side use)
+   */
+  interface ContentBeat {
+    type: 'content';
+    messages: number[];
+  }
+
+  interface AnimationBeat {
+    type: 'animation';
+    stage: string;
+  }
+
+  type Beat = ContentBeat | AnimationBeat;
+
+  interface SectionTimeline {
+    sectionId: string;
+    beats: Beat[];
+  }
+
+  /**
+   * Timing constants
+   */
+  const TIMING = {
+    CONTENT_TO_ANIMATION: 2000,
+    ANIMATION_TO_CONTENT: 2000,
+    ANIMATION_FADE_OUT: 1400,
+  };
+
+  // Speed settings in ms - headings get half the time
+  const HEADING_SPEED_MULTIPLIER = 0.5;
+
+  interface ChatPanelState {
+    currentMessageIndex: number;      // Track shown messages
+    totalMessages: number;
+    isAnimating: boolean;
+    autoAdvanceTimer: number | null;
+    isComplete: boolean;
+    speedLevel: number;               // 0=slow, 1=normal, 2=fast, etc.
+    // Timeline state
+    currentBeatIndex: number;         // Which beat we're on
+    currentBeatMessageIndex: number;  // Within a content beat, which message
+    waitingForAnimation: boolean;     // Blocked waiting for animation:stage-complete
+  }
+
+  // Speed settings in ms
+  const SPEED_DELAYS = [7000, 5000, 4000, 2000, 1000]; // 7s, 5s, 4s, 2s, 1s
+
+  class ChatContentController {
+    private container: HTMLElement;
+    private messagesContainer: HTMLElement;
+    private messages: HTMLElement[];
+    private continueHint: HTMLElement;
+    private sectionCompleteEl: HTMLElement;
+    private replayBtn: HTMLElement;
+    private progressCurrent: HTMLElement;
+    private speedBtns: NodeListOf<HTMLButtonElement>;
+    private speedDisplay: HTMLElement;
+    private state: ChatPanelState;
+    private timeline: SectionTimeline | null = null;
+    private boundAnimationStageComplete: (e: Event) => void;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.messagesContainer = container.querySelector('[data-chat-messages]') as HTMLElement;
+      this.messages = Array.from(container.querySelectorAll('.chat-message'));
+      this.continueHint = container.querySelector('[data-continue-hint]') as HTMLElement;
+      this.sectionCompleteEl = container.querySelector('[data-section-complete]') as HTMLElement;
+      this.replayBtn = container.querySelector('[data-replay-btn]') as HTMLElement;
+      this.progressCurrent = container.querySelector('.progress-current') as HTMLElement;
+      this.speedBtns = container.querySelectorAll('.speed-btn') as NodeListOf<HTMLButtonElement>;
+      this.speedDisplay = container.querySelector('[data-speed-display]') as HTMLElement;
+
+      // Parse timeline from data attribute
+      const timelineData = container.dataset.timeline;
+      if (timelineData && timelineData !== 'null') {
+        try {
+          this.timeline = JSON.parse(timelineData);
+        } catch (e) {
+          console.warn('Failed to parse timeline data:', e);
+        }
+      }
+
+      this.state = {
+        currentMessageIndex: -1,
+        totalMessages: this.messages.length,
+        isAnimating: false,
+        autoAdvanceTimer: null,
+        isComplete: false,
+        speedLevel: 1,
+        currentBeatIndex: -1,
+        currentBeatMessageIndex: 0,
+        waitingForAnimation: false,
+      };
+
+      // Bind the animation complete handler for cleanup
+      this.boundAnimationStageComplete = this.handleAnimationStageComplete.bind(this);
+
+      this.init();
+    }
+
+    private get autoAdvanceDelay(): number {
+      return SPEED_DELAYS[this.state.speedLevel];
+    }
+
+    private get sectionId(): string {
+      return this.container.dataset.sectionId || '';
+    }
+
+    private init() {
+      // Listen for section changes
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        
+        if (detail.sectionData?.id === this.sectionId) {
+          this.start();
+        } else {
+          this.reset();
+        }
+      });
+
+      // User input to advance
+      this.container.addEventListener('click', (e) => {
+        // Don't advance if clicking speed buttons or replay button
+        if ((e.target as HTMLElement).closest('.speed-btn')) return;
+        if ((e.target as HTMLElement).closest('[data-replay-btn]')) return;
+        this.userAdvance();
+      });
+      document.addEventListener('keydown', (e) => this.handleKeydown(e));
+
+      // Listen for animation stage completion
+      document.addEventListener('animation:stage-complete', this.boundAnimationStageComplete);
+
+      // Speed button handlers
+      this.speedBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const speed = btn.dataset.speed;
+          if (speed === 'slow') {
+            this.adjustSpeed(-1);
+          } else if (speed === 'fast') {
+            this.adjustSpeed(1);
+          }
+        });
+      });
+
+      // Replay button handler
+      this.replayBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.replay();
+      });
+
+      // Check if we should start immediately (direct navigation)
+      const hash = window.location.hash.slice(1);
+      if (hash === this.sectionId) {
+        setTimeout(() => this.start(), 300);
+      }
+
+      // Initialize speed display
+      this.updateSpeedUI();
+    }
+
+    private handleAnimationStageComplete(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      
+      // Only respond if it's for our section and we're waiting
+      if (detail.sectionId !== this.sectionId || !this.state.waitingForAnimation) {
+        return;
+      }
+
+      this.state.waitingForAnimation = false;
+      
+      // Dispatch event to start fading animation panel (SplitLayout listens)
+      // The fade happens over ANIMATION_FADE_OUT ms while new content appears
+      document.dispatchEvent(new CustomEvent('content:resuming', {
+        detail: { 
+          sectionId: this.sectionId,
+          fadeDuration: TIMING.ANIMATION_FADE_OUT 
+        }
+      }));
+
+      // Start showing next content after short delay - it appears while animation fades
+      setTimeout(() => {
+        this.processNextBeat();
+      }, TIMING.ANIMATION_TO_CONTENT);
+    }
+
+    private adjustSpeed(delta: number) {
+      const maxLevel = SPEED_DELAYS.length - 1;
+      const newLevel = Math.max(0, Math.min(maxLevel, this.state.speedLevel + delta));
+      if (newLevel !== this.state.speedLevel) {
+        this.state.speedLevel = newLevel;
+        this.updateSpeedUI();
+        
+        // Reschedule auto-advance with new timing if active
+        if (this.state.autoAdvanceTimer && !this.state.isComplete) {
+          clearTimeout(this.state.autoAdvanceTimer);
+          this.scheduleAutoAdvance();
+        }
+      }
+    }
+
+    private updateSpeedUI() {
+      const delaySeconds = (this.autoAdvanceDelay / 1000).toFixed(1);
+      if (this.speedDisplay) {
+        this.speedDisplay.textContent = `${delaySeconds}s`;
+      }
+    }
+
+    private handleKeydown(e: KeyboardEvent) {
+      // Ignore if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      // Space, Enter, or arrow keys advance
+      if (['Space', 'Enter', 'ArrowDown', 'ArrowRight'].includes(e.code)) {
+        e.preventDefault();
+        this.userAdvance();
+      }
+    }
+
+    private userAdvance() {
+      // Cancel auto-timer
+      if (this.state.autoAdvanceTimer) {
+        clearTimeout(this.state.autoAdvanceTimer);
+        this.state.autoAdvanceTimer = null;
+      }
+
+      // Can't advance while waiting for animation
+      if (this.state.waitingForAnimation) {
+        return;
+      }
+
+      // If section is complete, clicking advances to next section
+      if (this.state.isComplete) {
+        document.dispatchEvent(new CustomEvent('section:advance-next', {
+          detail: { sectionId: this.sectionId }
+        }));
+        return;
+      }
+
+      if (this.timeline) {
+        this.advanceInBeat();
+      } else {
+        this.showNextMessageLegacy();
+      }
+    }
+
+    /**
+     * Replay the current section from the beginning
+     */
+    replay() {
+      // Dispatch event to reset animation
+      document.dispatchEvent(new CustomEvent('section:replay', {
+        detail: { sectionId: this.sectionId }
+      }));
+      
+      // Restart content
+      this.start();
+    }
+
+    start() {
+      this.reset();
+      
+      // Small delay before starting
+      setTimeout(() => {
+        if (this.timeline) {
+          this.processNextBeat();
+        } else {
+          this.showNextMessageLegacy();
+        }
+      }, 500);
+    }
+
+    // ========================================
+    // TIMELINE-AWARE BEAT PROCESSING
+    // ========================================
+
+    /**
+     * Process the next beat in the timeline
+     */
+    private processNextBeat() {
+      if (!this.timeline || this.state.isComplete) return;
+
+      this.state.currentBeatIndex++;
+      this.state.currentBeatMessageIndex = 0;
+
+      if (this.state.currentBeatIndex >= this.timeline.beats.length) {
+        this.complete();
+        return;
+      }
+
+      const beat = this.timeline.beats[this.state.currentBeatIndex];
+
+      if (beat.type === 'content') {
+        this.processContentBeat(beat);
+      } else if (beat.type === 'animation') {
+        this.processAnimationBeat(beat);
+      }
+    }
+
+    /**
+     * Process a content beat - show messages with user-controlled timing
+     */
+    private processContentBeat(beat: ContentBeat) {
+      // Show first message in this beat
+      this.showMessageFromBeat(beat, 0);
+    }
+
+    /**
+     * Show a specific message within a content beat
+     */
+    private showMessageFromBeat(beat: ContentBeat, beatMsgIndex: number) {
+      if (beatMsgIndex >= beat.messages.length) {
+        // All messages in this beat shown, move to next beat
+        this.processNextBeat();
+        return;
+      }
+
+      const messageIndex = beat.messages[beatMsgIndex];
+      this.state.currentBeatMessageIndex = beatMsgIndex;
+      
+      this.showMessage(messageIndex);
+      
+      // Schedule auto-advance to next message (or next beat)
+      this.scheduleAutoAdvance();
+    }
+
+    /**
+     * Called when user advances within a content beat
+     */
+    private advanceInBeat() {
+      if (!this.timeline || this.state.isAnimating) return;
+
+      const beat = this.timeline.beats[this.state.currentBeatIndex];
+      
+      if (beat?.type === 'content') {
+        const nextMsgIndex = this.state.currentBeatMessageIndex + 1;
+        if (nextMsgIndex < beat.messages.length) {
+          // More messages in this beat
+          this.showMessageFromBeat(beat, nextMsgIndex);
+        } else {
+          // This beat is done, move to next
+          this.processNextBeat();
+        }
+      } else {
+        // Not in a content beat, just go to next beat
+        this.processNextBeat();
+      }
+    }
+
+    /**
+     * Process an animation beat - trigger animation stage and wait
+     */
+    private processAnimationBeat(beat: AnimationBeat) {
+      this.state.waitingForAnimation = true;
+
+      // Hide the continue hint while animation plays
+      this.continueHint.classList.remove('visible');
+
+      // Dispatch event for SplitLayout to undim animation panel
+      document.dispatchEvent(new CustomEvent('content:pausing-for-animation', {
+        detail: { sectionId: this.sectionId }
+      }));
+
+      // Wait CONTENT_TO_ANIMATION delay, then trigger animation
+      setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('animation:play-stage', {
+          detail: { 
+            sectionId: this.sectionId, 
+            stage: beat.stage 
+          }
+        }));
+      }, TIMING.CONTENT_TO_ANIMATION);
+    }
+
+    // ========================================
+    // LEGACY MODE (no timeline)
+    // ========================================
+
+    private showNextMessageLegacy() {
+      if (this.state.isAnimating) return;
+      
+      const nextIndex = this.state.currentMessageIndex + 1;
+      
+      if (nextIndex >= this.state.totalMessages) {
+        this.complete();
+        return;
+      }
+
+      this.showMessage(nextIndex);
+      this.scheduleAutoAdvance();
+    }
+
+    // ========================================
+    // SHARED HELPERS
+    // ========================================
+
+    /**
+     * Check if a message is a heading (title or subheading)
+     */
+    private isHeading(message: HTMLElement): boolean {
+      return message.dataset.messageType === 'title';
+    }
+
+    /**
+     * Show a message by index
+     */
+    private showMessage(index: number) {
+      if (index < 0 || index >= this.messages.length) return;
+
+      this.state.isAnimating = true;
+      this.state.currentMessageIndex = index;
+      
+      const message = this.messages[index];
+      const isHeading = this.isHeading(message);
+      
+      // Reveal message
+      message.classList.add('visible');
+      
+      // Update progress
+      this.progressCurrent.textContent = String(index + 1);
+      
+      // Scroll behavior: headings scroll to top, content scrolls into view
+      if (isHeading) {
+        this.scrollToTop(message);
+      } else {
+        this.scrollToMessage(message);
+      }
+      
+      // Show continue hint after first message
+      if (index === 0) {
+        setTimeout(() => {
+          this.continueHint.classList.add('visible');
+        }, 800);
+      } else if (!this.state.waitingForAnimation) {
+        this.continueHint.classList.add('visible');
+      }
+
+      // Dispatch message shown event
+      document.dispatchEvent(new CustomEvent('chat:message-shown', {
+        detail: {
+          index,
+          total: this.state.totalMessages,
+          sectionId: this.sectionId,
+          isLast: index === this.state.totalMessages - 1,
+          isHeading
+        }
+      }));
+
+      // Animation complete
+      setTimeout(() => {
+        this.state.isAnimating = false;
+      }, 400);
+    }
+
+    /**
+     * Get the appropriate auto-advance delay for the current message
+     */
+    private getAutoAdvanceDelay(): number {
+      const currentMessage = this.messages[this.state.currentMessageIndex];
+      if (currentMessage && this.isHeading(currentMessage)) {
+        return Math.round(this.autoAdvanceDelay * HEADING_SPEED_MULTIPLIER);
+      }
+      return this.autoAdvanceDelay;
+    }
+
+    private scheduleAutoAdvance() {
+      if (this.state.autoAdvanceTimer) {
+        clearTimeout(this.state.autoAdvanceTimer);
+      }
+
+      // Don't auto-advance if waiting for animation
+      if (this.state.waitingForAnimation) return;
+
+      this.state.autoAdvanceTimer = window.setTimeout(() => {
+        if (this.timeline) {
+          this.advanceInBeat();
+        } else {
+          this.showNextMessageLegacy();
+        }
+      }, this.getAutoAdvanceDelay());
+    }
+
+    /**
+     * Scroll a heading to the top of the container
+     */
+    private scrollToTop(message: HTMLElement) {
+      message.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    private scrollToMessage(message: HTMLElement) {
+      message.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    private complete() {
+      this.state.isComplete = true;
+      this.continueHint.classList.remove('visible');
+      
+      // Show section complete actions (replay button + next hint)
+      this.sectionCompleteEl?.classList.add('visible');
+      
+      // Clear any pending timer
+      if (this.state.autoAdvanceTimer) {
+        clearTimeout(this.state.autoAdvanceTimer);
+        this.state.autoAdvanceTimer = null;
+      }
+      
+      // Only dispatch completion event for legacy mode (no timeline)
+      // Timeline mode: all animation stages already played inline, just stop
+      if (!this.timeline) {
+        document.dispatchEvent(new CustomEvent('chat:content-complete', {
+          detail: { sectionId: this.sectionId }
+        }));
+      }
+    }
+
+    reset() {
+      // Clear timer
+      if (this.state.autoAdvanceTimer) {
+        clearTimeout(this.state.autoAdvanceTimer);
+        this.state.autoAdvanceTimer = null;
+      }
+
+      // Reset state
+      this.state.currentMessageIndex = -1;
+      this.state.isAnimating = false;
+      this.state.isComplete = false;
+      this.state.currentBeatIndex = -1;
+      this.state.currentBeatMessageIndex = 0;
+      this.state.waitingForAnimation = false;
+
+      // Hide all messages
+      this.messages.forEach(msg => {
+        msg.classList.remove('visible');
+      });
+
+      // Reset progress
+      this.progressCurrent.textContent = '0';
+
+      // Hide continue hint and section complete actions
+      this.continueHint.classList.remove('visible');
+      this.sectionCompleteEl?.classList.remove('visible');
+
+      // Scroll to top
+      this.messagesContainer.scrollTop = 0;
+    }
+  }
+
+  // Initialize controllers for all chat panels
+  function initChatPanels() {
+    const panels = document.querySelectorAll('[data-chat-panel]');
+    panels.forEach(panel => {
+      if (!(panel as any).__chatController) {
+        (panel as any).__chatController = new ChatContentController(panel as HTMLElement);
+      }
+    });
+  }
+
+  initChatPanels();
+  document.addEventListener('DOMContentLoaded', initChatPanels);
+</script>

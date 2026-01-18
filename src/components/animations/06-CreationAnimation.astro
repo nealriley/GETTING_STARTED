@@ -292,19 +292,21 @@ const { class: className = '' } = Astro.props;
     }
 
     private init() {
-      document.addEventListener('section:change', (e: Event) => {
+      // Listen for animation start trigger (from chat content completion)
+      document.addEventListener('animation:start', (e: Event) => {
         const detail = (e as CustomEvent).detail;
-        if (detail.sectionData?.id === 'creation') {
+        if (detail.sectionId === 'creation') {
           this.play();
-        } else {
-          this.reset();
         }
       });
 
-      const hash = window.location.hash.slice(1);
-      if (hash === 'creation') {
-        setTimeout(() => this.play(), 500);
-      }
+      // Reset when section changes away
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id !== 'creation') {
+          this.reset();
+        }
+      });
     }
 
     play() {

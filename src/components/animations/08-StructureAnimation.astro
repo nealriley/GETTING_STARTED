@@ -327,22 +327,21 @@ const { class: className = '' } = Astro.props;
     }
 
     private init() {
-      // Listen for section changes
-      document.addEventListener('section:change', (e: Event) => {
+      // Listen for animation start trigger (from chat content completion)
+      document.addEventListener('animation:start', (e: Event) => {
         const detail = (e as CustomEvent).detail;
-        if (detail.sectionData?.id === 'structure') {
+        if (detail.sectionId === 'structure') {
           this.play();
-        } else {
-          this.reset();
         }
       });
 
-      // Check if we're already on this section
-      const hash = window.location.hash.slice(1);
-      if (hash === 'structure') {
-        // Delay to let page render
-        setTimeout(() => this.play(), 500);
-      }
+      // Reset when section changes away
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id !== 'structure') {
+          this.reset();
+        }
+      });
     }
 
     play() {
