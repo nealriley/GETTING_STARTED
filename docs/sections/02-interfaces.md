@@ -1,34 +1,58 @@
-# Section 2: Not All Models Are the Same, Not All Interfaces Either
+# Section 2: Same Models, Different Interfaces
 
 ## Animation: `02-InterfacesAnimation`
 
-Same AI orb displayed in different interface containers.
+Subtractive scene flow showing same prompt, different outcomes.
 
 ## Design Notes
 
-**Concept: "Same Brain, Different Body"**
+**Concept: "Same Intelligence, Different Access"**
 
-Visualize the same AI model being accessed through different interfaces, showing how the experience changes while the underlying intelligence stays constant.
+Instead of a busy split-screen, we show one full scene at a time. Chat first (isolated), then terminal (connected). The contrast is sharper because each gets full attention.
 
-**Duration:** ~25 seconds
+**Duration:** ~20 seconds
 
-### Visual Breakdown
+### Scene Flow
 
-1. **The Core** - Abstract glowing orb representing "the model"
-2. **Web Chat** - Orb contained in a browser window (limited access)
-3. **CLI Tool** - Orb in terminal with file system access (can reach out)
-4. **Desktop App** - Orb in GUI window with folder access (approachable + powerful)
-5. **The Reveal** - Split screen showing all interfaces with identical orb
+**Scene 1: Chat Interface (Sandboxed)** ~6s
+- Chat window appears with user message: "Summarize my project files"
+- AI responds: "I don't have access to your local files..."
+- Below: barrier line + grayed-out file icons (unreachable)
+- Visual: The chat is ALONE - separated from user's machine
 
-**Key Moment:** The visual reveals that the same intelligence exists in each interface, but capabilities differ based on access.
+**Scene 2: Terminal (Connected)** ~8s  
+- Chat fades out completely
+- Terminal window appears
+- Same prompt typed: `llm "Summarize my project files"`
+- Files appear ABOVE terminal with connection dots/lines
+- Terminal reads files, shows success output
+- Visual: The terminal is CONNECTED - lines link to files
 
-**Visual Hook:** The "orb" that represents the model, dressed in different interface "bodies"
+**Scene 3: Insight** ~4s
+- Terminal fades
+- Simple comparison: 💬 Chat (Isolated) vs ⌨️ Terminal (Connected)
+- Text: "Same intelligence. Different access."
+
+### Visual Cues
+
+| Element | Chat Scene | Terminal Scene |
+|---------|------------|----------------|
+| Files | Grayed out, below barrier | Full color, connected above |
+| Border color | Neutral | Green (success) |
+| Prompt | "Summarize my project files" | `llm "Summarize my project files"` |
+| Response | "I don't have access..." | "✓ Summary: 3 key themes..." |
+
+### Why Subtractive
+
+- One thing at a time = less cognitive load
+- Same prompt in both = direct comparison
+- Removing chat scene emphasizes what was MISSING
+- Full-screen scenes are more impactful than split-screen
 
 ## Content Summary
 
-Explores how the same AI model can be accessed through web chat, CLI tools, desktop apps, and embedded integrations - each with different capabilities. The interface determines what's possible.
+The terminal connects AI to your local environment. Chat interfaces are sandboxed - text in, text out. CLI tools run on your machine with access to your files. Same models, same APIs, different capabilities based on where the interface runs.
 
-## References
+## Key Message
 
-- Original storyboard: `animation/storyboards/SECTION_2_STORYBOARD.md`
-- Alternative considered: "The Landscape Tour" (flythrough of interface types)
+The interface determines what's possible. Choose the terminal when you need AI to work WITH your files, not just talk ABOUT them.
