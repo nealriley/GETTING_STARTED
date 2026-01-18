@@ -49,7 +49,7 @@ export function parseMarkdownSections(markdown: string): Section[] {
   // First, temporarily replace code blocks to avoid matching headers inside them
   const codeBlockPlaceholder = '___CODE_BLOCK___';
   const codeBlocks: string[] = [];
-  let processedMarkdown = markdown.replace(/```[\s\S]*?```/g, (match) => {
+  const processedMarkdown = markdown.replace(/```[\s\S]*?```/g, (match) => {
     codeBlocks.push(match);
     return codeBlockPlaceholder + (codeBlocks.length - 1);
   });

@@ -1,0 +1,177 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['welcome-screen', className]} data-welcome-screen>
+  <div class="welcome-content">
+    <h1 class="welcome-title">Getting Started</h1>
+    <p class="welcome-tagline">A guide for the technical adjacent</p>
+    
+    <div class="welcome-intro">
+      <p>
+        You're a UX researcher, product manager, designer, or data analyst. 
+        You work alongside engineers and want to harness AI tools more effectively.
+      </p>
+      <p>
+        This guide introduces foundational concepts for working with AI in the terminal, 
+        structured prompts, and context management—no coding experience required.
+      </p>
+    </div>
+
+    <button class="welcome-cta" data-welcome-cta>
+      Get Started
+      <span class="cta-arrow">&rarr;</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .welcome-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
+  }
+
+  .welcome-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .welcome-content {
+    max-width: 600px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .welcome-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.1;
+  }
+
+  .welcome-tagline {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    color: #4b5563;
+    margin: 0 0 2rem 0;
+    font-style: italic;
+  }
+
+  .welcome-intro {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #4b5563;
+    margin-bottom: 2.5rem;
+  }
+
+  .welcome-intro p {
+    margin: 0 0 1rem 0;
+  }
+
+  .welcome-intro p:last-child {
+    margin-bottom: 0;
+  }
+
+  .welcome-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    background: #111827;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .welcome-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .welcome-cta:active {
+    transform: translateY(0);
+  }
+
+  .cta-arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .welcome-cta:hover .cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .welcome-screen {
+      transition: none;
+    }
+    
+    .welcome-cta,
+    .cta-arrow {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function initWelcomeScreen() {
+    const welcomeScreen = document.querySelector('[data-welcome-screen]') as HTMLElement;
+    const ctaButton = document.querySelector('[data-welcome-cta]') as HTMLButtonElement;
+
+    if (!welcomeScreen || !ctaButton) return;
+
+    // Check initial state - if hash exists, hide welcome screen immediately
+    if (window.location.hash) {
+      welcomeScreen.classList.add('hidden');
+      // Remove from DOM after transition
+      setTimeout(() => {
+        welcomeScreen.style.display = 'none';
+      }, 400);
+    }
+
+    // Handle CTA click
+    ctaButton.addEventListener('click', () => {
+      // Navigate to #intro
+      window.location.hash = 'intro';
+      
+      // Hide welcome screen
+      welcomeScreen.classList.add('hidden');
+      setTimeout(() => {
+        welcomeScreen.style.display = 'none';
+      }, 400);
+    });
+
+    // Handle hash changes (e.g., user navigates back to root)
+    window.addEventListener('hashchange', () => {
+      if (!window.location.hash) {
+        // Show welcome screen again
+        welcomeScreen.style.display = 'flex';
+        // Force reflow
+        welcomeScreen.offsetHeight;
+        welcomeScreen.classList.remove('hidden');
+      }
+    });
+  }
+
+  // Initialize
+  initWelcomeScreen();
+  document.addEventListener('DOMContentLoaded', initWelcomeScreen);
+</script>

@@ -8,6 +8,7 @@
  */
 
 import type { SectionData } from '../lib/sections';
+import WelcomeScreen from './WelcomeScreen.astro';
 import IntroAnimation from './animations/01-IntroAnimation.astro';
 import InterfacesAnimation from './animations/02-InterfacesAnimation.astro';
 import ClaudeChatAnimation from './animations/03-ClaudeChatAnimation.astro';
@@ -32,8 +33,12 @@ const { sections, initialSection = 1 } = Astro.props;
 const currentSection = sections[initialSection - 1] || sections[0];
 ---
 
+<!-- Welcome Screen (shown when no hash) -->
+<WelcomeScreen />
+
 <div 
   class="split-layout" 
+  data-split-layout
   data-current-section={initialSection}
   data-total-sections={sections.length}
 >
@@ -48,10 +53,6 @@ const currentSection = sections[initialSection - 1] || sections[0];
         <span class="nav-arrow">&larr;</span>
         <span class="nav-text">Previous</span>
       </button>
-      
-      <div class="nav-info" aria-live="polite" aria-atomic="true">
-        <span class="nav-current" data-section-title>{currentSection.title}</span>
-      </div>
       
       <button 
         class="nav-btn next" 
@@ -200,6 +201,14 @@ const currentSection = sections[initialSection - 1] || sections[0];
     width: 100vw;
     overflow: hidden;
     background: #0a0a0f;
+    opacity: 1;
+    transition: opacity 0.3s ease-out;
+  }
+
+  /* Hidden state when welcome screen is active */
+  .split-layout.hidden {
+    opacity: 0;
+    pointer-events: none;
   }
   
   /* Minimal header - unobtrusive */
@@ -683,6 +692,30 @@ const currentSection = sections[initialSection - 1] || sections[0];
 </style>
 
 <script>
+  // Welcome state management
+  function isWelcomeState(): boolean {
+    return !window.location.hash;
+  }
+
+  function updateLayoutVisibility() {
+    const layout = document.querySelector('[data-split-layout]') as HTMLElement;
+    if (!layout) return;
+
+    if (isWelcomeState()) {
+      layout.classList.add('hidden');
+    } else {
+      layout.classList.remove('hidden');
+    }
+  }
+
+  // Initialize layout visibility on load
+  updateLayoutVisibility();
+
+  // Listen for hash changes to toggle layout visibility
+  window.addEventListener('hashchange', () => {
+    updateLayoutVisibility();
+  });
+
   // Section navigation logic with dynamic content updates
   const layout = document.querySelector('.split-layout') as HTMLElement;
   const prevBtn = document.querySelector('.nav-btn.prev') as HTMLButtonElement;
