@@ -33,5 +33,5 @@ Explains why markdown files have become central to AI workflows. Files are persi
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTION_6_STORYBOARD.md` (originally Section 6)
-- Philosophical concept: `animation/philosophical-concepts/SECTION_5_MARKDOWN_MAGIC.md`
+- Animation component: `src/components/animations/08-MarkdownAnimation.astro`
+- Content: `src/content/sections/08-markdown.md`

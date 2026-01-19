@@ -1,5 +1,10 @@
 # Section Briefs: Unified Structure for All Nine Sections
 
+> **ARCHIVED**: This document reflects the original 9-section structure.
+> The project has since been restructured to 12 sections.
+> See `docs/sections/` for current section design notes.
+> Archived: 2026-01-19
+
 ## The Through-Line
 
 **Core narrative arc:**

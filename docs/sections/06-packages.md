@@ -28,4 +28,5 @@ Explains package managers (Homebrew, npm, pip) as the original app stores. Demys
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTIONS_3_4_STORYBOARD.md` (Part 3 - App Stores timeline)
+- Animation component: `src/components/animations/06-PackageManagerAnimation.astro`
+- Content: `src/content/sections/06-packages.md`

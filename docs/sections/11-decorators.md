@@ -35,6 +35,5 @@ Explains how text structure serves as a communication channel with AI. Models we
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTION_9_STORYBOARD.md` (originally Section 9)
-- Philosophical concept: `animation/philosophical-concepts/SECTION_8_DECORATORS.md`
-- Note: Originally proposed as "The Story in Structure" - telling one story through multiple format transitions
+- Animation component: `src/components/animations/11-DecoratorsAnimation.astro`
+- Content: `src/content/sections/11-decorators.md`

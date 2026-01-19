@@ -32,4 +32,5 @@ Expands the concept of what terminals can create beyond code: documents, images,
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTION_5_STORYBOARD.md` (originally Section 5)
+- Animation component: `src/components/animations/07-CreationAnimation.astro`
+- Content: `src/content/sections/07-creation.md`

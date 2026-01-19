@@ -32,5 +32,5 @@ Demonstrates that formatting and structure aren't just for looks - they force cl
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTION_7_STORYBOARD.md` (originally Section 7)
-- Philosophical concept: `animation/philosophical-concepts/SECTION_6_STRUCTURE.md`
+- Animation component: `src/components/animations/09-StructureAnimation.astro`
+- Content: `src/content/sections/09-structure.md`

@@ -35,6 +35,5 @@ Concludes the guide by reframing documentation as productive assets. The accumul
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTION_10_STORYBOARD.md` (originally Section 10)
-- Philosophical concept: `animation/philosophical-concepts/SECTION_9_FACTORY.md`
-- Potential: Could include "The Gap Has Narrowed" series closing elements
+- Animation component: `src/components/animations/12-FactoryAnimation.astro`
+- Content: `src/content/sections/12-factory.md`

@@ -27,4 +27,5 @@ Demystifies terminal commands by showing they're abbreviations (ls=list, cd=chan
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTIONS_3_4_STORYBOARD.md` (Part 2)
+- Animation component: `src/components/animations/04-RawTerminalAnimation.astro`
+- Content: `src/content/sections/04-terminal-raw.md`

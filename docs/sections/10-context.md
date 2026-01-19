@@ -36,5 +36,5 @@ Introduces the concept that context has types, and providing the right TYPE of c
 
 ## References
 
-- Original storyboard: `animation/storyboards/SECTION_8_STORYBOARD.md` (originally Section 8)
-- Philosophical concept: `animation/philosophical-concepts/SECTION_7_CONTEXT.md`
+- Animation component: `src/components/animations/10-ContextAnimation.astro`
+- Content: `src/content/sections/10-context.md`

@@ -28,4 +28,5 @@ Positions AI tools like Claude Code as translation layers that convert natural l
 
 ## References
 
-- Related concept: "The Unlocked Door" - decades of powerful terminal tools now accessible
+- Animation component: `src/components/animations/05-TranslatorAnimation.astro`
+- Content: `src/content/sections/05-terminal-translator.md`

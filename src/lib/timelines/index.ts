@@ -7,6 +7,7 @@
 import type { SectionTimeline } from '../timeline';
 import { introTimeline } from './intro';
 import { whyTerminalTimeline } from './why-terminal';
+import { interfacesTimeline } from './interfaces';
 
 /**
  * Map of section IDs to their timeline configurations.
@@ -15,6 +16,7 @@ import { whyTerminalTimeline } from './why-terminal';
 export const timelines: Record<string, SectionTimeline> = {
   'intro': introTimeline,
   'why-terminal': whyTerminalTimeline,
+  'interfaces': interfacesTimeline,
 };
 
 /**

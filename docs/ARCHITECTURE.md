@@ -23,11 +23,11 @@ User lands on /
 | # | ID | Title | Animation |
 |---|-----|-------|-----------|
 | 1 | `intro` | For the Technical Adjacent | 01-IntroAnimation |
-| 2 | `interfaces` | Not All Models Are the Same | 02-InterfacesAnimation |
-| 3 | `terminal-chat` | The Terminal is Just a Chat | 03-ClaudeChatAnimation |
-| 4 | `terminal-raw` | What's Actually Happening | 04-RawTerminalAnimation |
-| 5 | `terminal-translator` | AI as Your Translator | 05-TranslatorAnimation |
-| 6 | `packages` | Package Managers | 06-PackageManagerAnimation |
+| 2 | `why-terminal` | Why Use a Terminal? | 02-WhyTerminalAnimation |
+| 3 | `interfaces` | Same Models, Different Interfaces | 03-InterfacesAnimation |
+| 4 | `terminal-raw` | Same Pattern, Different Words | 04-RawTerminalAnimation |
+| 5 | `terminal-translator` | AI Speaks Fluent Terminal | 05-TranslatorAnimation |
+| 6 | `packages` | The Original App Stores | 06-PackageManagerAnimation |
 | 7 | `creation` | More Than Just Code | 07-CreationAnimation |
 | 8 | `markdown` | The Unreasonable Usefulness of Markdown | 08-MarkdownAnimation |
 | 9 | `structure` | A Little Bit of Structure | 09-StructureAnimation |

@@ -2,13 +2,13 @@
 /**
  * InterfacesAnimation.astro
  * 
- * Section 2: "Same Models, Different Interfaces"
+ * Section 3: "Same Models, Different Interfaces"
  * 
- * Subtractive scene flow:
- * 1. Web browser (ChatGPT-style) - familiar chat interface
- * 2. Prompt "travels" to terminal
- * 3. Terminal - same prompt, but references local files
- * 4. Insight - "Same intelligence. Different access."
+ * Animation stages (triggered by timeline):
+ * - web-chat: Web browser appears, shows chat exchange
+ * - prompt-travel: Prompt floats from web to terminal
+ * - terminal-response: Terminal shows file-aware response
+ * - insight: Final insight text
  * 
  * Key visual: The prompt moves between windows, showing same model, different capabilities.
  */
@@ -685,8 +685,7 @@ const { class: className = '' } = Astro.props;
 
   class InterfacesAnimationController {
     private container: HTMLElement;
-    private timeline: gsap.core.Timeline | null = null;
-    private isPlaying = false;
+    private currentTimeline: gsap.core.Timeline | null = null;
 
     constructor(container: HTMLElement) {
       this.container = container;
@@ -694,11 +693,11 @@ const { class: className = '' } = Astro.props;
     }
 
     private init() {
-      // Listen for animation start trigger (from chat content completion)
-      document.addEventListener('animation:start', (e: Event) => {
+      // Listen for stage-based animation triggers from timeline system
+      document.addEventListener('animation:play-stage', (e: Event) => {
         const detail = (e as CustomEvent).detail;
         if (detail.sectionId === 'interfaces') {
-          this.play();
+          this.playStage(detail.stage);
         }
       });
 
@@ -711,75 +710,104 @@ const { class: className = '' } = Astro.props;
       });
     }
 
-    play() {
-      if (this.isPlaying) return;
+    private q(sel: string): HTMLElement {
+      return this.container.querySelector(sel) as HTMLElement;
+    }
 
-      if (this.timeline) {
-        this.timeline.kill();
-        this.timeline = null;
+    private qAll(sel: string): NodeListOf<Element> {
+      return this.container.querySelectorAll(sel);
+    }
+
+    /**
+     * Play a specific animation stage
+     */
+    playStage(stage: string) {
+      // Kill any running timeline
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
       }
 
-      this.resetElements();
-      this.isPlaying = true;
+      switch (stage) {
+        case 'web-chat':
+          this.playWebChat();
+          break;
+        case 'prompt-travel':
+          this.playPromptTravel();
+          break;
+        case 'terminal-response':
+          this.playTerminalResponse();
+          break;
+        case 'insight':
+          this.playInsight();
+          break;
+        default:
+          console.warn(`Unknown animation stage: ${stage}`);
+      }
+    }
 
-      this.timeline = gsap.timeline({
-        onComplete: () => { this.isPlaying = false; }
+    /**
+     * Stage 1: Web chat interface appears with conversation
+     */
+    private playWebChat() {
+      const tl = gsap.timeline({
+        onComplete: () => this.dispatchStageComplete('web-chat')
       });
+      this.currentTimeline = tl;
 
-      const tl = this.timeline;
-      const q = (sel: string) => this.container.querySelector(sel) as HTMLElement;
-
-      // ========================================
-      // SCENE 1: WEB BROWSER
-      // ========================================
-      
-      tl.set(q('[data-scene="web"]'), { visibility: 'visible' });
-      tl.to(q('[data-scene="web"]'), { opacity: 1, duration: 0.3 });
-      tl.to(q('[data-scene="web"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.1');
+      // Show web scene
+      tl.set(this.q('[data-scene="web"]'), { visibility: 'visible' });
+      tl.to(this.q('[data-scene="web"]'), { opacity: 1, duration: 0.3 });
+      tl.to(this.q('[data-scene="web"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.1');
 
       // Browser window appears
-      tl.to(q('.browser-window'), {
+      tl.to(this.q('.browser-window'), {
         opacity: 1,
         y: 0,
         duration: 0.6,
         ease: 'power2.out'
       });
 
-      tl.to({}, { duration: 0.5 });
+      tl.to({}, { duration: 0.4 });
 
       // User message
-      tl.to(q('[data-web="user"]'), {
+      tl.to(this.q('[data-web="user"]'), {
         opacity: 1,
         duration: 0.4,
         ease: 'power2.out'
       });
 
-      tl.to({}, { duration: 1.5 });
+      tl.to({}, { duration: 1.2 });
 
       // AI response
-      tl.to(q('[data-web="ai"]'), {
+      tl.to(this.q('[data-web="ai"]'), {
         opacity: 1,
         duration: 0.5,
         ease: 'power2.out'
       });
 
       // Input area
-      tl.to(q('[data-web="input"]'), {
+      tl.to(this.q('[data-web="input"]'), {
         opacity: 1,
         duration: 0.3
       }, '-=0.2');
 
-      // Hold - let them read the web response
-      tl.to({}, { duration: 4.0 });
+      // Hold for reading
+      tl.to({}, { duration: 2.0 });
+    }
 
-      // ========================================
-      // TRANSITION: Prompt travels
-      // ========================================
+    /**
+     * Stage 2: Prompt travels from web to terminal
+     */
+    private playPromptTravel() {
+      const tl = gsap.timeline({
+        onComplete: () => this.dispatchStageComplete('prompt-travel')
+      });
+      this.currentTimeline = tl;
 
-      // Get positions for the floating prompt animation
-      const userBubble = q('[data-web="user"] .message-bubble');
-      const floatingPrompt = q('[data-element="floating-prompt"]');
-      
+      const userBubble = this.q('[data-web="user"] .message-bubble');
+      const floatingPrompt = this.q('[data-element="floating-prompt"]');
+
       // Position floating prompt over the user message
       tl.call(() => {
         const rect = userBubble.getBoundingClientRect();
@@ -792,8 +820,8 @@ const { class: className = '' } = Astro.props;
         });
       });
 
-      // Fade out web scene except the user message briefly highlighted
-      tl.to(q('.browser-window'), {
+      // Fade out web scene
+      tl.to(this.q('.browser-window'), {
         opacity: 0.3,
         duration: 0.3
       });
@@ -805,12 +833,12 @@ const { class: className = '' } = Astro.props;
       });
 
       // Fade out web completely
-      tl.to(q('[data-scene="web"]'), {
+      tl.to(this.q('[data-scene="web"]'), {
         opacity: 0,
         duration: 0.3
       }, '+=0.2');
 
-      // Move floating prompt to center, then down toward terminal position
+      // Move floating prompt to center
       tl.to(floatingPrompt, {
         top: '50%',
         left: '50%',
@@ -823,20 +851,20 @@ const { class: className = '' } = Astro.props;
       tl.to({}, { duration: 0.3 });
 
       // Hide web scene, show terminal scene
-      tl.set(q('[data-scene="web"]'), { visibility: 'hidden' });
-      tl.set(q('[data-scene="terminal"]'), { visibility: 'visible' });
-      tl.to(q('[data-scene="terminal"]'), { opacity: 1, duration: 0.3 });
-      tl.to(q('[data-scene="terminal"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.1');
+      tl.set(this.q('[data-scene="web"]'), { visibility: 'hidden' });
+      tl.set(this.q('[data-scene="terminal"]'), { visibility: 'visible' });
+      tl.to(this.q('[data-scene="terminal"]'), { opacity: 1, duration: 0.3 });
+      tl.to(this.q('[data-scene="terminal"] .scene-label'), { opacity: 1, duration: 0.3 }, '-=0.1');
 
       // Terminal window appears
-      tl.to(q('.terminal-window'), {
+      tl.to(this.q('.terminal-window'), {
         opacity: 1,
         y: 0,
         duration: 0.5,
         ease: 'power2.out'
       }, '-=0.2');
 
-      // Move floating prompt toward the terminal prompt area and fade out
+      // Move floating prompt toward terminal and fade out
       tl.to(floatingPrompt, {
         top: '35%',
         opacity: 0,
@@ -844,86 +872,112 @@ const { class: className = '' } = Astro.props;
         ease: 'power2.in'
       });
 
-      // Show the prompt in terminal (it "landed")
-      tl.to(q('[data-term="prompt"]'), {
+      // Show the prompt in terminal
+      tl.to(this.q('[data-term="prompt"]'), {
         opacity: 1,
         duration: 0.3
       }, '-=0.2');
 
       tl.set(floatingPrompt, { visibility: 'hidden' });
+    }
 
-      // ========================================
-      // SCENE 2: TERMINAL
-      // ========================================
+    /**
+     * Stage 3: Terminal shows file-aware response
+     */
+    private playTerminalResponse() {
+      const tl = gsap.timeline({
+        onComplete: () => this.dispatchStageComplete('terminal-response')
+      });
+      this.currentTimeline = tl;
 
-      tl.to({}, { duration: 0.8 });
+      tl.to({}, { duration: 0.5 });
 
       // Show thinking indicator
-      tl.to(q('[data-term="thinking"]'), {
+      tl.to(this.q('[data-term="thinking"]'), {
         opacity: 1,
         duration: 0.3
       });
 
       // Hold on thinking
-      tl.to({}, { duration: 2.0 });
+      tl.to({}, { duration: 1.5 });
 
       // Hide thinking, show response
-      tl.to(q('[data-term="thinking"]'), {
+      tl.to(this.q('[data-term="thinking"]'), {
         opacity: 0,
         duration: 0.2
       });
 
-      // Response (includes context note about local files)
-      tl.to(q('[data-term="response"]'), {
+      // Response with file context
+      tl.to(this.q('[data-term="response"]'), {
         opacity: 1,
         duration: 0.5,
         ease: 'power2.out'
       });
 
-      // Hold - let them read the terminal response
-      tl.to({}, { duration: 4.5 });
+      // Hold for reading
+      tl.to({}, { duration: 3.0 });
+    }
 
-      // ========================================
-      // SCENE 3: INSIGHT
-      // ========================================
+    /**
+     * Stage 4: Final insight
+     */
+    private playInsight() {
+      const tl = gsap.timeline({
+        onComplete: () => this.dispatchStageComplete('insight')
+      });
+      this.currentTimeline = tl;
 
       // Fade out terminal
-      tl.to(q('[data-scene="terminal"]'), {
+      tl.to(this.q('[data-scene="terminal"]'), {
         opacity: 0,
         duration: 0.4
       });
-      tl.set(q('[data-scene="terminal"]'), { visibility: 'hidden' });
+      tl.set(this.q('[data-scene="terminal"]'), { visibility: 'hidden' });
 
       // Show insight
-      tl.set(q('[data-scene="insight"]'), { visibility: 'visible' });
-      tl.to(q('[data-scene="insight"]'), { opacity: 1, duration: 0.3 });
+      tl.set(this.q('[data-scene="insight"]'), { visibility: 'visible' });
+      tl.to(this.q('[data-scene="insight"]'), { opacity: 1, duration: 0.3 });
 
-      tl.to(q('.insight-main'), {
+      tl.to(this.q('.insight-main'), {
         opacity: 1,
         duration: 0.6,
         ease: 'power2.out'
       });
 
       // Hold on insight
-      tl.to({}, { duration: 4.0 });
+      tl.to({}, { duration: 3.0 });
     }
 
-    private resetElements() {
-      const q = (sel: string) => this.container.querySelector(sel) as HTMLElement;
-      const qAll = (sel: string) => this.container.querySelectorAll(sel);
+    /**
+     * Dispatch event when a stage completes
+     */
+    private dispatchStageComplete(stage: string) {
+      document.dispatchEvent(new CustomEvent('animation:stage-complete', {
+        detail: { sectionId: 'interfaces', stage }
+      }));
+    }
+
+    /**
+     * Reset all elements to initial state
+     */
+    reset() {
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
+      }
 
       // Hide all scenes
-      gsap.set(qAll('.scene'), { opacity: 0, visibility: 'hidden' });
-      gsap.set(qAll('.scene-label'), { opacity: 0 });
+      gsap.set(this.qAll('.scene'), { opacity: 0, visibility: 'hidden' });
+      gsap.set(this.qAll('.scene-label'), { opacity: 0 });
 
       // Reset web scene
-      gsap.set(q('.browser-window'), { opacity: 0, y: 10 });
-      gsap.set(q('[data-web="user"]'), { opacity: 0 });
-      gsap.set(q('[data-web="ai"]'), { opacity: 0 });
-      gsap.set(q('[data-web="input"]'), { opacity: 0 });
+      gsap.set(this.q('.browser-window'), { opacity: 0, y: 10 });
+      gsap.set(this.q('[data-web="user"]'), { opacity: 0 });
+      gsap.set(this.q('[data-web="ai"]'), { opacity: 0 });
+      gsap.set(this.q('[data-web="input"]'), { opacity: 0 });
 
       // Reset floating prompt
-      gsap.set(q('[data-element="floating-prompt"]'), { 
+      gsap.set(this.q('[data-element="floating-prompt"]'), { 
         opacity: 0, 
         visibility: 'hidden',
         top: '50%',
@@ -933,22 +987,13 @@ const { class: className = '' } = Astro.props;
       });
 
       // Reset terminal scene
-      gsap.set(q('.terminal-window'), { opacity: 0, y: 10 });
-      gsap.set(q('[data-term="prompt"]'), { opacity: 0 });
-      gsap.set(q('[data-term="thinking"]'), { opacity: 0 });
-      gsap.set(q('[data-term="response"]'), { opacity: 0 });
+      gsap.set(this.q('.terminal-window'), { opacity: 0, y: 10 });
+      gsap.set(this.q('[data-term="prompt"]'), { opacity: 0 });
+      gsap.set(this.q('[data-term="thinking"]'), { opacity: 0 });
+      gsap.set(this.q('[data-term="response"]'), { opacity: 0 });
 
       // Reset insight
-      gsap.set(q('.insight-main'), { opacity: 0 });
-    }
-
-    reset() {
-      if (this.timeline) {
-        this.timeline.kill();
-        this.timeline = null;
-      }
-      this.isPlaying = false;
-      this.resetElements();
+      gsap.set(this.q('.insight-main'), { opacity: 0 });
     }
   }
 
