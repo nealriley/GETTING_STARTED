@@ -10,7 +10,7 @@
 import type { SectionData } from '../lib/sections';
 import WelcomeScreen from './WelcomeScreen.astro';
 import ChatContentPanel from './ChatContentPanel.astro';
-import PlugTestAnimation from './animations/02-PlugTestAnimation.astro';
+import IntroAnimation from './animations/01-IntroAnimation.astro';
 import WhyTerminalAnimation from './animations/02-WhyTerminalAnimation.astro';
 import InterfacesAnimation from './animations/03-InterfacesAnimation.astro';
 import RawTerminalAnimation from './animations/04-RawTerminalAnimation.astro';
@@ -105,7 +105,7 @@ const currentSection = sections[initialSection - 1] || sections[0];
         
         <!-- Section 1: Intro Animation -->
         <div class="animation-container" data-animation-id="intro" style="display: none;">
-          <PlugTestAnimation />
+          <IntroAnimation />
         </div>
         
         <!-- Section 2: Why Terminal Animation -->

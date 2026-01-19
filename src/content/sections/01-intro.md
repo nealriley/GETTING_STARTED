@@ -2,7 +2,7 @@
 id: "intro"
 number: 1
 title: "It all starts with the Terminal"
-animation: "02-PlugTestAnimation"
+animation: "01-IntroAnimation"
 ---
 
 AI-powered tools have exposed the practice of software development to people who would otherwise be unable to write code. "Vibe coders" are building apps, automating workflows, and creating tools—all without traditional programming training. 
