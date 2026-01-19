@@ -1,8 +1,8 @@
 ---
 id: "markdown"
-number: 7
+number: 8
 title: "The Unreasonable Usefulness of Markdown"
-animation: "07-MarkdownAnimation"
+animation: "08-MarkdownAnimation"
 ---
 
 It wasn't immediately obvious that files would become one of the most powerful ways to work with AI. Early on, everything was chat-based - ephemeral conversations that disappeared when you closed the window.

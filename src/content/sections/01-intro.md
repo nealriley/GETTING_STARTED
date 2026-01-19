@@ -2,30 +2,13 @@
 id: "intro"
 number: 1
 title: "It all starts with the Terminal"
-animation: "01-IntroAnimation"
+animation: "02-PlugTestAnimation"
 ---
 
-AI-powered tools have opened software development to people who never imagined writing code. "Vibe coders" are building apps, automating workflows, and creating tools—all without traditional programming training.
+AI-powered tools have exposed the practice of software development to people who would otherwise be unable to write code. "Vibe coders" are building apps, automating workflows, and creating tools—all without traditional programming training. 
 
-But here's what separates those who struggle from those who thrive: **understanding the systems underneath.**
+They are also writing scripts, and **Terminals love scripts**.
 
-You don't need to become a professional developer. But the more you understand about how terminals work, how AI processes context, and how to structure your requests, the more powerful these tools become. The gap between "frustrating black box" and "genuine superpower" is smaller than you think.
+You don't need to become a professional developer in order to use some of the tools of the trade. But the more you understand about how these tools like Terminals work, the more powerful these tools become. This includes using AI tools to do the 'writing' of software and scripts.
 
-This guide is for the technical adjacent—UX researchers, product managers, designers, data analysts—people who work alongside engineers and want to harness AI tools more effectively.
-
-## Why the Terminal?
-
-You could use AI in a browser tab. But your work doesn't live in a browser tab.
-
-Your files, your projects, your tools—they live on your computer. The terminal is how you access them directly. It's the native interface to your machine.
-
-When AI meets the terminal, it stops being a conversation and starts being a collaborator:
-
-- **It sees your actual project** — not a pasted snippet, the real thing
-- **It uses real tools** — the same ones developers use every day
-- **It works where you work** — no copying between browser and desktop
-- **It stays local** — your files, your machine, your control
-
-This isn't about replacing chat interfaces. It's about bringing AI to the place where work actually happens.
-
-*Let's begin.*
+The gap between "frustrating black box" and "genuine superpower" is smaller than you think.

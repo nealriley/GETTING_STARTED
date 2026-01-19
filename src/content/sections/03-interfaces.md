@@ -1,8 +1,8 @@
 ---
 id: "interfaces"
-number: 2
+number: 3
 title: "Same Model, Different Interface"
-animation: "02-InterfacesAnimation"
+animation: "03-InterfacesAnimation"
 ---
 
 Every major AI provider offers two ways to access their models: a chat interface in your browser, and command-line tools for your terminal.

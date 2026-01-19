@@ -1,8 +1,8 @@
 ---
 id: "factory"
-number: 11
+number: 12
 title: "The Factory Is the Teacher"
-animation: "11-FactoryAnimation"
+animation: "12-FactoryAnimation"
 ---
 
 Every codebase has a story. Not just in its code, but in its documentation - the READMEs, the comments, the getting-started guides, the troubleshooting pages.

@@ -70,6 +70,11 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
       </button>
     </div>
     
+    <button class="playback-btn" data-playback-btn title="Pause/Resume">
+      <span class="playback-icon playing" data-playback-icon>&#9616;&#9616;</span>
+      <span class="playback-icon paused" data-playback-icon-paused>&#9654;</span>
+    </button>
+    
     <div class="continue-hint" data-continue-hint>
       <span class="hint-text">Click or press any key</span>
       <span class="hint-icon">↓</span>
@@ -335,6 +340,53 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
     text-align: center;
   }
 
+  /* Playback (pause/play) button */
+  .playback-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-left: 0.5rem;
+  }
+
+  .playback-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .playback-btn.paused {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: rgba(139, 92, 246, 0.9);
+  }
+
+  .playback-icon {
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  .playback-icon.paused {
+    display: none;
+  }
+
+  .playback-btn.paused .playback-icon.playing {
+    display: none;
+  }
+
+  .playback-btn.paused .playback-icon.paused {
+    display: inline;
+  }
+
   /* Continue hint */
   .continue-hint {
     display: flex;
@@ -511,6 +563,7 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
     autoAdvanceTimer: number | null;
     isComplete: boolean;
     speedLevel: number;               // 0=slow, 1=normal, 2=fast, etc.
+    isPaused: boolean;                // Playback paused
     // Timeline state
     currentBeatIndex: number;         // Which beat we're on
     currentBeatMessageIndex: number;  // Within a content beat, which message
@@ -530,6 +583,7 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
     private progressCurrent: HTMLElement;
     private speedBtns: NodeListOf<HTMLButtonElement>;
     private speedDisplay: HTMLElement;
+    private playbackBtn: HTMLElement;
     private state: ChatPanelState;
     private timeline: SectionTimeline | null = null;
     private boundAnimationStageComplete: (e: Event) => void;
@@ -544,6 +598,7 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
       this.progressCurrent = container.querySelector('.progress-current') as HTMLElement;
       this.speedBtns = container.querySelectorAll('.speed-btn') as NodeListOf<HTMLButtonElement>;
       this.speedDisplay = container.querySelector('[data-speed-display]') as HTMLElement;
+      this.playbackBtn = container.querySelector('[data-playback-btn]') as HTMLElement;
 
       // Parse timeline from data attribute
       const timelineData = container.dataset.timeline;
@@ -562,6 +617,7 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
         autoAdvanceTimer: null,
         isComplete: false,
         speedLevel: 1,
+        isPaused: false,
         currentBeatIndex: -1,
         currentBeatMessageIndex: 0,
         waitingForAnimation: false,
@@ -624,6 +680,12 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
         this.replay();
       });
 
+      // Playback (pause/play) button handler
+      this.playbackBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.togglePause();
+      });
+
       // Check if we should start immediately (direct navigation)
       const hash = window.location.hash.slice(1);
       if (hash === this.sectionId) {
@@ -655,6 +717,12 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
 
       // Start showing next content after short delay - it appears while animation fades
       setTimeout(() => {
+        // Respect pause state - if paused, wait for user to resume
+        if (this.state.isPaused) {
+          // Show continue hint so user knows they can advance
+          this.continueHint.classList.add('visible');
+          return;
+        }
         this.processNextBeat();
       }, TIMING.ANIMATION_TO_CONTENT);
     }
@@ -667,10 +735,34 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
         this.updateSpeedUI();
         
         // Reschedule auto-advance with new timing if active
-        if (this.state.autoAdvanceTimer && !this.state.isComplete) {
+        if (this.state.autoAdvanceTimer && !this.state.isComplete && !this.state.isPaused) {
           clearTimeout(this.state.autoAdvanceTimer);
           this.scheduleAutoAdvance();
         }
+      }
+    }
+
+    private togglePause() {
+      this.state.isPaused = !this.state.isPaused;
+      this.updatePlaybackUI();
+
+      if (this.state.isPaused) {
+        // Clear any pending auto-advance timer
+        if (this.state.autoAdvanceTimer) {
+          clearTimeout(this.state.autoAdvanceTimer);
+          this.state.autoAdvanceTimer = null;
+        }
+      } else {
+        // Resume: schedule next auto-advance if not complete
+        if (!this.state.isComplete && !this.state.waitingForAnimation) {
+          this.scheduleAutoAdvance();
+        }
+      }
+    }
+
+    private updatePlaybackUI() {
+      if (this.playbackBtn) {
+        this.playbackBtn.classList.toggle('paused', this.state.isPaused);
       }
     }
 
@@ -945,8 +1037,8 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
         clearTimeout(this.state.autoAdvanceTimer);
       }
 
-      // Don't auto-advance if waiting for animation
-      if (this.state.waitingForAnimation) return;
+      // Don't auto-advance if paused or waiting for animation
+      if (this.state.isPaused || this.state.waitingForAnimation) return;
 
       this.state.autoAdvanceTimer = window.setTimeout(() => {
         if (this.timeline) {
@@ -1001,9 +1093,13 @@ const timelineJson = timeline ? JSON.stringify(timeline) : 'null';
       this.state.currentMessageIndex = -1;
       this.state.isAnimating = false;
       this.state.isComplete = false;
+      this.state.isPaused = false;
       this.state.currentBeatIndex = -1;
       this.state.currentBeatMessageIndex = 0;
       this.state.waitingForAnimation = false;
+
+      // Reset playback UI
+      this.updatePlaybackUI();
 
       // Hide all messages
       this.messages.forEach(msg => {

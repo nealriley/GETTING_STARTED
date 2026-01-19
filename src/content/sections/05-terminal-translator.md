@@ -1,8 +1,8 @@
 ---
 id: "terminal-translator"
-number: 4
+number: 5
 title: "AI Speaks Fluent Terminal"
-animation: "04-TranslatorAnimation"
+animation: "05-TranslatorAnimation"
 ---
 
 Here's the magic: **AI is really good at speaking terminal.**

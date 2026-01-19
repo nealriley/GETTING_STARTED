@@ -1,8 +1,8 @@
 ---
 id: "decorators"
-number: 10
+number: 11
 title: "Decorating Your Prompts"
-animation: "10-DecoratorsAnimation"
+animation: "11-DecoratorsAnimation"
 ---
 
 When you talk to someone, you use more than words. Tone of voice. Pauses. Gestures. The way you organize what you say.

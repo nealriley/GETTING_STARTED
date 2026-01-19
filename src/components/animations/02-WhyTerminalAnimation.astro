@@ -1,0 +1,595 @@
+---
+/**
+ * WhyTerminalAnimation.astro
+ * 
+ * Animation for "Why use a Terminal?" section.
+ * Shows AI tools running from the terminal - demonstrating how
+ * AI capabilities are accessed via CLI.
+ * 
+ * Stages:
+ * - ai-cli-tools: Shows running claude CLI with a prompt
+ * - local-files: Shows AI CLI accessing local files
+ * - build-script: Shows AI CLI building a script to automate a task
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['why-terminal-animation', className]} data-why-terminal-animation>
+  <div class="terminal-window">
+    <div class="terminal-chrome">
+      <div class="window-controls">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <span class="terminal-title">Terminal</span>
+    </div>
+    
+    <div class="terminal-content">
+      <!-- Stage 1: Claude CLI -->
+      <div class="stage-container" data-stage="ai-cli-tools">
+        <div class="demo-command" data-demo="claude-cmd">
+          <div class="demo-line">
+            <span class="prompt">$</span>
+            <span class="demo-typed" data-demo-typed="claude-cmd"></span>
+          </div>
+        </div>
+        
+        <div class="ai-response-block" data-demo="claude-response">
+          <div class="response-text" data-text="claude-response">Claude is an AI assistant made by Anthropic. 
+            
+I can help you with coding, writing, analysis, math, and much more.
+
+What would you like to work on?</div>
+        </div>
+      </div>
+      
+      <!-- Stage 2: Local Files -->
+      <div class="stage-container" data-stage="local-files">
+        <div class="demo-command" data-demo="read-file">
+          <div class="demo-line">
+            <span class="prompt">$</span>
+            <span class="demo-typed" data-demo-typed="read-file"></span>
+          </div>
+          <div class="demo-output multi-line" data-demo-output="read-file">Reading project files...
+  - README.md
+  - src/app.js
+  - data/report.csv
+Analyzing 3 files...</div>
+        </div>
+        
+        <div class="ai-response-block" data-demo="summarize-response">
+          <div class="response-text" data-text="summarize-response">This project is a sales dashboard that visualizes 
+quarterly revenue data from report.csv...</div>
+        </div>
+      </div>
+      
+      <!-- Stage 3: Build Script -->
+      <div class="stage-container" data-stage="build-script">
+        <div class="demo-command" data-demo="request">
+          <div class="demo-line">
+            <span class="prompt">$</span>
+            <span class="demo-typed" data-demo-typed="request"></span>
+          </div>
+        </div>
+        
+        <div class="script-creation" data-demo="script-output">
+          <div class="script-status" data-script="thinking">Thinking...</div>
+          <div class="script-status" data-script="writing">Writing rename-photos.sh...</div>
+          <div class="script-file" data-script="file">
+            <div class="file-header">rename-photos.sh</div>
+            <pre class="file-content" set:html={`#!/bin/bash
+for f in *.jpg; do
+  d=$(exiftool -d "%Y-%m-%d" -DateTimeOriginal -s3 "$f")
+  mv "$f" "$d_$f"
+done`}></pre>
+          </div>
+          <div class="script-status success" data-script="done">Created rename-photos.sh</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .why-terminal-animation {
+    height: 100%;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .terminal-window {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(10px);
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  .terminal-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27ca40; }
+
+  .terminal-title {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+  }
+
+  .terminal-content {
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  /* Stage containers */
+  .stage-container {
+    opacity: 0;
+    display: none;
+  }
+
+  .stage-container.active {
+    display: block;
+  }
+
+  /* Command demos */
+  .demo-command {
+    margin-bottom: 1rem;
+    opacity: 0;
+  }
+
+  .demo-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .prompt {
+    color: #22c55e;
+    font-weight: 600;
+  }
+
+  .demo-typed {
+    color: #e2e8f0;
+  }
+
+  .demo-output {
+    color: #94a3b8;
+    padding-left: 1.25rem;
+    margin-top: 0.5rem;
+    opacity: 0;
+    font-size: 0.85rem;
+  }
+
+  .demo-output.multi-line {
+    white-space: pre-line;
+    line-height: 1.4;
+  }
+
+  /* AI response block */
+  .ai-response-block {
+    background: rgba(167, 139, 250, 0.1);
+    border-left: 3px solid #a78bfa;
+    padding: 1rem 1.25rem;
+    margin-top: 0.5rem;
+    border-radius: 0 8px 8px 0;
+    opacity: 0;
+  }
+
+  .response-text {
+    color: #e2e8f0;
+    white-space: pre-line;
+    line-height: 1.6;
+    font-size: 0.9rem;
+  }
+
+  /* Script creation animation */
+  .script-creation {
+    margin-top: 0.5rem;
+    padding-left: 1.25rem;
+    opacity: 0;
+  }
+
+  .script-status {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    opacity: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .script-status.success {
+    color: #4ade80;
+  }
+
+  .script-file {
+    background: #1a1a1a;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 0.75rem 0;
+    opacity: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .file-header {
+    background: #252525;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .file-content {
+    margin: 0;
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    color: #e2e8f0;
+    line-height: 1.5;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  /**
+   * WhyTerminalController
+   * 
+   * Animation stages:
+   * - ai-cli-tools: Shows running claude CLI with a prompt
+   * - local-files: Shows AI CLI accessing local files  
+   * - build-script: Shows AI CLI building a script
+   */
+  class WhyTerminalController {
+    private container: HTMLElement;
+    private currentTimeline: gsap.core.Timeline | null = null;
+    private isPlaying = false;
+    private terminalVisible = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private q(sel: string): HTMLElement {
+      return this.container.querySelector(sel) as HTMLElement;
+    }
+
+    private qAll(sel: string): NodeListOf<Element> {
+      return this.container.querySelectorAll(sel);
+    }
+
+    private typeText(element: HTMLElement, text: string, duration: number): gsap.core.Tween {
+      const chars = text.split('');
+      element.textContent = '';
+      return gsap.to({ i: 0 }, {
+        i: chars.length,
+        duration,
+        ease: 'none',
+        onUpdate: function() {
+          element.textContent = chars.slice(0, Math.floor(this.targets()[0].i)).join('');
+        }
+      });
+    }
+
+    private init() {
+      // Listen for stage-based animation triggers
+      document.addEventListener('animation:play-stage', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionId === 'why-terminal') {
+          this.playStage(detail.stage);
+        }
+      });
+
+      // Legacy: full animation trigger
+      document.addEventListener('animation:start', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionId === 'why-terminal') {
+          this.playAll();
+        }
+      });
+
+      // Reset when section changes away
+      document.addEventListener('section:change', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionData?.id !== 'why-terminal') {
+          this.reset();
+        }
+      });
+
+      // Reset on replay request
+      document.addEventListener('animation:reset', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail.sectionId === 'why-terminal') {
+          this.reset();
+        }
+      });
+    }
+
+    /**
+     * Play a specific animation stage
+     */
+    playStage(stage: string) {
+      if (this.isPlaying) return;
+      
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
+      }
+
+      this.isPlaying = true;
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          this.isPlaying = false;
+          document.dispatchEvent(new CustomEvent('animation:stage-complete', {
+            detail: { sectionId: 'why-terminal', stage }
+          }));
+        }
+      });
+
+      this.currentTimeline = tl;
+
+      // Ensure terminal is visible for all stages
+      if (!this.terminalVisible) {
+        this.showTerminal(tl);
+      }
+
+      switch (stage) {
+        case 'ai-cli-tools':
+          this.buildAiCliToolsStage(tl);
+          break;
+        case 'local-files':
+          this.buildLocalFilesStage(tl);
+          break;
+        case 'build-script':
+          this.buildScriptStage(tl);
+          break;
+        default:
+          console.warn(`Unknown animation stage: ${stage}`);
+          this.isPlaying = false;
+      }
+    }
+
+    /**
+     * Show terminal window (called once at start)
+     */
+    private showTerminal(tl: gsap.core.Timeline) {
+      tl.to(this.q('.terminal-window'), {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+      this.terminalVisible = true;
+    }
+
+    /**
+     * Hide previous stage and show new one
+     */
+    private switchStage(tl: gsap.core.Timeline, newStage: string) {
+      // Hide all stages
+      this.qAll('.stage-container').forEach(el => {
+        gsap.set(el, { opacity: 0, display: 'none' });
+      });
+      
+      // Show new stage
+      const stageEl = this.q(`[data-stage="${newStage}"]`);
+      tl.set(stageEl, { display: 'block' });
+      tl.to(stageEl, { opacity: 1, duration: 0.4 });
+    }
+
+    /**
+     * Stage 1: Claude CLI - shows claude command with a prompt
+     */
+    private buildAiCliToolsStage(tl: gsap.core.Timeline) {
+      this.switchStage(tl, 'ai-cli-tools');
+      
+      // Pause before starting
+      tl.to({}, { duration: 0.8 });
+
+      // Show command line
+      const cmdEl = this.q('[data-demo="claude-cmd"]');
+      const typedEl = this.q('[data-demo-typed="claude-cmd"]');
+      
+      tl.to(cmdEl, { opacity: 1, duration: 0.3 });
+      tl.to({}, { duration: 0.5 });
+      
+      // Type the claude command with a prompt
+      tl.add(this.typeText(typedEl, 'claude "what can you help me with?"', 1.4));
+      
+      // Pause after typing
+      tl.to({}, { duration: 1.0 });
+
+      // Show AI response
+      const responseEl = this.q('[data-demo="claude-response"]');
+      tl.to(responseEl, { opacity: 1, duration: 0.5 });
+      
+      // Hold to read
+      tl.to({}, { duration: 2.5 });
+    }
+
+    /**
+     * Stage 2: Local Files - shows AI reading project files
+     */
+    private buildLocalFilesStage(tl: gsap.core.Timeline) {
+      this.switchStage(tl, 'local-files');
+
+      // Pause before starting
+      tl.to({}, { duration: 0.8 });
+
+      // Read file command
+      const readEl = this.q('[data-demo="read-file"]');
+      const readTyped = this.q('[data-demo-typed="read-file"]');
+      const readOutput = this.q('[data-demo-output="read-file"]');
+
+      tl.to(readEl, { opacity: 1, duration: 0.3 });
+      tl.to({}, { duration: 0.5 });
+      tl.add(this.typeText(readTyped, 'claude "what is this project?"', 1.2));
+      tl.to({}, { duration: 0.8 });
+      tl.to(readOutput, { opacity: 1, duration: 0.5 });
+      tl.to({}, { duration: 1.5 });
+
+      // Show AI response
+      const responseEl = this.q('[data-demo="summarize-response"]');
+      tl.to(responseEl, { opacity: 1, duration: 0.5 });
+      
+      // Hold to read
+      tl.to({}, { duration: 2.5 });
+    }
+
+    /**
+     * Stage 3: Build Script - shows AI creating a script
+     */
+    private buildScriptStage(tl: gsap.core.Timeline) {
+      this.switchStage(tl, 'build-script');
+
+      // Pause before starting
+      tl.to({}, { duration: 0.8 });
+
+      // Request command
+      const reqEl = this.q('[data-demo="request"]');
+      const reqTyped = this.q('[data-demo-typed="request"]');
+
+      tl.to(reqEl, { opacity: 1, duration: 0.3 });
+      tl.to({}, { duration: 0.5 });
+      tl.add(this.typeText(reqTyped, 'claude "write a script to rename photos by date"', 1.8));
+      tl.to({}, { duration: 0.8 });
+
+      // Script creation sequence
+      const scriptOutput = this.q('[data-demo="script-output"]');
+      tl.to(scriptOutput, { opacity: 1, duration: 0.3 });
+
+      // Thinking...
+      tl.to(this.q('[data-script="thinking"]'), { opacity: 1, duration: 0.4 });
+      tl.to({}, { duration: 1.2 });
+      tl.to(this.q('[data-script="thinking"]'), { opacity: 0, duration: 0.3 });
+
+      // Writing...
+      tl.to(this.q('[data-script="writing"]'), { opacity: 1, duration: 0.4 });
+      tl.to({}, { duration: 0.8 });
+
+      // Show file
+      tl.to(this.q('[data-script="file"]'), { opacity: 1, duration: 0.5 });
+      tl.to({}, { duration: 2.0 });
+
+      // Done!
+      tl.to(this.q('[data-script="done"]'), { opacity: 1, duration: 0.4 });
+      tl.to({}, { duration: 1.5 });
+    }
+
+    /**
+     * Play all stages sequentially
+     */
+    playAll() {
+      if (this.isPlaying) return;
+
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
+      }
+
+      this.resetElements();
+      this.isPlaying = true;
+
+      const tl = gsap.timeline({
+        onComplete: () => { 
+          this.isPlaying = false;
+          document.dispatchEvent(new CustomEvent('animation:stage-complete', {
+            detail: { sectionId: 'why-terminal', stage: 'all' }
+          }));
+        }
+      });
+
+      this.currentTimeline = tl;
+
+      // Show terminal first
+      this.showTerminal(tl);
+      tl.to({}, { duration: 1.0 });
+
+      // Build all stages with pauses
+      this.buildAiCliToolsStage(tl);
+      tl.to({}, { duration: 1.5 });
+      this.buildLocalFilesStage(tl);
+      tl.to({}, { duration: 1.5 });
+      this.buildScriptStage(tl);
+    }
+
+    private resetElements() {
+      this.terminalVisible = false;
+      gsap.set(this.q('.terminal-window'), { opacity: 0, y: 10 });
+      
+      // Reset all stages
+      this.qAll('.stage-container').forEach(el => {
+        gsap.set(el, { opacity: 0, display: 'none' });
+      });
+      
+      // Reset all text elements
+      this.qAll('.demo-command').forEach(el => gsap.set(el, { opacity: 0 }));
+      this.qAll('.demo-output').forEach(el => gsap.set(el, { opacity: 0 }));
+      this.qAll('.ai-response-block').forEach(el => gsap.set(el, { opacity: 0 }));
+      this.qAll('[data-demo-typed]').forEach(el => { (el as HTMLElement).textContent = ''; });
+      
+      // Reset script creation elements
+      gsap.set(this.q('[data-demo="script-output"]'), { opacity: 0 });
+      this.qAll('.script-status').forEach(el => gsap.set(el, { opacity: 0 }));
+      gsap.set(this.q('[data-script="file"]'), { opacity: 0 });
+    }
+
+    reset() {
+      if (this.currentTimeline) {
+        this.currentTimeline.kill();
+        this.currentTimeline = null;
+      }
+      this.isPlaying = false;
+      this.resetElements();
+    }
+  }
+
+  function init() {
+    const container = document.querySelector('[data-why-terminal-animation]') as HTMLElement;
+    if (container && !(container as any).__controller) {
+      (container as any).__controller = new WhyTerminalController(container);
+    }
+  }
+
+  init();
+  document.addEventListener('DOMContentLoaded', init);
+</script>
