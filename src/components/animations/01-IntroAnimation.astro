@@ -4,13 +4,11 @@
  * 
  * Section 1: "It all starts with the Terminal"
  * 
- * Shows a terminal with simulated user typing and AI responses.
- * Demonstrates: your files, your tools, AI as collaborator.
- * 
- * Key moments:
- * - User typing simulation (humanizes terminal)
- * - Backspace/retype (figuring out what to ask)
- * - AI using real tools (not just chatting)
+ * Animation stages:
+ * - terminal-appear: Terminal window fades in, types ./GETTING_STARTED, shows welcome + history
+ * - script-demo: Shows example terminal commands (open app, rename file, run script)
+ * - plug-animation: ASCII plug connects to socket with spark effect
+ * - capabilities: Shows "Terminals can be used for a lot..." messages
  */
 
 interface Props {
@@ -32,73 +30,86 @@ const { class: className = '' } = Astro.props;
     </div>
     
     <div class="terminal-content">
-      <!-- Line 1: GETTING_STARTED command -->
+      <!-- Command line -->
       <div class="terminal-line" data-line="1">
         <span class="prompt">$</span>
-        <span class="typed-text" data-typed="GETTING_STARTED"></span>
-        <span class="cursor active-cursor">█</span>
+        <span class="typed-text" data-typed="command"></span>
+        <span class="cursor">█</span>
       </div>
       
-      <!-- Line 2-3: Welcome response -->
+      <!-- Welcome -->
       <div class="terminal-output" data-line="2">
-        <div class="welcome-text">Welcome to the terminal.</div>
-        <div class="welcome-sub">Your files. Your tools. Your machine.</div>
+        <div class="output-text" data-text="welcome">Welcome to the Terminal.</div>
       </div>
       
-      <!-- Line 4: ls command -->
-      <div class="terminal-line" data-line="3">
-        <span class="prompt">$</span>
-        <span class="typed-text" data-typed="ls ~/projects"></span>
-        <span class="cursor">█</span>
+      <!-- History line 1 -->
+      <div class="terminal-output" data-line="3">
+        <div class="output-text" data-text="history1">Terminals have been around a very long time.</div>
       </div>
       
-      <!-- Line 5: File tree output -->
-      <div class="terminal-output file-tree" data-line="4">
-        <div class="tree-line" data-tree="1">research/</div>
-        <div class="tree-line" data-tree="2">├── data/</div>
-        <div class="tree-line" data-tree="3">│   └── survey-results.csv</div>
-        <div class="tree-line" data-tree="4">├── analysis/</div>
-        <div class="tree-line" data-tree="5">│   └── findings.md</div>
-        <div class="tree-line" data-tree="6">└── README.md</div>
+      <!-- History line 2 -->
+      <div class="terminal-output" data-line="4">
+        <div class="output-text" data-text="history2">They allow you to plug in to how the computer actually runs.</div>
       </div>
       
-      <!-- Line 6: Hesitant typing then real command -->
-      <div class="terminal-line" data-line="5">
-        <span class="prompt">$</span>
-        <span class="typed-text" data-typed="llm &quot;summarize findings.md&quot;"></span>
-        <span class="cursor">█</span>
+      <!-- ASCII Plug Animation -->
+      <div class="plug-container" data-line="5">
+        <pre class="ascii-art plug-left" data-plug="left">      ┌──────┐
+══════╡ ●  ● │
+══════╡ ●  ● │
+      └──────┘</pre>
+        <div class="spark-container">
+          <span class="spark" data-plug="spark">⚡</span>
+        </div>
+        <pre class="ascii-art plug-right" data-plug="right">┌──────┐
+│ ○  ○ ╞══════
+│ ○  ○ ╞══════
+└──────┘</pre>
       </div>
       
-      <!-- Line 7: AI summary response -->
-      <div class="terminal-output ai-response" data-line="6">
-        <div class="ai-status" data-ai="1">Reading findings.md...</div>
-        <div class="ai-result" data-ai="2">Summary: 3 key themes identified in user research.</div>
+      <!-- Connected state -->
+      <div class="connected-container" data-line="6">
+        <pre class="ascii-art connected" data-connected>      ┌──────┬──────┐
+══════╡ ●  ● │ ○  ○ ╞════════════╗
+══════╡ ●  ● │ ○  ○ ╞════════════╬══▶ <span class="connected-text">CONNECTED</span>
+      └──────┴──────┘            ╚═══</pre>
       </div>
       
-      <!-- Line 8: Chart command -->
-      <div class="terminal-line" data-line="7">
-        <span class="prompt">$</span>
-        <span class="typed-text" data-typed="llm &quot;chart from data.csv&quot;"></span>
-        <span class="cursor">█</span>
+      <!-- Capabilities -->
+      <div class="terminal-output" data-line="7">
+        <div class="output-text" data-text="cap1">Terminals can be used for a lot,</div>
+        <div class="output-text" data-text="cap2">including running and writing code.</div>
       </div>
       
-      <!-- Line 9: Tool usage output -->
-      <div class="terminal-output tool-output" data-line="8">
-        <div class="tool-step" data-tool="1"><span class="arrow">→</span> Reading survey-results.csv</div>
-        <div class="tool-step" data-tool="2"><span class="arrow">→</span> Using matplotlib</div>
-        <div class="tool-step success" data-tool="3"><span class="check">✓</span> Chart saved to charts/results.png</div>
-      </div>
-      
-      <!-- Closing message -->
-      <div class="closing-message" data-line="9">
-        AI that works where work happens.
-      </div>
-      
-      <!-- Continue prompt -->
-      <div class="continue-prompt" data-line="10">
-        <span class="continue-text">Press</span>
-        <span class="key-hint">→</span>
-        <span class="continue-text">to continue</span>
+      <!-- Script Demo - shows terminal running scripts -->
+      <div class="script-demo" data-line="8">
+        <div class="script-intro" data-text="script-intro">Terminals love scripts:</div>
+        
+        <div class="demo-command" data-demo="1">
+          <div class="demo-line">
+            <span class="prompt">$</span>
+            <span class="demo-typed" data-demo-typed="1"></span>
+          </div>
+          <div class="demo-output" data-demo-output="1">✓ Firefox opened</div>
+        </div>
+        
+        <div class="demo-command" data-demo="2">
+          <div class="demo-line">
+            <span class="prompt">$</span>
+            <span class="demo-typed" data-demo-typed="2"></span>
+          </div>
+          <div class="demo-output" data-demo-output="2">report_draft.docx → report_final.docx</div>
+        </div>
+        
+        <div class="demo-command" data-demo="3">
+          <div class="demo-line">
+            <span class="prompt">$</span>
+            <span class="demo-typed" data-demo-typed="3"></span>
+          </div>
+          <div class="demo-output multi-line" data-demo-output="3">Found 47 files
+Renamed 47 files
+Done in 0.3s</div>
+        </div>
       </div>
     </div>
   </div>
@@ -162,26 +173,23 @@ const { class: className = '' } = Astro.props;
     padding: 1.5rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
     overflow-y: auto;
     font-size: 1rem;
     line-height: 1.6;
     flex: 1;
   }
 
-  /* Terminal lines */
   .terminal-line {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     opacity: 0;
-    min-height: 1.5em;
   }
 
   .prompt {
     color: #22c55e;
     font-weight: 600;
-    user-select: none;
   }
 
   .typed-text {
@@ -203,138 +211,137 @@ const { class: className = '' } = Astro.props;
     50% { opacity: 0; }
   }
 
-  /* Output blocks */
   .terminal-output {
     padding-left: 1rem;
     opacity: 0;
   }
 
-  .welcome-text {
+  .output-text {
+    opacity: 0;
+  }
+
+  .output-text[data-text="welcome"] {
     color: #a78bfa;
-    font-weight: 500;
+    font-size: 1.3rem;
+    font-weight: 600;
   }
 
-  .welcome-sub {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.9rem;
+  .output-text[data-text="history1"],
+  .output-text[data-text="history2"] {
+    color: rgba(255, 255, 255, 0.8);
   }
 
-  /* File tree */
-  .file-tree {
-    font-size: 0.9rem;
+  .output-text[data-text="cap1"],
+  .output-text[data-text="cap2"] {
+    color: rgba(255, 255, 255, 0.85);
   }
 
-  .tree-line {
-    color: rgba(255, 255, 255, 0.7);
+  /* Script Demo Styles */
+  .script-demo {
     opacity: 0;
-  }
-
-  .tree-line:first-child {
-    color: #60a5fa;
-    font-weight: 500;
-  }
-
-  /* AI response */
-  .ai-response {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .ai-status {
-    color: rgba(255, 255, 255, 0.5);
-    font-style: italic;
-    opacity: 0;
-  }
-
-  .ai-result {
-    color: #22c55e;
-    opacity: 0;
-  }
-
-  /* Tool output */
-  .tool-output {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .tool-step {
-    color: rgba(255, 255, 255, 0.6);
-    opacity: 0;
-  }
-
-  .tool-step .arrow {
-    color: #60a5fa;
-    margin-right: 0.25rem;
-  }
-
-  .tool-step.success {
-    color: #22c55e;
-  }
-
-  .tool-step .check {
-    margin-right: 0.25rem;
-  }
-
-  /* Closing message */
-  .closing-message {
-    margin-top: 0.75rem;
-    padding: 0.75rem 1rem;
-    background: rgba(139, 92, 246, 0.1);
-    border-left: 3px solid #8b5cf6;
-    color: #c4b5fd;
-    font-style: italic;
-    opacity: 0;
-  }
-
-  /* Continue prompt */
-  .continue-prompt {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
+  }
+
+  .script-intro {
+    color: #fbbf24;
+    font-weight: 600;
+    margin-bottom: 1rem;
     opacity: 0;
   }
 
-  .continue-text {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.85rem;
+  .demo-command {
+    margin-bottom: 0.75rem;
+    opacity: 0;
   }
 
-  .key-hint {
-    display: inline-flex;
+  .demo-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .demo-typed {
+    color: #e2e8f0;
+  }
+
+  .demo-output {
+    color: #4ade80;
+    padding-left: 1.25rem;
+    margin-top: 0.25rem;
+    opacity: 0;
+    font-size: 0.9rem;
+  }
+
+  .demo-output.multi-line {
+    white-space: pre-line;
+    line-height: 1.4;
+  }
+
+  /* Plug Animation */
+  .plug-container {
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 24px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    color: #8b5cf6;
-    font-size: 0.9rem;
+    padding: 1.5rem 0;
+    opacity: 0;
+    min-height: 100px;
+  }
+
+  .ascii-art {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.2;
+    opacity: 0;
+    white-space: pre;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  .plug-left {
+    color: #a78bfa;
+  }
+
+  .plug-right {
+    color: #60a5fa;
+  }
+
+  .spark-container {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .spark {
+    color: #fbbf24;
+    font-size: 2.5rem;
+    opacity: 0;
+    position: absolute;
+    text-shadow: 0 0 30px rgba(251, 191, 36, 0.9);
+  }
+
+  .connected-container {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 0;
+    opacity: 0;
+  }
+
+  .connected {
+    color: #22c55e;
+    font-size: 1rem;
+    line-height: 1.2;
+    white-space: pre;
+    opacity: 0;
+  }
+
+  .connected-text {
+    color: #4ade80;
     font-weight: bold;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .terminal-content {
-      font-size: 0.85rem;
-      padding: 1rem 1.25rem;
-    }
-    
-    .file-tree {
-      font-size: 0.8rem;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cursor {
-      animation: none;
-      opacity: 1;
-    }
+    text-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
   }
 </style>
 
@@ -342,35 +349,57 @@ const { class: className = '' } = Astro.props;
   import gsap from 'gsap';
 
   /**
-   * Animation stages for the intro section:
-   * - terminal-appear: Terminal fades in, types GETTING_STARTED, shows welcome
-   * - file-tree: Types ls ~/projects, shows file tree
-   * - ai-commands: Types llm commands, shows AI responses and tool usage
-   * - closing: Shows closing message
+   * IntroAnimationController
+   * 
+   * Supports stage-based animation for timeline integration.
+   * 
+   * Stages:
+   * - terminal-appear: Terminal window fades in, types ./GETTING_STARTED, shows welcome + history
+   * - plug-animation: ASCII plug connects to socket with spark effect
+   * - capabilities: Shows "Terminals can be used for a lot..." messages
+   * - script-demo: Shows example terminal commands
    */
-  type IntroStage = 'terminal-appear' | 'file-tree' | 'ai-commands' | 'closing';
-
   class IntroAnimationController {
     private container: HTMLElement;
     private currentTimeline: gsap.core.Timeline | null = null;
     private isPlaying = false;
-    private completedStages: Set<IntroStage> = new Set();
 
     constructor(container: HTMLElement) {
       this.container = container;
       this.init();
     }
 
+    private q(sel: string): HTMLElement {
+      return this.container.querySelector(sel) as HTMLElement;
+    }
+
+    private qAll(sel: string): NodeListOf<Element> {
+      return this.container.querySelectorAll(sel);
+    }
+
+    private typeText(element: HTMLElement, text: string, duration: number): gsap.core.Tween {
+      const chars = text.split('');
+      element.textContent = '';
+      return gsap.to({ i: 0 }, {
+        i: chars.length,
+        duration,
+        ease: 'none',
+        onUpdate: function() {
+          element.textContent = chars.slice(0, Math.floor(this.targets()[0].i)).join('');
+        }
+      });
+    }
+
     private init() {
-      // Listen for stage-based animation triggers
+      // Listen for stage-based animation triggers (timeline integration)
       document.addEventListener('animation:play-stage', (e: Event) => {
         const detail = (e as CustomEvent).detail;
         if (detail.sectionId === 'intro') {
-          this.playStage(detail.stage as IntroStage);
+          this.playStage(detail.stage);
         }
       });
 
-      // Legacy: full animation trigger (for backward compatibility)
+      // Legacy: full animation trigger
       document.addEventListener('animation:start', (e: Event) => {
         const detail = (e as CustomEvent).detail;
         if (detail.sectionId === 'intro') {
@@ -395,76 +424,12 @@ const { class: className = '' } = Astro.props;
       });
     }
 
-    // Helper methods
-    private q(sel: string): HTMLElement {
-      return this.container.querySelector(sel) as HTMLElement;
-    }
-
-    private qAll(sel: string): NodeListOf<Element> {
-      return this.container.querySelectorAll(sel);
-    }
-
-    private showCursor(lineNum: number) {
-      const cursor = this.q(`[data-line="${lineNum}"] .cursor`);
-      if (cursor) cursor.classList.add('active');
-    }
-
-    private hideCursor(lineNum: number) {
-      const cursor = this.q(`[data-line="${lineNum}"] .cursor`);
-      if (cursor) cursor.classList.remove('active');
-    }
-
-    private typeText(element: HTMLElement, text: string, duration: number): gsap.core.Tween {
-      const chars = text.split('');
-      element.textContent = '';
-      
-      return gsap.to({ charIndex: 0 }, {
-        charIndex: chars.length,
-        duration: duration,
-        ease: 'none',
-        onUpdate: function() {
-          const index = Math.floor(this.targets()[0].charIndex);
-          element.textContent = chars.slice(0, index).join('');
-        }
-      });
-    }
-
-    private typeWithBackspace(
-      element: HTMLElement, 
-      wrongText: string, 
-      correctText: string,
-      typeDuration: number,
-      backspaceDuration: number
-    ): gsap.core.Timeline {
-      const tl = gsap.timeline();
-      
-      tl.add(this.typeText(element, wrongText, typeDuration));
-      tl.to({}, { duration: 0.4 });
-      
-      const wrongChars = wrongText.split('');
-      tl.to({ charIndex: wrongChars.length }, {
-        charIndex: 0,
-        duration: backspaceDuration,
-        ease: 'none',
-        onUpdate: function() {
-          const index = Math.floor(this.targets()[0].charIndex);
-          element.textContent = wrongChars.slice(0, index).join('');
-        }
-      });
-      
-      tl.to({}, { duration: 0.3 });
-      tl.add(this.typeText(element, correctText, typeDuration * 1.5));
-      
-      return tl;
-    }
-
     /**
      * Play a specific animation stage
      */
-    playStage(stage: IntroStage) {
+    playStage(stage: string) {
       if (this.isPlaying) return;
       
-      // Kill any existing timeline
       if (this.currentTimeline) {
         this.currentTimeline.kill();
         this.currentTimeline = null;
@@ -475,8 +440,6 @@ const { class: className = '' } = Astro.props;
       const tl = gsap.timeline({
         onComplete: () => {
           this.isPlaying = false;
-          this.completedStages.add(stage);
-          // Dispatch stage complete event
           document.dispatchEvent(new CustomEvent('animation:stage-complete', {
             detail: { sectionId: 'intro', stage }
           }));
@@ -489,22 +452,27 @@ const { class: className = '' } = Astro.props;
         case 'terminal-appear':
           this.buildTerminalAppearStage(tl);
           break;
-        case 'file-tree':
-          this.buildFileTreeStage(tl);
+        case 'plug-animation':
+          this.buildPlugAnimationStage(tl);
           break;
-        case 'ai-commands':
-          this.buildAiCommandsStage(tl);
+        case 'capabilities':
+          this.buildCapabilitiesStage(tl);
           break;
-        case 'closing':
-          this.buildClosingStage(tl);
+        case 'script-demo':
+          this.buildScriptDemoStage(tl);
           break;
+        default:
+          console.warn(`Unknown animation stage: ${stage}`);
+          this.isPlaying = false;
       }
     }
 
     /**
-     * Stage: Terminal appears, types GETTING_STARTED, shows welcome
+     * Stage 1: Terminal appears, types ./GETTING_STARTED, shows welcome + history
      */
     private buildTerminalAppearStage(tl: gsap.core.Timeline) {
+      const cursor = this.q('[data-line="1"] .cursor');
+
       // Terminal window fades in
       tl.to(this.q('.terminal-window'), {
         opacity: 1,
@@ -515,93 +483,143 @@ const { class: className = '' } = Astro.props;
 
       // Show first line and cursor
       tl.to(this.q('[data-line="1"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => this.showCursor(1));
+      tl.call(() => cursor?.classList.add('active'));
       
       // Pause with blinking cursor
-      tl.to({}, { duration: 0.8 });
-
-      // Type "GETTING_STARTED"
-      tl.add(this.typeText(this.q('[data-typed="GETTING_STARTED"]'), 'GETTING_STARTED', 1.2));
-      tl.call(() => this.hideCursor(1));
-      
-      // Show welcome response
-      tl.to({}, { duration: 0.3 });
-      tl.to(this.q('[data-line="2"]'), { opacity: 1, duration: 0.4 });
-    }
-
-    /**
-     * Stage: Types ls ~/projects, shows file tree
-     */
-    private buildFileTreeStage(tl: gsap.core.Timeline) {
-      // Show ls command line
-      tl.to(this.q('[data-line="3"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => this.showCursor(3));
-      
-      // Type command
-      tl.add(this.typeText(this.q('[data-typed="ls ~/projects"]'), 'ls ~/projects', 1.0));
-      tl.call(() => this.hideCursor(3));
-      
-      // Show file tree (staggered)
-      tl.to({}, { duration: 0.3 });
-      tl.to(this.q('[data-line="4"]'), { opacity: 1, duration: 0.1 });
-      tl.to(this.qAll('.tree-line'), {
-        opacity: 1,
-        duration: 0.15,
-        stagger: 0.12
-      });
-    }
-
-    /**
-     * Stage: AI commands - summarize and chart
-     */
-    private buildAiCommandsStage(tl: gsap.core.Timeline) {
-      // Summarize command with hesitant typing
-      tl.to(this.q('[data-line="5"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => this.showCursor(5));
-      
-      const typedEl = this.q('[data-typed="llm \\"summarize findings.md\\""]');
-      tl.add(this.typeWithBackspace(
-        typedEl,
-        'how do I...',
-        'llm "summarize findings.md"',
-        0.8,
-        0.4
-      ));
-      tl.call(() => this.hideCursor(5));
-      
-      // Show AI response
-      tl.to({}, { duration: 0.3 });
-      tl.to(this.q('[data-line="6"]'), { opacity: 1, duration: 0.1 });
-      tl.to(this.q('[data-ai="1"]'), { opacity: 1, duration: 0.3 });
-      tl.to({}, { duration: 0.6 });
-      tl.to(this.q('[data-ai="2"]'), { opacity: 1, duration: 0.4 });
-      
       tl.to({}, { duration: 1.0 });
 
-      // Chart command
-      tl.to(this.q('[data-line="7"]'), { opacity: 1, duration: 0.1 });
-      tl.call(() => this.showCursor(7));
-      tl.add(this.typeText(this.q('[data-typed="llm \\"chart from data.csv\\""]'), 'llm "chart from data.csv"', 1.2));
-      tl.call(() => this.hideCursor(7));
+      // Type "./GETTING_STARTED"
+      tl.add(this.typeText(this.q('[data-typed="command"]'), './GETTING_STARTED', 1.2));
+      tl.call(() => cursor?.classList.remove('active'));
       
-      // Show tool steps
-      tl.to({}, { duration: 0.3 });
-      tl.to(this.q('[data-line="8"]'), { opacity: 1, duration: 0.1 });
-      tl.to(this.q('[data-tool="1"]'), { opacity: 1, duration: 0.3 });
-      tl.to({}, { duration: 0.4 });
-      tl.to(this.q('[data-tool="2"]'), { opacity: 1, duration: 0.3 });
-      tl.to({}, { duration: 0.4 });
-      tl.to(this.q('[data-tool="3"]'), { opacity: 1, duration: 0.3 });
+      // Pause before welcome
+      tl.to({}, { duration: 0.8 });
+      
+      // Show welcome
+      tl.to(this.q('[data-line="2"]'), { opacity: 1, duration: 0.1 });
+      tl.to(this.q('[data-text="welcome"]'), { 
+        opacity: 1, 
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+      
+      // Hold on welcome
+      tl.to({}, { duration: 2.5 });
+      
+      // Show first history line
+      tl.to(this.q('[data-line="3"]'), { opacity: 1, duration: 0.1 });
+      tl.to(this.q('[data-text="history1"]'), { opacity: 1, duration: 0.5 });
+      
+      // Hold
+      tl.to({}, { duration: 2.0 });
+      
+      // Show second history line
+      tl.to(this.q('[data-line="4"]'), { opacity: 1, duration: 0.1 });
+      tl.to(this.q('[data-text="history2"]'), { opacity: 1, duration: 0.5 });
+      
+      // Hold
+      tl.to({}, { duration: 2.0 });
     }
 
     /**
-     * Stage: Closing message
+     * Stage 2: ASCII plug animation - plug connects to socket
      */
-    private buildClosingStage(tl: gsap.core.Timeline) {
-      tl.to(this.q('[data-line="9"]'), { 
-        opacity: 1, 
-        duration: 0.8,
-        ease: 'power2.out'
+    private buildPlugAnimationStage(tl: gsap.core.Timeline) {
+      const plugContainer = this.q('[data-line="5"]');
+      const plugLeft = this.q('[data-plug="left"]');
+      const plugRight = this.q('[data-plug="right"]');
+      const spark = this.q('[data-plug="spark"]');
+      const connectedContainer = this.q('[data-line="6"]');
+      const connected = this.q('[data-connected]');
+
+      // Show plug container
+      tl.to(plugContainer, { opacity: 1, duration: 0.3 });
+      
+      // Show plugs separated
+      tl.to(plugLeft, { opacity: 1, x: -80, duration: 0.4 });
+      tl.to(plugRight, { opacity: 1, x: 80, duration: 0.4 }, '<');
+
+      // Hold - see separated state
+      tl.to({}, { duration: 1.2 });
+
+      // Move plugs together
+      tl.to(plugLeft, { x: -5, duration: 0.8, ease: 'power2.inOut' });
+      tl.to(plugRight, { x: 5, duration: 0.8, ease: 'power2.inOut' }, '<');
+
+      // Spark burst!
+      tl.to(spark, { opacity: 1, scale: 1.5, duration: 0.1, ease: 'power4.out' });
+      tl.to(spark, { scale: 2, duration: 0.1 });
+      tl.to(spark, { opacity: 0, scale: 0.5, duration: 0.25 });
+
+      // Hide plug animation, show connected
+      tl.to(plugContainer, { opacity: 0, duration: 0.3 });
+      tl.set(plugContainer, { display: 'none' });
+      tl.set(connectedContainer, { display: 'flex', opacity: 0 });
+      tl.to(connectedContainer, { opacity: 1, duration: 0.4 });
+      tl.to(connected, { opacity: 1, duration: 0.5, ease: 'power2.out' });
+
+      // Flash the connected text green
+      tl.to(connected, { textShadow: '0 0 30px rgba(74, 222, 128, 0.9)', duration: 0.2 });
+      tl.to(connected, { textShadow: '0 0 10px rgba(74, 222, 128, 0.3)', duration: 0.6 });
+      
+      // Hold on connected state
+      tl.to({}, { duration: 2.0 });
+    }
+
+    /**
+     * Stage 3: Capabilities message
+     */
+    private buildCapabilitiesStage(tl: gsap.core.Timeline) {
+      // Show capabilities text - first line
+      tl.to(this.q('[data-line="7"]'), { opacity: 1, duration: 0.1 });
+      tl.to(this.q('[data-text="cap1"]'), { opacity: 1, duration: 0.5 });
+      
+      // Hold
+      tl.to({}, { duration: 1.5 });
+      
+      // Second line
+      tl.to(this.q('[data-text="cap2"]'), { opacity: 1, duration: 0.5 });
+      
+      // Hold
+      tl.to({}, { duration: 2.0 });
+    }
+
+    /**
+     * Stage 4: Script demo - shows terminal running example scripts
+     * Triggered after "Terminals love scripts" content
+     */
+    private buildScriptDemoStage(tl: gsap.core.Timeline) {
+      const commands = [
+        { typed: 1, text: 'open Firefox.app', delay: 0.6 },
+        { typed: 2, text: 'mv report_draft.docx report_final.docx', delay: 0.9 },
+        { typed: 3, text: './rename-screenshots.sh', delay: 0.7 }
+      ];
+
+      // Show script demo container
+      tl.to(this.q('[data-line="8"]'), { opacity: 1, duration: 0.3 });
+      
+      // Show intro text
+      tl.to(this.q('[data-text="script-intro"]'), { opacity: 1, duration: 0.4 });
+      tl.to({}, { duration: 0.8 });
+
+      // Run through each command
+      commands.forEach((cmd, i) => {
+        const demoEl = this.q(`[data-demo="${cmd.typed}"]`);
+        const typedEl = this.q(`[data-demo-typed="${cmd.typed}"]`);
+        const outputEl = this.q(`[data-demo-output="${cmd.typed}"]`);
+
+        // Show command container
+        tl.to(demoEl, { opacity: 1, duration: 0.2 });
+        
+        // Type the command
+        tl.add(this.typeText(typedEl, cmd.text, cmd.delay));
+        
+        // Brief pause then show output
+        tl.to({}, { duration: 0.3 });
+        tl.to(outputEl, { opacity: 1, duration: 0.3 });
+        
+        // Hold before next command (longer on last one)
+        tl.to({}, { duration: i === commands.length - 1 ? 1.5 : 0.8 });
       });
     }
 
@@ -630,35 +648,39 @@ const { class: className = '' } = Astro.props;
 
       this.currentTimeline = tl;
 
-      // Build all stages
+      // Build all stages with pauses between
       this.buildTerminalAppearStage(tl);
-      tl.to({}, { duration: 1.5 }); // pause between stages
-      this.buildFileTreeStage(tl);
       tl.to({}, { duration: 1.5 });
-      this.buildAiCommandsStage(tl);
+      this.buildPlugAnimationStage(tl);
       tl.to({}, { duration: 1.5 });
-      this.buildClosingStage(tl);
+      this.buildCapabilitiesStage(tl);
+      tl.to({}, { duration: 1.5 });
+      this.buildScriptDemoStage(tl);
     }
 
     private resetElements() {
       gsap.set(this.q('.terminal-window'), { opacity: 0, y: 10 });
       gsap.set(this.qAll('.terminal-line'), { opacity: 0 });
       gsap.set(this.qAll('.terminal-output'), { opacity: 0 });
-      gsap.set(this.qAll('.tree-line'), { opacity: 0 });
-      gsap.set(this.qAll('[data-ai]'), { opacity: 0 });
-      gsap.set(this.qAll('[data-tool]'), { opacity: 0 });
-      gsap.set(this.q('.closing-message'), { opacity: 0 });
-      gsap.set(this.q('.continue-prompt'), { opacity: 0 });
-      
-      this.qAll('.cursor').forEach(el => {
-        el.classList.remove('active');
-      });
-      
-      this.qAll('.typed-text').forEach(el => {
-        (el as HTMLElement).textContent = '';
-      });
+      gsap.set(this.qAll('.output-text'), { opacity: 0 });
+      gsap.set(this.q('[data-line="5"]'), { opacity: 0, display: 'flex' });
+      gsap.set(this.q('[data-line="6"]'), { opacity: 0, display: 'none' });
+      gsap.set(this.qAll('.ascii-art'), { opacity: 0, x: 0 });
+      gsap.set(this.q('[data-plug="spark"]'), { opacity: 0, scale: 0 });
+      gsap.set(this.q('[data-connected]'), { opacity: 0, textShadow: 'none' });
 
-      this.completedStages.clear();
+      // Reset script demo elements
+      gsap.set(this.q('[data-line="8"]'), { opacity: 0 });
+      gsap.set(this.q('[data-text="script-intro"]'), { opacity: 0 });
+      gsap.set(this.qAll('.demo-command'), { opacity: 0 });
+      gsap.set(this.qAll('.demo-output'), { opacity: 0 });
+      this.qAll('[data-demo-typed]').forEach(el => { (el as HTMLElement).textContent = ''; });
+
+      const cursor = this.q('.cursor');
+      cursor?.classList.remove('active');
+      
+      const typed = this.q('.typed-text');
+      if (typed) typed.textContent = '';
     }
 
     reset() {
@@ -671,13 +693,13 @@ const { class: className = '' } = Astro.props;
     }
   }
 
-  function initAnimation() {
+  function init() {
     const container = document.querySelector('[data-intro-animation]') as HTMLElement;
-    if (container && !(container as any).__animationController) {
-      (container as any).__animationController = new IntroAnimationController(container);
+    if (container && !(container as any).__controller) {
+      (container as any).__controller = new IntroAnimationController(container);
     }
   }
 
-  initAnimation();
-  document.addEventListener('DOMContentLoaded', initAnimation);
+  init();
+  document.addEventListener('DOMContentLoaded', init);
 </script>
